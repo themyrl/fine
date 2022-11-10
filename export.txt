@@ -1,0 +1,3 @@
+export nnUNet_raw_data_base="/path/to/nnUNetData/nnUNet_raw"
+export nnUNet_preprocessed="/path/to/nnUNetData/nnUNet_preprocessed"
+export RESULTS_FOLDER="/path/to/nnUNetData/nnUNet_trained_models"

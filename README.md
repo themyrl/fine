@@ -26,6 +26,7 @@ pip install -e .
 ## 3. Training & Evaluation
 
 ```
+cd fine_package/fine
 python run/run_all_fine.py
 ```
 

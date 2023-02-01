@@ -38,7 +38,7 @@ if __name__ == "__main__":
 
     train_folder = join(base, "Training/img")
     label_folder = join(base, "Training/label")
-    test_folder = join(base, "Test/img")
+    test_folder = join(base, "Testing/img")
     train_patient_names = []
     test_patient_names = []
     train_patients = subfiles(train_folder, join=False, suffix = 'nii.gz')

@@ -29,4 +29,7 @@ export RESULTS_FOLDER="/gpfsscratch/rech/arf/unm89rb/nnUNet_trained_models"
 
 
 # convert dataset
-srun python nnUNet/nnunet/dataset_conversion/Task017_BeyondCranialVaultAbdominalOrganSegmentation.py
+# srun python nnUNet/nnunet/dataset_conversion/Task017_BeyondCranialVaultAbdominalOrganSegmentation.py
+
+# planning and pre-processing
+srun nnUNet_plan_and_preprocess -t 017 --verify_dataset_integrity

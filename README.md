@@ -11,7 +11,7 @@ pip install torch torchvision torchaudio --extra-index-url https://download.pyto
 
 cd nnUNet
 pip install -e .
-cd fine
+cd ../fine_package
 pip install -e .
 ```
 

@@ -20,11 +20,11 @@ import shutil
 
 
 if __name__ == "__main__":
-    base = "/gpfsscratch/rech/arf/unm89rb/MULTI_ATLAS/RawData/"
+    base = "/gpfsscratch/rech/arf/unm89rb/LiverUS/"
 
-    task_id = 17
-    task_name = "AbdominalOrganSegmentation"
-    prefix = 'ABD'
+    task_id = 130
+    task_name = "Livus"
+    # prefix = 'ABD'
 
     foldername = "Task%03.0d_%s" % (task_id, task_name)
 

@@ -19,7 +19,7 @@ module purge
 module load cuda/10.2
 module load python/3.9.12
 
-conda activate fine
+# conda activate fine
 
 
 export nnUNet_raw_data_base="/gpfsscratch/rech/arf/unm89rb/nnUNetData/nnUNet_raw"

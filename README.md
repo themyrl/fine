@@ -1,5 +1,5 @@
-# FINE
-Memory transformers for full context and high-resolution 3D Medical Segmentation official repository
+# FINE : Memory transformers for full context and high-resolution 3D Medical Segmentation
+[Memory transformers for full context and high-resolution 3D Medical Segmentation](https://arxiv.org/pdf/2210.05313.pdf) official repository
 
 ## 1. Installattion
 ```

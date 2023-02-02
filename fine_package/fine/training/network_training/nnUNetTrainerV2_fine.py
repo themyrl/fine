@@ -295,7 +295,7 @@ class nnUNetTrainerV2_fine(nnUNetTrainer):
         """
         # if the split file does not exist we need to create it
         if not isfile(join(self.dataset_directory, "splits_final.pkl")):
-            shutil.copy('../../../data/splits_final.pkl', self.dataset_directory)
+            shutil.copy('fine_package/fine/datasets/splits_final.pkl', self.dataset_directory)
 
         splits_file = join(self.dataset_directory, "splits_final.pkl")
         splits = load_pickle(splits_file)

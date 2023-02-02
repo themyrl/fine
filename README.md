@@ -19,7 +19,7 @@ pip install -e .
 
 - Download [BCV Dataset](https://www.synapse.org/#!Synapse:syn3193805/wiki/217789)
 - Preprocess the BCV dataset according to the uploaded nnUNet package
-- Training and Testing ID are in data/splits_final.pkl
+- Training and Testing ID are in fine_package/fine/datasets/splits_final.pkl
 
 
 

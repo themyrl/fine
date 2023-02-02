@@ -37,4 +37,4 @@ export RESULTS_FOLDER="/gpfsscratch/rech/arf/unm89rb/nnUNet_trained_models"
 
 
 # training
-srun python fine_package/fine/run/run_all_fine.py
+srun python fine_package/fine/run/run_all_unet.py

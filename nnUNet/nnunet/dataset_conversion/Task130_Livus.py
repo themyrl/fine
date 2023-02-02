@@ -53,7 +53,8 @@ if __name__ == "__main__":
         label_file = join(label_folder, p.replace('_img', '-St_Vol'))
 
         image_file = join(train_folder, p)
-        shutil.copy(image_file, join(imagestr, f'{train_patient_name[:7]}_0000.nii.gz'))
+        # shutil.copy(image_file, join(imagestr, f'{train_patient_name[:7]}_0000.nii.gz'))
+        shutil.copy(image_file, join(imagestr, f'{train_patient_name[:8]}_0000.nii.gz'))
         shutil.copy(label_file, join(labelstr, train_patient_name))
         train_patient_names.append(train_patient_name)
 

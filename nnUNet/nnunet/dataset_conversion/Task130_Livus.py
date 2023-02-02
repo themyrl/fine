@@ -24,7 +24,7 @@ if __name__ == "__main__":
 
     task_id = 130
     task_name = "Livus"
-    # prefix = 'ABD'
+    prefix = 'LVU'
 
     foldername = "Task%03.0d_%s" % (task_id, task_name)
 
@@ -36,55 +36,53 @@ if __name__ == "__main__":
     maybe_mkdir_p(imagests)
     maybe_mkdir_p(labelstr)
 
-    train_folder = join(base, "Training/img")
-    label_folder = join(base, "Training/label")
-    test_folder = join(base, "Test/img")
+    train_folder = join(base, "imagesTr")
+    label_folder = join(base, "labelStaple")
+    test_folder = join(base, "")
     train_patient_names = []
     test_patient_names = []
     train_patients = subfiles(train_folder, join=False, suffix = 'nii.gz')
     for p in train_patients:
-        serial_number = int(p[3:7])
-        train_patient_name = f'{prefix}_{serial_number:03d}.nii.gz'
-        label_file = join(label_folder, f'label{p[3:]}')
+        # serial_number = int(p[3:7])
+        serial_number = int(p.split('_')[1])       
+
+        # train_patient_name = f'{prefix}_{serial_number:03d}.nii.gz'
+        train_patient_name = f'{prefix}_{serial_number:04d}.nii.gz'
+
+        # label_file = join(label_folder, f'label{p[3:]}')
+        label_file = join(label_folder, p.replace('_img', '-St_Vol'))
+
         image_file = join(train_folder, p)
         shutil.copy(image_file, join(imagestr, f'{train_patient_name[:7]}_0000.nii.gz'))
         shutil.copy(label_file, join(labelstr, train_patient_name))
         train_patient_names.append(train_patient_name)
 
-    test_patients = subfiles(test_folder, join=False, suffix=".nii.gz")
-    for p in test_patients:
-        p = p[:-7]
-        image_file = join(test_folder, p + ".nii.gz")
-        serial_number = int(p[3:7])
-        test_patient_name = f'{prefix}_{serial_number:03d}.nii.gz'
-        shutil.copy(image_file, join(imagests, f'{test_patient_name[:7]}_0000.nii.gz'))
-        test_patient_names.append(test_patient_name)
+    # test_patients = subfiles(test_folder, join=False, suffix=".nii.gz")
+    # for p in test_patients:
+    #     p = p[:-7]
+    #     image_file = join(test_folder, p + ".nii.gz")
+    #     serial_number = int(p[3:7])
+    #     test_patient_name = f'{prefix}_{serial_number:03d}.nii.gz'
+    #     shutil.copy(image_file, join(imagests, f'{test_patient_name[:7]}_0000.nii.gz'))
+    #     test_patient_names.append(test_patient_name)
 
     json_dict = OrderedDict()
-    json_dict['name'] = "AbdominalOrganSegmentation"
-    json_dict['description'] = "Multi-Atlas Labeling Beyond the Cranial Vault Abdominal Organ Segmentation"
+    json_dict['name'] = "Livus"
+    json_dict['description'] = "Liver and vessels 3D ultrasound segmentation"
     json_dict['tensorImageSize'] = "3D"
-    json_dict['reference'] = "https://www.synapse.org/#!Synapse:syn3193805/wiki/217789"
-    json_dict['licence'] = "see challenge website"
+    json_dict['reference'] = ""
+    json_dict['licence'] = "Ask authors"
     json_dict['release'] = "0.0"
     json_dict['modality'] = {
-        "0": "CT",
+        "0": "US",
     }
     json_dict['labels'] = OrderedDict({
         "00": "background",
-        "01": "spleen",
-        "02": "right kidney",
-        "03": "left kidney",
-        "04": "gallbladder",
-        "05": "esophagus",
-        "06": "liver",
-        "07": "stomach",
-        "08": "aorta",
-        "09": "inferior vena cava",
-        "10": "portal vein and splenic vein",
-        "11": "pancreas",
-        "12": "right adrenal gland",
-        "13": "left adrenal gland"}
+        "01": "PV",
+        "02": "IVC",
+        "03": "HV",
+        "04": "liver",
+        }
     )
     json_dict['numTraining'] = len(train_patient_names)
     json_dict['numTest'] = len(test_patient_names)

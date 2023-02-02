@@ -3,11 +3,11 @@ from collections import OrderedDict
 
 
 
-l =[OrderedDict([('train', ['bcv_6','bcv_7','bcv_9','bcv_10','bcv_21','bcv_23','bcv_24','bcv_26','bcv_27','bcv_31','bcv_33','bcv_34','bcv_39','bcv_40','bcv_5','bcv_28','bcv_30','bcv_37']),('val', ['bcv_1','bcv_2','bcv_3','bcv_4','bcv_8','bcv_22','bcv_25','bcv_29','bcv_32','bcv_35','bcv_36','bcv_38'])])]
-l+=[OrderedDict([('train', ['bcv_1','bcv_2','bcv_3','bcv_4','bcv_23','bcv_8','bcv_22','bcv_25','bcv_29','bcv_31','bcv_32','bcv_33','bcv_34','bcv_36','bcv_37','bcv_38','bcv_39','bcv_40']), ('val', ['bcv_35','bcv_6','bcv_7','bcv_9','bcv_10','bcv_21','bcv_5','bcv_24','bcv_26','bcv_27','bcv_28','bcv_30'])])]
-l+=[OrderedDict([('train', ['bcv_2','bcv_3','bcv_4','bcv_5','bcv_6','bcv_9','bcv_21','bcv_22','bcv_23','bcv_24','bcv_26','bcv_27','bcv_28','bcv_29','bcv_30','bcv_32','bcv_36','bcv_38']),  ('val', ['bcv_1','bcv_35','bcv_7','bcv_8','bcv_10','bcv_25','bcv_31','bcv_33','bcv_34','bcv_37','bcv_39','bcv_40'])])]
-l+=[OrderedDict([('train', ['bcv_1','bcv_5','bcv_6','bcv_7','bcv_8','bcv_9','bcv_10','bcv_21','bcv_23','bcv_24','bcv_25','bcv_27','bcv_29','bcv_31','bcv_32','bcv_36','bcv_38','bcv_39']),  ('val', ['bcv_2','bcv_35','bcv_3','bcv_4','bcv_22','bcv_26','bcv_28','bcv_30','bcv_33','bcv_34','bcv_37','bcv_40'])])]
-l+=[OrderedDict([('train', ['bcv_1','bcv_2','bcv_3','bcv_4','bcv_7','bcv_8','bcv_10','bcv_22','bcv_23','bcv_25','bcv_26','bcv_28','bcv_30','bcv_33','bcv_34','bcv_36','bcv_37','bcv_40']),  ('val', ['bcv_5','bcv_6','bcv_9','bcv_21','bcv_24','bcv_27','bcv_29','bcv_31','bcv_32','bcv_35','bcv_38','bcv_39'])])]
+l =[OrderedDict([('train', ['ABD_006','ABD_007','ABD_009','ABD_010','ABD_021','ABD_023','ABD_024','ABD_026','ABD_027','ABD_031','ABD_033','ABD_034','ABD_039','ABD_040','ABD_005','ABD_028','ABD_030','ABD_037']),  ('val', ['ABD_001','ABD_002','ABD_003','ABD_004','ABD_008','ABD_022','ABD_025','ABD_029','ABD_032','ABD_035','ABD_036','ABD_038'])])]
+l+=[OrderedDict([('train', ['ABD_001','ABD_002','ABD_003','ABD_004','ABD_023','ABD_008','ABD_022','ABD_025','ABD_029','ABD_031','ABD_032','ABD_033','ABD_034','ABD_036','ABD_037','ABD_038','ABD_039','ABD_040']),  ('val', ['ABD_035','ABD_006','ABD_007','ABD_009','ABD_010','ABD_021','ABD_005','ABD_024','ABD_026','ABD_027','ABD_028','ABD_030'])])]
+l+=[OrderedDict([('train', ['ABD_002','ABD_003','ABD_004','ABD_005','ABD_006','ABD_009','ABD_021','ABD_022','ABD_023','ABD_024','ABD_026','ABD_027','ABD_028','ABD_029','ABD_030','ABD_032','ABD_036','ABD_038']),  ('val', ['ABD_001','ABD_035','ABD_007','ABD_008','ABD_010','ABD_025','ABD_031','ABD_033','ABD_034','ABD_037','ABD_039','ABD_040'])])]
+l+=[OrderedDict([('train', ['ABD_001','ABD_005','ABD_006','ABD_007','ABD_008','ABD_009','ABD_010','ABD_021','ABD_023','ABD_024','ABD_025','ABD_027','ABD_029','ABD_031','ABD_032','ABD_036','ABD_038','ABD_039']),  ('val', ['ABD_002','ABD_035','ABD_003','ABD_004','ABD_022','ABD_026','ABD_028','ABD_030','ABD_033','ABD_034','ABD_037','ABD_040'])])]
+l+=[OrderedDict([('train', ['ABD_001','ABD_002','ABD_003','ABD_004','ABD_007','ABD_008','ABD_010','ABD_022','ABD_023','ABD_025','ABD_026','ABD_028','ABD_030','ABD_033','ABD_034','ABD_036','ABD_037','ABD_040']),  ('val', ['ABD_005','ABD_006','ABD_009','ABD_021','ABD_024','ABD_027','ABD_029','ABD_031','ABD_032','ABD_035','ABD_038','ABD_039'])])]
 
 with open("splits_final.pkl", "wb") as f:
 	pkl.dump(l,f)

@@ -23,7 +23,7 @@ if __name__ == "__main__":
     base = "/gpfsscratch/rech/arf/unm89rb/MULTI_ATLAS/RawData/"
 
     task_id = 17
-    task_name = "AbdominalOrganSegmentation"
+    task_name = "BCV"
     prefix = 'ABD'
 
     foldername = "Task%03.0d_%s" % (task_id, task_name)
@@ -61,7 +61,7 @@ if __name__ == "__main__":
         test_patient_names.append(test_patient_name)
 
     json_dict = OrderedDict()
-    json_dict['name'] = "AbdominalOrganSegmentation"
+    json_dict['name'] = "BCV"
     json_dict['description'] = "Multi-Atlas Labeling Beyond the Cranial Vault Abdominal Organ Segmentation"
     json_dict['tensorImageSize'] = "3D"
     json_dict['reference'] = "https://www.synapse.org/#!Synapse:syn3193805/wiki/217789"

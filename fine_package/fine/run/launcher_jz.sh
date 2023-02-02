@@ -16,7 +16,7 @@ cd $WORK/fine
 module purge
 #conda deactivate
 
-conda deactivate
+# conda deactivate
 module load cuda/10.2
 module load python/3.9.12
 

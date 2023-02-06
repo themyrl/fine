@@ -80,7 +80,6 @@ class nnUNetTrainerV2_fine(nnUNetTrainer):
                 # self.plans['plans_per_stage'][1]['batch_size'] = 1   #Debug
                 print("Batch size is %s" % self.plans['plans_per_stage'][1]['batch_size'])
             
-            self.plans['plans_per_stage'][1]['patch_size'] = [64,128,128]
 
             self.process_plans(self.plans)
 

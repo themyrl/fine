@@ -72,7 +72,7 @@ class nnUNetTrainerV2(nnUNetTrainer):
         """
         if not self.was_initialized:
             maybe_mkdir_p(self.output_folder)
-
+            print("force_load_plans", force_load_plans, "plans is none",(self.plans is None))
             if force_load_plans or (self.plans is None):
                 self.load_plans_file()
                 # print("\n\n\n\n",self.plans.keys())
@@ -82,7 +82,9 @@ class nnUNetTrainerV2(nnUNetTrainer):
 
                 self.plans['plans_per_stage'][1]['patch_size'] = [64,128,128]
                 print("Patch size is %s" % self.plans['plans_per_stage'][1]['patch_size'])
+                exit(0)
 
+            
             self.process_plans(self.plans)
 
             self.setup_DA_params()

@@ -44,7 +44,7 @@ if __name__ == "__main__":
     train_patients = subfiles(train_folder, join=False, suffix = 'nii.gz')
     for p in train_patients:
         # serial_number = int(p[3:7])
-        serial_number = int(p[5:9])
+        serial_number = p[5:9]
         # serial_number = int(p.split('_')[1])       
 
         # train_patient_name = f'{prefix}_{serial_number:03d}.nii.gz'

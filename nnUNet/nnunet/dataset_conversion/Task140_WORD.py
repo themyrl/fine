@@ -22,9 +22,9 @@ import shutil
 if __name__ == "__main__":
     base = "/gpfsscratch/rech/arf/unm89rb/WORD-V0.1.0/"
 
-    task_id = 130
-    task_name = "Livus"
-    prefix = 'LVU'
+    task_id = 140
+    task_name = "WORD"
+    prefix = 'WRD'
 
     foldername = "Task%03.0d_%s" % (task_id, task_name)
 
@@ -36,21 +36,23 @@ if __name__ == "__main__":
     maybe_mkdir_p(imagests)
     maybe_mkdir_p(labelstr)
 
-    train_folder = join(base, "imagesTr")
-    label_folder = join(base, "labelStaple")
+    train_folder = join(base, "imagesTrTs")
+    label_folder = join(base, "labelsTrTs")
     test_folder = join(base, "")
     train_patient_names = []
     test_patient_names = []
     train_patients = subfiles(train_folder, join=False, suffix = 'nii.gz')
     for p in train_patients:
         # serial_number = int(p[3:7])
-        serial_number = int(p.split('_')[1])       
+        serial_number = int(p[5:9])
+        # serial_number = int(p.split('_')[1])       
 
         # train_patient_name = f'{prefix}_{serial_number:03d}.nii.gz'
-        train_patient_name = f'{prefix}_{serial_number:04d}.nii.gz'
+        train_patient_name = f'{prefix}_{serial_number}.nii.gz'
 
         # label_file = join(label_folder, f'label{p[3:]}')
-        label_file = join(label_folder, p.replace('_img', '-St_Vol'))
+        label_file = join(label_folder, p)
+        # label_file = join(label_folder, p.replace('_img', '-St_Vol'))
 
         image_file = join(train_folder, p)
         # shutil.copy(image_file, join(imagestr, f'{train_patient_name[:7]}_0000.nii.gz'))
@@ -68,21 +70,33 @@ if __name__ == "__main__":
     #     test_patient_names.append(test_patient_name)
 
     json_dict = OrderedDict()
-    json_dict['name'] = "Livus"
-    json_dict['description'] = "Liver and vessels 3D ultrasound segmentation"
+    json_dict['name'] = "WORD"
+    json_dict['description'] = "Whole abdomen ORgan segmentation Dataset (WORD), just for research use !!!"
     json_dict['tensorImageSize'] = "3D"
-    json_dict['reference'] = ""
-    json_dict['licence'] = "Ask authors"
-    json_dict['release'] = "0.0"
+    json_dict['reference'] = "WORD: Revisiting Organs Segmentation in the Whole Abdominal Region, link:https://arxiv.org/pdf/2111.02403.pdf, https://github.com/HiLab-git/WORD"
+    json_dict['licence'] = "GNU General Public License v3.0"
+    json_dict['release'] = "v0.1.0 10/11/2021"
     json_dict['modality'] = {
-        "0": "US",
+        "0": "CT",
     }
     json_dict['labels'] = OrderedDict({
         "00": "background",
-        "01": "PV",
-        "02": "IVC",
-        "03": "HV",
-        "04": "liver",
+        "01": "liver",
+        "02": "spleen",
+        "03": "left_kidney",
+        "04": "right_kidney",
+        "05": "stomach",
+        "06": "gallbladder",
+        "07": "esophagus",
+        "08": "pancreas",
+        "09": "duodenum",
+        "10": "colon",
+        "11": "intestine",
+        "12": "adrenal",
+        "13": "rectum",
+        "14": "bladder",
+        "15": "Head_of_femur_L",
+        "16": "Head_of_femur_R"
         }
     )
     json_dict['numTraining'] = len(train_patient_names)

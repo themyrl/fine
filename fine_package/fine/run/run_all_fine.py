@@ -10,5 +10,10 @@ gpu = '0'
 
 
 # LIVUS
-run.main(gpu=gpu, network='3d_fullres', network_trainer='nnUNetTrainerV2_fine', task='130', fold=0, outpath='FINE', val=False, npz=True)
-run.main(gpu=gpu, network='3d_fullres', network_trainer='nnUNetTrainerV2_fine', task='130', fold=0, outpath='FINE', val=True,  npz=True)
+# run.main(gpu=gpu, network='3d_fullres', network_trainer='nnUNetTrainerV2_fine', task='130', fold=0, outpath='FINE', val=False, npz=True)
+# run.main(gpu=gpu, network='3d_fullres', network_trainer='nnUNetTrainerV2_fine', task='130', fold=0, outpath='FINE', val=True,  npz=True)
+
+
+# WORD
+run.main(gpu=gpu, network='3d_fullres', network_trainer='nnUNetTrainerV2_fine', task='140', fold=0, outpath='FINE', val=False, npz=True)
+run.main(gpu=gpu, network='3d_fullres', network_trainer='nnUNetTrainerV2_fine', task='140', fold=0, outpath='FINE', val=True,  npz=True)

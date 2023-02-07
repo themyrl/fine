@@ -923,9 +923,9 @@ class swintransformer(SegmentationNetwork):
         self.encoder=encoder(pretrain_img_size=[64,128,128],embed_dim=embed_dim,window_size=4,patch_size=patch_size,num_heads=[24,12,6],depths=[2,2,2])
    
         self.final=[]
-        self.final.append(final_patch_expanding(embed_dim*2**0,14,patch_size=(2,4,4)))
+        self.final.append(final_patch_expanding(embed_dim*2**0,self.num_classes,patch_size=(2,4,4)))
         for i in range(1,len(depths)-1):
-            self.final.append(final_patch_expanding(embed_dim*2**i,14,patch_size=(4,4,4)))
+            self.final.append(final_patch_expanding(embed_dim*2**i,self.num_classes,patch_size=(4,4,4)))
         self.final=nn.ModuleList(self.final)
         
     def forward(self, x):

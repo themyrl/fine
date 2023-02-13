@@ -16,6 +16,6 @@ g = '0'
 
 
 # WORD
-run.main(gpu=g, network='3d_fullres', network_trainer='nnUNetTrainerV2', task='140', fold=0, outpath='NNUNET', val=False, npz=True, na=True)
+# run.main(gpu=g, network='3d_fullres', network_trainer='nnUNetTrainerV2', task='140', fold=0, outpath='NNUNET', val=False, npz=True, na=True)
 run.main(gpu=g, network='3d_fullres', network_trainer='nnUNetTrainerV2', task='140', fold=0, outpath='NNUNET', val=True, npz=True, na=True)
 

@@ -1177,7 +1177,7 @@ class swintransformer(SegmentationNetwork):
 
         if dataset=="SYNAPSE":
             self.imsize=[64,128,128]
-            self.vt_map=(3,5,5)
+            # self.vt_map=(3,5,5)
             self.max_imsize=SYNAPSE_MAX
             embed_dim=192
             depths=[2, 2, 2, 2]
@@ -1186,7 +1186,7 @@ class swintransformer(SegmentationNetwork):
             window_size=[4,4,4,4]
         elif dataset=="BRAIN_TUMOR":
             self.imsize=[128,128,128]
-            self.vt_map=(2,2,2)
+            # self.vt_map=(2,2,2)
             self.max_imsize=BRAIN_TUMOR_MAX
             embed_dim=96
             depths=[2, 2, 2, 2]
@@ -1199,7 +1199,7 @@ class swintransformer(SegmentationNetwork):
         self.do_ds = deep_supervision
         self.num_classes=num_classes
         self.conv_op=conv_op
-        # self.vt_map = vt_map
+        self.vt_map = vt_map
        
         
         self.upscale_logits_ops = []

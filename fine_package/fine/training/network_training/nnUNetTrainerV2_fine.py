@@ -158,13 +158,20 @@ class nnUNetTrainerV2_fine(nnUNetTrainer):
         dropout_op_kwargs = {'p': 0, 'inplace': True}
         net_nonlin = nn.LeakyReLU
         net_nonlin_kwargs = {'negative_slope': 1e-2, 'inplace': True}
+
+        # get the volume token grid size depending on the images max size
+        max_sizes = [0,0,0]
+        for i in self.plans['dataset_properties']['all_sizes']:
+            max_sizes = [max(max_sizes[j], i[j]) for j in range(3)]
+        grid_size = [int(max_sizes[i]/self.plans['plans_per_stage'][1]['patch_size'][i]) for i in range(3)]
         
         self.network = swintransformer(self.num_input_channels, self.base_num_features, self.num_classes,
                                     len(self.net_num_pool_op_kernel_sizes),
                                     self.conv_per_stage, 2, conv_op, norm_op, norm_op_kwargs, dropout_op,
                                     dropout_op_kwargs,
                                     net_nonlin, net_nonlin_kwargs, True, False, lambda x: x, InitWeights_He(1e-2),
-                                    self.net_num_pool_op_kernel_sizes, self.net_conv_kernel_sizes, False, True, True,gt_num=1)
+                                    self.net_num_pool_op_kernel_sizes, self.net_conv_kernel_sizes, False, True, True,gt_num=1,
+                                    vt_map=grid_size)
 
         total = sum([param.nelement() for param in self.network.parameters()])
         print('  + Number of Network Params: %.2f(e6)' % (total / 1e6))

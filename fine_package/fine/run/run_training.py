@@ -181,8 +181,8 @@ def main(gpu, network, network_trainer, task, fold, outpath, val, npz, c=False, 
         if network == '3d_lowres':
             print("predicting segmentations for the next stage of the cascade")
             predict_next_stage(trainer, join(dataset_directory, trainer.plans['data_identifier'] + "_stage%d" % 1))
-    if not dbg:
-        ts.send(messages=[network_trainer+" "+task +" "+ str(fold) +" "+ outpath +" val="+ str(val)+" END!"])
+    # if not dbg:
+        # ts.send(messages=[network_trainer+" "+task +" "+ str(fold) +" "+ outpath +" val="+ str(val)+" END!"])
 
 if __name__ == "__main__":
     main()

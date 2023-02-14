@@ -417,7 +417,8 @@ class Fine_UNet(SegmentationNetwork):
             # self.apply(print_module_training_status)
 
     def forward(self, x):
-        # print(x.shape)
+        print("---------------------------- DEBUG ----------------------------")
+        print("x shape start", x.shape)
         skips = []
         seg_outputs = []
         for d in range(len(self.conv_blocks_context) - 1):
@@ -425,11 +426,11 @@ class Fine_UNet(SegmentationNetwork):
             skips.append(x)
             if not self.convolutional_pooling:
                 x = self.td[d](x)
+            print("x shape {}".format(d), x.shape)
 
         x = self.conv_blocks_context[-1](x)
 
         # Add transformer here
-        print("---------------------------- DEBUG ----------------------------")
         print("x shape", x.shape)
         print("inp sizes", self.input_sizes)
         print("---------------------------------------------------------------")

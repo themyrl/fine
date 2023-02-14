@@ -306,8 +306,12 @@ class Fine_UNet(SegmentationNetwork):
         # determine the first stride
         if self.convolutional_pooling:
             first_stride = pool_op_kernel_sizes[-1]
+            self.input_sizes.append((self.input_sizes[d-1][0]//first_stride[0],
+                                    self.input_sizes[d-1][1]//first_stride[1],
+                                    self.input_sizes[d-1][2]//first_stride[2]))
         else:
             first_stride = None
+            self.input_sizes.append(self.input_sizes[-1])
 
         # the output of the last conv must match the number of features from the skip connection if we are not using
         # convolutional upsampling. If we use convolutional upsampling then the reduction in feature maps will be

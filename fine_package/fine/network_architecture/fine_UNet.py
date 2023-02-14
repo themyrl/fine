@@ -306,9 +306,9 @@ class Fine_UNet(SegmentationNetwork):
         # determine the first stride
         if self.convolutional_pooling:
             first_stride = pool_op_kernel_sizes[-1]
-            self.input_sizes.append((self.input_sizes[d-1][0]//first_stride[0],
-                                    self.input_sizes[d-1][1]//first_stride[1],
-                                    self.input_sizes[d-1][2]//first_stride[2]))
+            self.input_sizes.append((self.input_sizes[-1][0]//first_stride[0],
+                                    self.input_sizes[-1][1]//first_stride[1],
+                                    self.input_sizes[-1][2]//first_stride[2]))
         else:
             first_stride = None
             self.input_sizes.append(self.input_sizes[-1])

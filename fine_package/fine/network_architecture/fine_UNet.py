@@ -202,7 +202,7 @@ class Fine_UNet(SegmentationNetwork):
 
         Questions? -> f.isensee@dkfz.de
         """
-        super(Generic_UNet, self).__init__()
+        super(Fine_UNet, self).__init__()
 
         # print("\n\n\n\n\nThat's my model !! \n\n\n\n")
         # exit(0)

@@ -192,7 +192,7 @@ class Fine_UNet(SegmentationNetwork):
                  conv_kernel_sizes=None,
                  upscale_logits=False, convolutional_pooling=False, convolutional_upsampling=False,
                  max_num_features=None, basic_block=ConvDropoutNormNonlin,
-                 seg_output_use_bias=False):
+                 seg_output_use_bias=False, patch_size=(64,128,128)):
         """
         basically more flexible than v1, architecture is the same
 
@@ -275,10 +275,15 @@ class Fine_UNet(SegmentationNetwork):
         output_features = base_num_features
         input_features = input_channels
 
+        self.input_sizes = [patch_size]
+
         for d in range(num_pool):
             # determine the first stride
             if d != 0 and self.convolutional_pooling:
                 first_stride = pool_op_kernel_sizes[d - 1]
+                self.input_sizes.append((input_sizes[d-1][0]//first_stride[0],
+                                    input_sizes[d-1][1]//first_stride[1],
+                                    input_sizes[d-1][2]//first_stride[2]))
             else:
                 first_stride = None
 
@@ -428,6 +433,7 @@ class Fine_UNet(SegmentationNetwork):
         # Add transformer here
         print("---------------------------- DEBUG ----------------------------")
         print("x shape", x.shape)
+        print("inp sizes", self.input_sizes)
         print("---------------------------------------------------------------")
         exit(0)
 

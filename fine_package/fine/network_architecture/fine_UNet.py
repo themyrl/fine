@@ -281,9 +281,9 @@ class Fine_UNet(SegmentationNetwork):
             # determine the first stride
             if d != 0 and self.convolutional_pooling:
                 first_stride = pool_op_kernel_sizes[d - 1]
-                self.input_sizes.append((input_sizes[d-1][0]//first_stride[0],
-                                    input_sizes[d-1][1]//first_stride[1],
-                                    input_sizes[d-1][2]//first_stride[2]))
+                self.input_sizes.append((self.input_sizes[d-1][0]//first_stride[0],
+                                    self.input_sizes[d-1][1]//first_stride[1],
+                                    self.input_sizes[d-1][2]//first_stride[2]))
             else:
                 first_stride = None
 
@@ -369,10 +369,8 @@ class Fine_UNet(SegmentationNetwork):
         # Fine module
         # self.fine_module = fine.BasicLayer(
         #         dim=self.conv_blocks_context[-1].output_channels,
-        #         input_resolution=(
-        #             pretrain_img_size[0] // patch_size[0] // 2 ** i_layer, pretrain_img_size[1] // patch_size[1] // 2 ** i_layer,
-        #             pretrain_img_size[2] // patch_size[2] // 2 ** i_layer),
-        #         depth=depths[i_layer],
+        #         input_resolution=self.input_sizes[-1],
+        #         depth=2,
         #         num_heads=num_heads[i_layer],
         #         window_size=window_size[i_layer],
         #         mlp_ratio=mlp_ratio,

@@ -362,24 +362,24 @@ class Generic_UNet(SegmentationNetwork):
 
 
         # Fine module
-        self.fine_module = fine.BasicLayer(
-                dim=int(embed_dim * 2 ** i_layer),
-                input_resolution=(
-                    pretrain_img_size[0] // patch_size[0] // 2 ** i_layer, pretrain_img_size[1] // patch_size[1] // 2 ** i_layer,
-                    pretrain_img_size[2] // patch_size[2] // 2 ** i_layer),
-                depth=depths[i_layer],
-                num_heads=num_heads[i_layer],
-                window_size=window_size[i_layer],
-                mlp_ratio=mlp_ratio,
-                qkv_bias=qkv_bias,
-                qk_scale=qk_scale,
-                drop=drop_rate,
-                attn_drop=attn_drop_rate,
-                drop_path=dpr[sum(
-                    depths[:i_layer]):sum(depths[:i_layer + 1])],
-                norm_layer=norm_layer,
-                downsample=PatchMerging,
-                use_checkpoint=use_checkpoint, gt_num=gt_num, id_layer=i_layer, vt_map=vt_map,vt_num=vt_num))
+        # self.fine_module = fine.BasicLayer(
+        #         dim=self.conv_blocks_context[-1].output_channels,
+        #         input_resolution=(
+        #             pretrain_img_size[0] // patch_size[0] // 2 ** i_layer, pretrain_img_size[1] // patch_size[1] // 2 ** i_layer,
+        #             pretrain_img_size[2] // patch_size[2] // 2 ** i_layer),
+        #         depth=depths[i_layer],
+        #         num_heads=num_heads[i_layer],
+        #         window_size=window_size[i_layer],
+        #         mlp_ratio=mlp_ratio,
+        #         qkv_bias=qkv_bias,
+        #         qk_scale=qk_scale,
+        #         drop=drop_rate,
+        #         attn_drop=attn_drop_rate,
+        #         drop_path=dpr[sum(
+        #             depths[:i_layer]):sum(depths[:i_layer + 1])],
+        #         norm_layer=norm_layer,
+        #         downsample=PatchMerging,
+        #         use_checkpoint=use_checkpoint, gt_num=gt_num, id_layer=i_layer, vt_map=vt_map,vt_num=vt_num))
         ###
 
 
@@ -426,6 +426,10 @@ class Generic_UNet(SegmentationNetwork):
         x = self.conv_blocks_context[-1](x)
 
         # Add transformer here
+        print("---------------------------- DEBUG ----------------------------")
+        print("x shape", x.shape)
+        print("---------------------------------------------------------------")
+        exit(0)
 
         for u in range(len(self.tu)):
             x = self.tu[u](x)

@@ -192,7 +192,7 @@ class Fine_UNet(SegmentationNetwork):
                  conv_kernel_sizes=None,
                  upscale_logits=False, convolutional_pooling=False, convolutional_upsampling=False,
                  max_num_features=None, basic_block=ConvDropoutNormNonlin,
-                 seg_output_use_bias=False, patch_size=(64,128,128)):
+                 seg_output_use_bias=False, patch_size=(64,128,128), vt_map=(3,5,5)):
         """
         basically more flexible than v1, architecture is the same
 
@@ -371,22 +371,24 @@ class Fine_UNet(SegmentationNetwork):
 
 
         # Fine module
-        # self.fine_module = fine.BasicLayer(
-        #         dim=self.conv_blocks_context[-1].output_channels,
-        #         input_resolution=self.input_sizes[-1],
-        #         depth=2,
-        #         num_heads=num_heads[i_layer],
-        #         window_size=window_size[i_layer],
-        #         mlp_ratio=mlp_ratio,
-        #         qkv_bias=qkv_bias,
-        #         qk_scale=qk_scale,
-        #         drop=drop_rate,
-        #         attn_drop=attn_drop_rate,
-        #         drop_path=dpr[sum(
-        #             depths[:i_layer]):sum(depths[:i_layer + 1])],
-        #         norm_layer=norm_layer,
-        #         downsample=PatchMerging,
-        #         use_checkpoint=use_checkpoint, gt_num=gt_num, id_layer=i_layer, vt_map=vt_map,vt_num=vt_num))
+        num_heads=[6, 12, 24, 48]
+        depths=[2, 2, 2, 2]
+        dpr = [x.item() for x in torch.linspace(0, 0.2, sum(depths))]  # stochastic depth decay rule
+        self.fine_module = fine.BasicLayer(
+                dim=self.conv_blocks_context[-1].output_channels,
+                input_resolution=self.input_sizes[-1],
+                depth=depths[-1],
+                num_heads=num_heads[-1],
+                window_size=4,
+                mlp_ratio=4.,
+                qkv_bias=True,
+                qk_scale=None,
+                drop=0.,
+                attn_drop=0.,
+                drop_path=dpr[sum(depths[:i_layer]):sum(depths[:i_layer + 1])],
+                norm_layer=nn.LayerNorm,
+                downsample=None,
+                use_checkpoint=False, gt_num=1, id_layer=3, vt_map=vt_map,vt_num=1)
         ###
 
 

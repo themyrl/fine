@@ -1,14 +1,14 @@
 #!/bin/bash
-#SBATCH --job-name=debug     # job name
+#SBATCH --job-name=unet_word_128     # job name
 #SBATCH --ntasks=1                  # number of MP tasks
 #SBATCH --ntasks-per-node=1          # number of MPI tasks per node
 #SBATCH --gres=gpu:1                 # number of GPUs per node
 #SBATCH --cpus-per-task=10           # number of cores per tasks
 #SBATCH --hint=nomultithread         # we get physical cores not logical
-#SBATCH --time=00:15:00             # maximum execution time (HH:MM:SS)
-#SBATCH --qos=qos_gpu-dev
-#SBATCH --output=logs/debug.out # output file name # add %j to id the job
-#SBATCH --error=logs/debug.err  # error file name # add %j to id the job
+#SBATCH --time=99:59:00             # maximum execution time (HH:MM:SS)
+#SBATCH --qos=qos_gpu-t4
+#SBATCH --output=logs/unet_word_128.out # output file name # add %j to id the job
+#SBATCH --error=logs/unet_word_128.err  # error file name # add %j to id the job
 # # SBATCH -C v100-32g
 
 
@@ -41,8 +41,8 @@ export RESULTS_FOLDER="/gpfsscratch/rech/arf/unm89rb/nnUNet_trained_models"
 
 
 # training
-# srun python fine_package/fine/run/run_all_unet.py #unet_livus & unet_livus_bis & unet_word+_eval
+srun python fine_package/fine/run/run_all_unet.py #unet_livus & unet_livus_bis & unet_word+_eval & unet_word_128
 # srun python fine_package/fine/run/run_all_cotr.py #cotr_livus & cotr_word+_eval 
 # srun python fine_package/fine/run/run_all_nnformer.py #nnformer_livsus & nnfo_word
 # srun python fine_package/fine/run/run_all_fine.py #fine_word+_c & fine_livus
-srun python fine_package/fine/run/run_all_fineunet.py #debug
+# srun python fine_package/fine/run/run_all_fineunet.py #debug

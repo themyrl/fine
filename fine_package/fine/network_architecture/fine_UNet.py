@@ -276,6 +276,7 @@ class Fine_UNet(SegmentationNetwork):
         input_features = input_channels
 
         self.input_sizes = [patch_size]
+        self.features_sizes = [output_features]
 
         for d in range(num_pool):
             # determine the first stride
@@ -301,6 +302,7 @@ class Fine_UNet(SegmentationNetwork):
             output_features = int(np.round(output_features * feat_map_mul_on_downscale))
 
             output_features = min(output_features, self.max_num_features)
+            self.features_sizes.append(output_features)
 
         # now the bottleneck.
         # determine the first stride
@@ -378,7 +380,7 @@ class Fine_UNet(SegmentationNetwork):
         depths=[2, 2, 2, 2]
         dpr = [x.item() for x in torch.linspace(0, 0.2, sum(depths))]  # stochastic depth decay rule
         self.fine_module = fine.BasicLayer(
-                dim=self.conv_blocks_context[-1].output_channels,
+                dim=self.features_sizes[-1],
                 input_resolution=self.input_sizes[-1],
                 depth=depths[-1],
                 num_heads=num_heads[-1],
@@ -455,7 +457,9 @@ class Fine_UNet(SegmentationNetwork):
 
         print("x shape", x.shape)
         print("inp sizes", self.input_sizes)
+        pritn("features sizes", self.features_sizes)
         print("vt pos", vt_pos)
+
         print("---------------------------------------------------------------")
         exit(0)
 

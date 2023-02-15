@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=finun_livus     # job name
+#SBATCH --job-name=finun_word     # job name
 #SBATCH --ntasks=1                  # number of MP tasks
 #SBATCH --ntasks-per-node=1          # number of MPI tasks per node
 #SBATCH --gres=gpu:1                 # number of GPUs per node
@@ -7,8 +7,8 @@
 #SBATCH --hint=nomultithread         # we get physical cores not logical
 #SBATCH --time=99:59:00             # maximum execution time (HH:MM:SS)
 #SBATCH --qos=qos_gpu-t4
-#SBATCH --output=logs/finun_livus.out # output file name # add %j to id the job
-#SBATCH --error=logs/finun_livus.err  # error file name # add %j to id the job
+#SBATCH --output=logs/finun_word.out # output file name # add %j to id the job
+#SBATCH --error=logs/finun_word.err  # error file name # add %j to id the job
 # # SBATCH -C v100-32g
  
 
@@ -45,4 +45,4 @@ export RESULTS_FOLDER="/gpfsscratch/rech/arf/unm89rb/nnUNet_trained_models"
 # srun python fine_package/fine/run/run_all_cotr.py #cotr_livus & cotr_word+_eval 
 # srun python fine_package/fine/run/run_all_nnformer.py #nnformer_livsus & nnfo_word
 # srun python fine_package/fine/run/run_all_fine.py #fine_word+_c & fine_livus
-srun python fine_package/fine/run/run_all_fineunet.py #finun_livus
+srun python fine_package/fine/run/run_all_fineunet.py #finun_livus & finun_word

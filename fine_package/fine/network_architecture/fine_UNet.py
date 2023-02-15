@@ -376,7 +376,8 @@ class Fine_UNet(SegmentationNetwork):
         self.vt_map = vt_map
         self.max_imsize = max_imsize
         self.imsize = patch_size
-        num_heads=[6, 12, 24, 48]
+        num_heads=[6, 12, 24, 80]
+        # num_heads=[6, 12, 24, 48]
         depths=[2, 2, 2, 2]
         dpr = [x.item() for x in torch.linspace(0, 0.2, sum(depths))]  # stochastic depth decay rule
         self.fine_module = fine.BasicLayer(

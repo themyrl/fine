@@ -251,7 +251,7 @@ class WindowAttention(nn.Module):
 
         qkv = self.qkv(x)
 
-        print("---> qkv shape", qkv.shape)
+        # print("---> qkv shape", qkv.shape)
         
         qkv=qkv.reshape(B_, N, 3, self.num_heads, C // self.num_heads).permute(2, 0, 3, 1, 4)
         q, k, v = qkv[0], qkv[1], qkv[2]  # make torchscript happy (cannot use tensor as tuple)

@@ -19,7 +19,7 @@ from torch import nn
 import torch
 import numpy as np
 from nnunet.network_architecture.initialization import InitWeights_He
-from nnunet.network_architecture.neural_network_ext import SegmentationNetwork
+from fine.network_architecture.neural_network_ext import SegmentationNetwork
 import torch.nn.functional
 
 import fine.network_architecture.fine as fine
@@ -421,6 +421,10 @@ class Fine_UNet(SegmentationNetwork):
             self.upscale_logits_ops = nn.ModuleList(
                 self.upscale_logits_ops)  # lambda x:x is not a Module so we need to distinguish here
 
+        self.iter = 0
+        self.vt_check = torch.nn.Parameter(torch.zeros(vt_map[1]*vt_map[2],1))
+        self.vt_check.requires_grad = False
+
         if self.weightInitializer is not None:
             self.apply(self.weightInitializer)
             # self.apply(print_module_training_status)
@@ -439,11 +443,21 @@ class Fine_UNet(SegmentationNetwork):
 
         x = self.conv_blocks_context[-1](x)
 
+
+
         # Add transformer here
+        vt_pos = self.pos2vtpos(pos)
+        # pr_check = ((self.vt_check >= 1).sum() >= self.vt_map[1]*self.vt_map[2])
+        self.vt_check[vt_pos] += 1
+        # check = ((self.vt_check >= 1).sum() >= self.vt_map[1]*self.vt_map[2])
+        self.iter += 1
+
+
         print("x shape", x.shape)
         print("inp sizes", self.input_sizes)
+        print("vt pos", vt_pos)
         print("---------------------------------------------------------------")
-        # exit(0)
+        exit(0)
 
         for u in range(len(self.tu)):
             x = self.tu[u](x)

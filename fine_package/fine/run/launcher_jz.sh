@@ -10,7 +10,7 @@
 #SBATCH --output=logs/fine_word.out # output file name # add %j to id the job
 #SBATCH --error=logs/fine_word.err  # error file name # add %j to id the job
 # # SBATCH -C v100-32g
-
+ 
 
 cd $WORK/fine
 module purge

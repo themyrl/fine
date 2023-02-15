@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=fine_livus     # job name
+#SBATCH --job-name=fine_word     # job name
 #SBATCH --ntasks=1                  # number of MP tasks
 #SBATCH --ntasks-per-node=1          # number of MPI tasks per node
 #SBATCH --gres=gpu:1                 # number of GPUs per node
@@ -7,8 +7,8 @@
 #SBATCH --hint=nomultithread         # we get physical cores not logical
 #SBATCH --time=99:59:00             # maximum execution time (HH:MM:SS)
 #SBATCH --qos=qos_gpu-t4
-#SBATCH --output=logs/fine_livus.out # output file name # add %j to id the job
-#SBATCH --error=logs/fine_livus.err  # error file name # add %j to id the job
+#SBATCH --output=logs/fine_word.out # output file name # add %j to id the job
+#SBATCH --error=logs/fine_word.err  # error file name # add %j to id the job
 # # SBATCH -C v100-32g
 
 

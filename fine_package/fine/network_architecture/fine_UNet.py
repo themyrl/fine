@@ -390,7 +390,8 @@ class Fine_UNet(SegmentationNetwork):
                 qk_scale=None,
                 drop=0.,
                 attn_drop=0.,
-                drop_path=dpr[sum(depths[:i_layer]):sum(depths[:i_layer + 1])],
+                drop_path=dpr[sum(depths[:3]):sum(depths[:3 + 1])],
+                # drop_path=dpr[sum(depths[:i_layer]):sum(depths[:i_layer + 1])],
                 norm_layer=nn.LayerNorm,
                 downsample=None,
                 use_checkpoint=False, gt_num=1, id_layer=3, vt_map=vt_map,vt_num=1)

@@ -461,9 +461,12 @@ class Fine_UNet(SegmentationNetwork):
         print("features sizes", self.features_sizes)
         print("pos", pos)
         print("vt pos", vt_pos)
+        print("vt map", self.vt_map)
 
         Ws, Wh, Ww = x.size(2), x.size(3), x.size(4)
         x = x.flatten(2).transpose(1, 2)
+
+        print("x shape", x.shape)
         x_out, S, H, W, x, Ws, Wh, Ww = self.fine_module(x, Ws, Wh, Ww, vt_pos, self.vt_check >= 1)
         # x_out, S, H, W, x, Ws, Wh, Ww = layer(x, Ws, Wh, Ww, vt_pos, check)
         print("x_out shape", x_out.shape)
@@ -507,16 +510,16 @@ class Fine_UNet(SegmentationNetwork):
 
 
         # deal with borders
-        vt_pos = [[vt[i]*(0**(vt[i]<0)) for i in range(3)] for vt in vt_pos]
-        vt_pos = [[vt_pos[j][i]*(0**((rc_pos[j][i] - pad[i])>=(self.vt_map[i]*dim[i]))) for i in range(3)] for j in range(len(vt_pos))]
+        vt_pos_ = [[vt[i]*(0**(vt[i]<0)) for i in range(3)] for vt in vt_pos]
+        _vt_pos = [[vt_pos_[j][i]*(0**((rc_pos[j][i] - pad[i])>=(self.vt_map[i]*dim[i]))) for i in range(3)] for j in range(len(vt_pos_))]
 
         # int it
-        vt_pos = [[int(i) for i in j] for j in vt_pos]
+        _vt_pos_ = [[int(i) for i in j] for j in _vt_pos]
 
         # vt_pos = [vt[0]*self.vt_map[1]*self.vt_map[2] + vt[1]*self.vt_map[2] + vt[2] for vt in vt_pos]
         # vt_pos = [vt[1]*self.vt_map[2] + vt[2] for vt in vt_pos]
         ret = []
-        for vt in vt_pos:
+        for vt in _vt_pos_:
             ##### --> not good find an other way ;)
             # deal with borders
             end_right = False

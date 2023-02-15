@@ -471,7 +471,7 @@ class Fine_UNet(SegmentationNetwork):
         x_out, S, H, W, x, Ws, Wh, Ww = self.fine_module(x, Ws, Wh, Ww, vt_pos, self.vt_check >= 1)
         # x_out, S, H, W, x, Ws, Wh, Ww = layer(x, Ws, Wh, Ww, vt_pos, check)
         # print("x_out shape", x_out.shape)
-        out = x_out.view(-1, S, H, W, self.features_sizes[-1]).permute(0, 4, 1, 2, 3).contiguous()
+        x = x_out.view(-1, S, H, W, self.features_sizes[-1]).permute(0, 4, 1, 2, 3).contiguous()
         # print("out shape", out.shape)
 
         # print("---------------------------------------------------------------")

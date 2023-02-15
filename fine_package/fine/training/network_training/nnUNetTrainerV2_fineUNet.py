@@ -183,7 +183,7 @@ class nnUNetTrainerV2_fineUNet(nnUNetTrainer):
                                     net_nonlin, net_nonlin_kwargs, True, False, lambda x: x, InitWeights_He(1e-2),
                                     self.net_num_pool_op_kernel_sizes, self.net_conv_kernel_sizes, False, True, True,
                                     patch_size=self.plans['plans_per_stage'][1]['patch_size'], 
-                                    vt_map=grid_size)
+                                    vt_map=grid_size, max_imsize=max_sizes)
         print("####\n#### MODEL PARAMS :{}\n####".format(get_n_params(self.network)))
         if torch.cuda.is_available():
             self.network.cuda()
@@ -261,6 +261,7 @@ class nnUNetTrainerV2_fineUNet(nnUNetTrainer):
         data_dict = next(data_generator)
         data = data_dict['data']
         target = data_dict['target']
+        pos = data_dict['pos']
 
         data = maybe_to_torch(data)
         target = maybe_to_torch(target)
@@ -274,7 +275,7 @@ class nnUNetTrainerV2_fineUNet(nnUNetTrainer):
         if self.fp16:
             with autocast():
                 # print("\n\n\n\n Here")
-                output = self.network(data)
+                output = self.network(data, pos)
                 # print("\n\n\n\n isoké")
                 # exit(0)
                 del data

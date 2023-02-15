@@ -1171,7 +1171,8 @@ class swintransformer(SegmentationNetwork):
                  conv_kernel_sizes=None,
                  upscale_logits=False, convolutional_pooling=False, convolutional_upsampling=False,
                  max_num_features=None, basic_block=None,
-                 seg_output_use_bias=False, gt_num=1, vt_map=(3,5,5), imsize=[64,128,128], dataset='SYNAPSE', vt_num=1, max_imsize=[218,660,660]):
+                 seg_output_use_bias=False, gt_num=1, vt_map=(3,5,5), imsize=[64,128,128], dataset='SYNAPSE', vt_num=1, 
+                 max_imsize=[218,660,660]):
     
         super(swintransformer, self).__init__()
 
@@ -1238,7 +1239,7 @@ class swintransformer(SegmentationNetwork):
 
         pad = [(max_dim[i]-dim[i]*self.vt_map[i])//2 + 0**((max_dim[i]-dim[i]*self.vt_map[i])%2 == 0) for i in range(3)]
 
-        # get de vt pos
+        # get the vt pos
         # vt_pos = [[(rc[i]-pad[i])//dim[i] for i in range(3)] for rc in rc_pos]
         vt_pos = [[(rc[i]-pad[i] - dim[i]//2)//dim[i] for i in range(3)] for rc in rc_pos]
 

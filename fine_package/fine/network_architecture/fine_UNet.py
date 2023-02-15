@@ -19,7 +19,7 @@ from torch import nn
 import torch
 import numpy as np
 from nnunet.network_architecture.initialization import InitWeights_He
-from nnunet.network_architecture.neural_network import SegmentationNetwork
+from nnunet.network_architecture.neural_network_ext import SegmentationNetwork
 import torch.nn.functional
 
 import fine.network_architecture.fine as fine
@@ -192,7 +192,7 @@ class Fine_UNet(SegmentationNetwork):
                  conv_kernel_sizes=None,
                  upscale_logits=False, convolutional_pooling=False, convolutional_upsampling=False,
                  max_num_features=None, basic_block=ConvDropoutNormNonlin,
-                 seg_output_use_bias=False, patch_size=(64,128,128), vt_map=(3,5,5)):
+                 seg_output_use_bias=False, patch_size=(64,128,128), vt_map=(3,5,5), max_imsize=[218,660,660]):
         """
         basically more flexible than v1, architecture is the same
 
@@ -371,6 +371,9 @@ class Fine_UNet(SegmentationNetwork):
 
 
         # Fine module
+        self.vt_map = vt_map
+        self.max_imsize = max_imsize
+        self.imsize = patch_size
         num_heads=[6, 12, 24, 48]
         depths=[2, 2, 2, 2]
         dpr = [x.item() for x in torch.linspace(0, 0.2, sum(depths))]  # stochastic depth decay rule
@@ -422,7 +425,7 @@ class Fine_UNet(SegmentationNetwork):
             self.apply(self.weightInitializer)
             # self.apply(print_module_training_status)
 
-    def forward(self, x):
+    def forward(self, x, pos=None):
         print("---------------------------- DEBUG ----------------------------")
         print("x shape start", x.shape)
         skips = []
@@ -440,7 +443,7 @@ class Fine_UNet(SegmentationNetwork):
         print("x shape", x.shape)
         print("inp sizes", self.input_sizes)
         print("---------------------------------------------------------------")
-        exit(0)
+        # exit(0)
 
         for u in range(len(self.tu)):
             x = self.tu[u](x)
@@ -457,6 +460,80 @@ class Fine_UNet(SegmentationNetwork):
             return ret
         else:
             return seg_outputs[-1]
+
+
+    def pos2vtpos(self, pos):
+        # dim = [64,128,128]
+        # max_dim = [218,660,660]
+        dim=self.imsize
+        max_dim=self.max_imsize
+
+        # Myr : We put the crop in the bigger image referential
+        rc_pos = [[p[i] + max_dim[i]//2 for i in range(3)] for p in pos]
+
+        pad = [(max_dim[i]-dim[i]*self.vt_map[i])//2 + 0**((max_dim[i]-dim[i]*self.vt_map[i])%2 == 0) for i in range(3)]
+
+        # get the vt pos
+        # vt_pos = [[(rc[i]-pad[i])//dim[i] for i in range(3)] for rc in rc_pos]
+        vt_pos = [[(rc[i]-pad[i] - dim[i]//2)//dim[i] for i in range(3)] for rc in rc_pos]
+
+
+        # deal with borders
+        vt_pos = [[vt[i]*(0**(vt[i]<0)) for i in range(3)] for vt in vt_pos]
+        vt_pos = [[vt_pos[j][i]*(0**((rc_pos[j][i] - pad[i])>=(self.vt_map[i]*dim[i]))) for i in range(3)] for j in range(len(vt_pos))]
+
+        # int it
+        vt_pos = [[int(i) for i in j] for j in vt_pos]
+
+        # vt_pos = [vt[0]*self.vt_map[1]*self.vt_map[2] + vt[1]*self.vt_map[2] + vt[2] for vt in vt_pos]
+        # vt_pos = [vt[1]*self.vt_map[2] + vt[2] for vt in vt_pos]
+        ret = []
+        for vt in vt_pos:
+            ##### --> not good find an other way ;)
+            # deal with borders
+            end_right = False
+            end_botom = False
+            if vt[1] == self.vt_map[1]-1:
+                end_right = True
+            if vt[2] == self.vt_map[2]-1:
+                end_botom = True
+
+
+            # 1) add nearest token pos (left )
+            p1 = vt[1]*self.vt_map[2] + vt[2]
+            ret.append(p1)
+
+            # 2) up right corner
+            if end_right:
+                p2 = (vt[1]-1)*self.vt_map[2] + vt[2]
+            else:
+                p2 = (vt[1]+1)*self.vt_map[2] + vt[2]
+            ret.append(p2)
+
+            # 3) botom left
+            if end_botom:
+                p3 = vt[1]*self.vt_map[2] + vt[2]-1
+            else:
+                p3 = vt[1]*self.vt_map[2] + vt[2]+1
+            ret.append(p3)
+
+
+            # 4) 
+            if end_right and end_botom:
+                p4 = (vt[1]-1)*self.vt_map[2] + vt[2]-1
+            elif end_right:
+                p4 = (vt[1]-1)*self.vt_map[2] + vt[2]+1
+            elif end_botom:
+                p4 = (vt[1]+1)*self.vt_map[2] + vt[2]-1
+            else:
+                p4 = (vt[1]+1)*self.vt_map[2] + vt[2]+1
+            ret.append(p4)
+
+
+            # vt_pos = [vt[1]*self.vt_map[2] + vt[2] for vt in vt_pos]
+
+
+        return ret
 
     @staticmethod
     def compute_approx_vram_consumption(patch_size, num_pool_per_axis, base_num_features, max_num_features,

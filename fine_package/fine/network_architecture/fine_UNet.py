@@ -458,7 +458,7 @@ class Fine_UNet(SegmentationNetwork):
 
         print("x shape", x.shape)
         print("inp sizes", self.input_sizes)
-        pritn("features sizes", self.features_sizes)
+        print("features sizes", self.features_sizes)
         print("vt pos", vt_pos)
 
         print("---------------------------------------------------------------")

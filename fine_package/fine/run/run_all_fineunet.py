@@ -11,7 +11,7 @@ g = '0'
 
 # Livus
 run.main(gpu=g, network='3d_fullres', network_trainer='nnUNetTrainerV2_fineUNet', task='130', fold=0, outpath='FINENNUNET', val=False, npz=True, na=True)
-# run.main(gpu=g, network='3d_fullres', network_trainer='nnUNetTrainerV2_fineUNet', task='130', fold=0, outpath='FINENNUNET', val=True, npz=True, na=True)
+run.main(gpu=g, network='3d_fullres', network_trainer='nnUNetTrainerV2_fineUNet', task='130', fold=0, outpath='FINENNUNET', val=True, npz=True, na=True)
 
 
 

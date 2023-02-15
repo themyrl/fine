@@ -171,7 +171,7 @@ class nnUNetTrainerV2_fine(nnUNetTrainer):
                                     dropout_op_kwargs,
                                     net_nonlin, net_nonlin_kwargs, True, False, lambda x: x, InitWeights_He(1e-2),
                                     self.net_num_pool_op_kernel_sizes, self.net_conv_kernel_sizes, False, True, True,gt_num=1,
-                                    vt_map=grid_size)
+                                    vt_map=grid_size, max_imsize=max_sizes)
 
         total = sum([param.nelement() for param in self.network.parameters()])
         print('  + Number of Network Params: %.2f(e6)' % (total / 1e6))

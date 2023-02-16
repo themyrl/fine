@@ -68,9 +68,11 @@ def main(gpu, network, network_trainer, task, fold, outpath, val, npz, c=False, 
     # args.task = task
     # args.fold = fold
     # args.validation_only = val
+    validation_only = val
     # args.outpath = outpath
     # args.npz = npz
     # args.continue_training = c
+    continue_training = c
     # args.pretrained_weights = pretrained_weights
 
 

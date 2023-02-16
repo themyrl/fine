@@ -1,6 +1,7 @@
 # import UTrans.run.nnunet_run_training as run
 import run_training as run
-import argparse
+# import argparse
+import sys
 
 
 g = '0'
@@ -23,13 +24,17 @@ g = '0'
 
 # ALL
 if __name__ == '__main__':
-	parser = argparse.ArgumentParser()
-	parser.add_argument("-n", "--network_trainer")
-	parser.add_argument("-t", "--task", type=str)
-	parser.add_argument("-o", "--outpath")
-	parser.add_argument("-a", "--na", type=bool)
+	# parser = argparse.ArgumentParser()
+	# parser.add_argument("-e", "--network_trainer")
+	# parser.add_argument("-t", "--task", type=str)
+	# parser.add_argument("-o", "--outpath")
+	# parser.add_argument("-a", "--na", type=bool)
+	network_trainer = sys.argv[1]
+	task = str(sys.argv[2])
+	outpath = sys.argv[3]
+	na = bool(int(sys.argv[4]))
 
-	args = parser.parse_args()
+	# args = parser.parse_args()
 
-	run.main(gpu=g, network='3d_fullres', network_trainer=args.network_trainer, task=args.task, fold=0, outpath=args.outpath, val=False, npz=True, na=args.na)
-	run.main(gpu=g, network='3d_fullres', network_trainer=args.network_trainer, task=args.task, fold=0, outpath=args.outpath, val=True, npz=True, na=args.na)
+	run.main(gpu=g, network='3d_fullres', network_trainer=network_trainer, task=task, fold=0, outpath=outpath, val=False, npz=True, na=na)
+	run.main(gpu=g, network='3d_fullres', network_trainer=network_trainer, task=task, fold=0, outpath=outpath, val=True, npz=True, na=na)

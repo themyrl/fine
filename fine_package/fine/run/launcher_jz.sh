@@ -48,4 +48,4 @@ export RESULTS_FOLDER="/gpfsscratch/rech/arf/unm89rb/nnUNet_trained_models"
 # srun python fine_package/fine/run/run_all_fineunet.py #finun_livus & finun_word
 
 
-srun python fine_package/fine/run/run_all_fineunet.py -n nnUNetTrainerV2_fineUNet -t 130 -o FINENNUNET -a True #finun_livus
+srun python fine_package/fine/run/run_all_fineunet.py nnUNetTrainerV2_fineUNet 130 FINENNUNET 1 #finun_livus

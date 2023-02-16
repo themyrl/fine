@@ -31,5 +31,5 @@ if __name__ == '__main__':
 
 	args = parser.parse_args()
 
-	run.main(gpu=g, network='3d_fullres', network_trainer=args['network_trainer'], task=args['task'], fold=0, outpath=args['outpath'], val=False, npz=True, na=args['na'])
-	run.main(gpu=g, network='3d_fullres', network_trainer=args['network_trainer'], task=args['task'], fold=0, outpath=args['outpath'], val=True, npz=True, na=args['na'])
+	run.main(gpu=g, network='3d_fullres', network_trainer=args.network_trainer, task=args.task, fold=0, outpath=args.outpath, val=False, npz=True, na=args.na)
+	run.main(gpu=g, network='3d_fullres', network_trainer=args.network_trainer, task=args.task, fold=0, outpath=args.outpath, val=True, npz=True, na=args.na)

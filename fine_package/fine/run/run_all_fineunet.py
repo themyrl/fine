@@ -1,7 +1,7 @@
 # import UTrans.run.nnunet_run_training as run
 import run_training as run
-# import argparse
-import sys
+import argparse
+# import sys
 
 
 g = '0'
@@ -33,8 +33,12 @@ if __name__ == '__main__':
 	task = str(sys.argv[2])
 	outpath = sys.argv[3]
 	na = bool(int(sys.argv[4]))
+	ov = bool(int(sys.argv[5]))
 
 	# args = parser.parse_args()
 
-	run.main(gpu=g, network='3d_fullres', network_trainer=network_trainer, task=task, fold=0, outpath=outpath, val=False, npz=True, na=na)
-	run.main(gpu=g, network='3d_fullres', network_trainer=network_trainer, task=task, fold=0, outpath=outpath, val=True, npz=True, na=na)
+	if not ov:
+		run.main(gpu=g, network='3d_fullres', network_trainer=network_trainer, task=task, fold=0, outpath=outpath, val=False, npz=True, na=na)
+		run.main(gpu=g, network='3d_fullres', network_trainer=network_trainer, task=task, fold=0, outpath=outpath, val=True, npz=True, na=na)
+	else:
+		run.main(gpu=g, network='3d_fullres', network_trainer=network_trainer, task=task, fold=0, outpath=outpath, val=True, npz=True, na=na)

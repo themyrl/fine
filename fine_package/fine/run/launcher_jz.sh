@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=finun_livus     # job name
+#SBATCH --job-name=finun_word_eval     # job name
 #SBATCH --ntasks=1                  # number of MP tasks
 #SBATCH --ntasks-per-node=1          # number of MPI tasks per node
 #SBATCH --gres=gpu:1                 # number of GPUs per node
@@ -7,8 +7,8 @@
 #SBATCH --hint=nomultithread         # we get physical cores not logical
 #SBATCH --time=99:59:00             # maximum execution time (HH:MM:SS)
 #SBATCH --qos=qos_gpu-t4
-#SBATCH --output=logs/finun_livus.out # output file name # add %j to id the job
-#SBATCH --error=logs/finun_livus.err  # error file name # add %j to id the job
+#SBATCH --output=logs/finun_word_eval.out # output file name # add %j to id the job
+#SBATCH --error=logs/finun_word_eval.err  # error file name # add %j to id the job
 # # SBATCH -C v100-32g
  
 
@@ -29,18 +29,18 @@ export RESULTS_FOLDER="/gpfsscratch/rech/arf/unm89rb/nnUNet_trained_models"
 
 
 
-# convert dataset
+## convert dataset
 # srun python nnUNet/nnunet/dataset_conversion/Task017_BeyondCranialVaultAbdominalOrganSegmentation.py
 # srun python nnUNet/nnunet/dataset_conversion/Task130_Livus.py
 # srun python nnUNet/nnunet/dataset_conversion/Task140_WORD.py
 
-# planning and pre-processing
+## planning and pre-processing
 # srun python nnUNet/nnunet/experiment_planning/nnUNet_plan_and_preprocess.py -t 017 --verify_dataset_integrity
 # srun python nnUNet/nnunet/experiment_planning/nnUNet_plan_and_preprocess.py -t 130 --verify_dataset_integrity
 # srun python nnUNet/nnunet/experiment_planning/nnUNet_plan_and_preprocess.py -t 140 --verify_dataset_integrity
 
 
-# training
+## training
 # srun python fine_package/fine/run/run_all_unet.py #unet_livus & unet_livus_bis & unet_word+_eval & unet_word_128
 # srun python fine_package/fine/run/run_all_cotr.py #cotr_livus & cotr_word+_eval 
 # srun python fine_package/fine/run/run_all_nnformer.py #nnformer_livsus & nnfo_word
@@ -48,4 +48,8 @@ export RESULTS_FOLDER="/gpfsscratch/rech/arf/unm89rb/nnUNet_trained_models"
 # srun python fine_package/fine/run/run_all_fineunet.py #finun_livus & finun_word
 
 
-srun python fine_package/fine/run/run_all_fineunet.py nnUNetTrainerV2_fineUNet 130 FINENNUNET 1 #finun_livus
+# srun python fine_package/fine/run/run_all_fineunet.py nnUNetTrainerV2_fineUNet 130 FINENNUNET 1 0 #finun_livus
+
+
+## Only eval
+srun python fine_package/fine/run/run_all_fineunet.py nnUNetTrainerV2_fineUNet 140 FINENNUNET 1 1 #finun_word_eval

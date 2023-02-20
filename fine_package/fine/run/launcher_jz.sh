@@ -54,5 +54,5 @@ export RESULTS_FOLDER="/gpfsscratch/rech/arf/unm89rb/nnUNet_trained_models"
 ## Only eval
 # srun python fine_package/fine/run/run_all_fineunet.py nnUNetTrainerV2_fineUNet 140 FINENNUNET 1 1 #finun_word_eval
 # srun python fine_package/fine/run/run.py nnUNetTrainerV2 140 NNUNET_128_128_64 1 1 #unet_word_128_eval
-# srun python fine_package/fine/run/run.py nnUNetTrainerV2_nnFormer 140 NNFORMER 1 0 #nnfo_word_eval
-srun python fine_package/fine/run/run.py nnUNetTrainerV2_fine 140 FINE 1 0 #fine_word_eval
+# srun python fine_package/fine/run/run.py nnUNetTrainerV2_nnFormer 140 NNFORMER 0 1 #nnfo_word_eval
+srun python fine_package/fine/run/run.py nnUNetTrainerV2_fine 140 FINE 0 1 #fine_word_eval

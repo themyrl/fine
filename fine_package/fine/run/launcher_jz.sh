@@ -61,8 +61,8 @@ export RESULTS_FOLDER="/gpfsscratch/rech/arf/unm89rb/nnUNet_trained_models"
 # srun python fine_package/fine/run/run.py nnUNetTrainerV2 140 notta_NNUNET_128_128_64 1 1 0 #nta_unet_word_128_eval
 # srun python fine_package/fine/run/run.py nnUNetTrainerV2_nnFormer 140 notta_NNFORMER 0 1 0 #nta_nnfo_word_eval
 # srun python fine_package/fine/run/run.py nnUNetTrainerV2_fine 140 notta_FINE 0 1 0 #nta_fine_word_eval
-# srun python fine_package/fine/run/run.py nnUNetTrainerV2_fineUNet 140 notta_FINENNUNET_IN_LeakyReLU 0 1 0 #nta_finun_word_eval
-srun python fine_package/fine/run/run.py nnUNetTrainerV2_CoTR_agno 140 notta_COTR_IN_LeakyReLU 1 1 0 #nta_cotr_word_eval
+# srun python fine_package/fine/run/run.py nnUNetTrainerV2_fineUNet 140 notta_FINENNUNET 0 1 0 #nta_finun_word_eval
+srun python fine_package/fine/run/run.py nnUNetTrainerV2_CoTR_agno 140 notta_COTR 1 1 0 #nta_cotr_word_eval
 
 
 

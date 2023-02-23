@@ -56,7 +56,11 @@ export RESULTS_FOLDER="/gpfsscratch/rech/arf/unm89rb/nnUNet_trained_models"
 # srun python fine_package/fine/run/run.py nnUNetTrainerV2_nnFormer 140 notta_NNFORMER 0 0 0 #nnfo_word
 # srun python fine_package/fine/run/run.py nnUNetTrainerV2_fine 140 notta_FINE 0 0 0 #fine_word
 # srun python fine_package/fine/run/run.py nnUNetTrainerV2_fineUNet 140 notta_FINENNUNET 1 0 0 #finun_word
-srun python fine_package/fine/run/run.py nnUNetTrainerV2_CoTR_agno 140 notta_COTR 1 0 0 #cotr_word
+# srun python fine_package/fine/run/run.py nnUNetTrainerV2_CoTR_agno 140 notta_COTR 1 0 0 #cotr_word
+
+### LIVUS
+srun python fine_package/fine/run/run.py nnUNetTrainerV2_finedbg 130 DBGFINE 0 0 0 #fine_word
+
 
 
 ## Only eval

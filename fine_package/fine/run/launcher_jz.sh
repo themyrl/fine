@@ -1,14 +1,14 @@
 #!/bin/bash
-#SBATCH --job-name=cotr_word     # job name
+#SBATCH --job-name=debug     # job name
 #SBATCH --ntasks=1                  # number of MP tasks
 #SBATCH --ntasks-per-node=1          # number of MPI tasks per node
 #SBATCH --gres=gpu:1                 # number of GPUs per node
 #SBATCH --cpus-per-task=10           # number of cores per tasks
 #SBATCH --hint=nomultithread         # we get physical cores not logical
-#SBATCH --time=99:59:00             # maximum execution time (HH:MM:SS)
-#SBATCH --qos=qos_gpu-t4
-#SBATCH --output=logs/cotr_word.out # output file name # add %j to id the job
-#SBATCH --error=logs/cotr_word.err  # error file name # add %j to id the job
+#SBATCH --time=00:15:00             # maximum execution time (HH:MM:SS)
+#SBATCH --qos=qos_gpu-dev
+#SBATCH --output=logs/debug.out # output file name # add %j to id the job
+#SBATCH --error=logs/debug.err  # error file name # add %j to id the job
 # # SBATCH -C v100-32g
  
 
@@ -59,7 +59,7 @@ export RESULTS_FOLDER="/gpfsscratch/rech/arf/unm89rb/nnUNet_trained_models"
 # srun python fine_package/fine/run/run.py nnUNetTrainerV2_CoTR_agno 140 notta_COTR 1 0 0 #cotr_word
 
 ### LIVUS
-srun python fine_package/fine/run/run.py nnUNetTrainerV2_finedbg 130 DBGFINE 0 0 0 #fine_word
+srun python fine_package/fine/run/run.py nnUNetTrainerV2_finedbg 130 DBGFINE 0 0 0 #debug
 
 
 

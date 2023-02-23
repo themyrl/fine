@@ -167,7 +167,7 @@ class nnUNetTrainerV2_finedbg(nnUNetTrainer):
 
         print("max_sizes", max_sizes)
         print("grid_size", grid_size)
-        exit(0)
+        # exit(0)
         
         self.network = swintransformer(self.num_input_channels, self.base_num_features, self.num_classes,
                                     len(self.net_num_pool_op_kernel_sizes),

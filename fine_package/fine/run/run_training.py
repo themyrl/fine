@@ -187,7 +187,7 @@ def main(gpu, network, network_trainer, task, fold, outpath, val, npz, c=False, 
         if visu:
             trainer.validate(idx=idx, save_softmax=npz, validation_folder_name=val_folder)
         else:
-            trainer.validate(save_softmax=npz, validation_folder_name=val_folder, do_mirroring=tta)
+            trainer.validate(save_softmax=npz, validation_folder_name=val_folder, do_mirroring=tta, overwrite=False)
 
         if network == '3d_lowres':
             print("predicting segmentations for the next stage of the cascade")

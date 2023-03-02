@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=unet_word_eval     # job name
+#SBATCH --job-name=unet_word_dft_eval     # job name
 #SBATCH --ntasks=1                  # number of MP tasks
 #SBATCH --ntasks-per-node=1          # number of MPI tasks per node
 #SBATCH --gres=gpu:1                 # number of GPUs per node
@@ -7,8 +7,8 @@
 #SBATCH --hint=nomultithread         # we get physical cores not logical
 #SBATCH --time=20:00:00             # maximum execution time (HH:MM:SS)
 #SBATCH --qos=qos_gpu-t3
-#SBATCH --output=logs/unet_word_eval.out # output file name # add %j to id the job
-#SBATCH --error=logs/unet_word_eval.err  # error file name # add %j to id the job
+#SBATCH --output=logs/unet_word_dft_eval.out # output file name # add %j to id the job
+#SBATCH --error=logs/unet_word_dft_eval.err  # error file name # add %j to id the job
 #SBATCH -C v100-32g
  
 
@@ -69,8 +69,8 @@ export RESULTS_FOLDER="/gpfsscratch/rech/arf/unm89rb/nnUNet_trained_models"
 # srun python fine_package/fine/run/run.py nnUNetTrainerV2_nnFormer 140 NNFORMER 0 1 1 #nnfo_word_eval
 # srun python fine_package/fine/run/run.py nnUNetTrainerV2_fine 140 FINE 0 1 1 #fine_word_eval
 
-# srun python fine_package/fine/run/run.py nnUNetTrainerV2_dft 140 notta_NNUNET_dft 1 1 0 #unet_word_dft_eval
-srun python fine_package/fine/run/run.py nnUNetTrainerV2 140 notta_NNUNET 1 1 0 #unet_word_eval
+srun python fine_package/fine/run/run.py nnUNetTrainerV2_dft 140 notta_NNUNET_dft 1 1 0 #unet_word_dft_eval
+# srun python fine_package/fine/run/run.py nnUNetTrainerV2 140 notta_NNUNET 1 1 0 #unet_word_eval
 # srun python fine_package/fine/run/run.py nnUNetTrainerV2_nnFormer 140 notta_NNFORMER 0 1 0 #nnfo_word_eval
 # srun python fine_package/fine/run/run.py nnUNetTrainerV2_fine 140 notta_FINE 0 1 0 #fine_word_eval
 # srun python fine_package/fine/run/run.py nnUNetTrainerV2_fineUNet 140 notta_FINENNUNET 1 1 0 #finun_word_eval

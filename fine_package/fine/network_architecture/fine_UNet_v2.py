@@ -382,25 +382,39 @@ class Fine_UNet_v2(SegmentationNetwork):
         depths=[2, 2, 2, 2, 2]
         dpr = [x.item() for x in torch.linspace(0, 0.2, sum(depths))]  # stochastic depth decay rule
 
+        # self.patch_embed_list = [PatchEmbed(
+        #                     patch_size=4, in_chans=self.features_sizes[0], embed_dim=self.features_sizes[0],
+        #                     norm_layer=nn.LayerNorm),
+        #             PatchEmbed(
+        #                 patch_size=2, in_chans=self.features_sizes[0], embed_dim=self.features_sizes[0],
+        #                 norm_layer=nn.LayerNorm),
+        #             None,
+        #             None,
+        #             None
+        #             ]
+
+
+        self.do_fine = [False, False, True, True, True]
         self.fine_module_list = []
         for ii in range(num_pool):
-            self.fine_module_list.append( fine.BasicLayer(
-                    dim=self.features_sizes[ii],
-                    input_resolution=self.input_sizes[ii],
-                    depth=depths[ii],
-                    num_heads=num_heads[ii],
-                    window_size=4,
-                    mlp_ratio=4.,
-                    qkv_bias=True,
-                    qk_scale=None,
-                    drop=0.,
-                    attn_drop=0.,
-                    drop_path=dpr[sum(depths[:ii]):sum(depths[:ii + 1])],
-                    # drop_path=dpr[sum(depths[:i_layer]):sum(depths[:i_layer + 1])],
-                    norm_layer=nn.LayerNorm,
-                    downsample=None,
-                    use_checkpoint=False, gt_num=1, id_layer=ii, vt_map=vt_map,vt_num=1)
-                    )
+            if self.do_fine[ii]:
+                self.fine_module_list.append( fine.BasicLayer(
+                        dim=self.features_sizes[ii],
+                        input_resolution=self.input_sizes[ii],
+                        depth=depths[ii],
+                        num_heads=num_heads[ii],
+                        window_size=4,
+                        mlp_ratio=4.,
+                        qkv_bias=True,
+                        qk_scale=None,
+                        drop=0.,
+                        attn_drop=0.,
+                        drop_path=dpr[sum(depths[:ii]):sum(depths[:ii + 1])],
+                        # drop_path=dpr[sum(depths[:i_layer]):sum(depths[:i_layer + 1])],
+                        norm_layer=nn.LayerNorm,
+                        downsample=None,
+                        use_checkpoint=False, gt_num=1, id_layer=ii, vt_map=vt_map,vt_num=1)
+                        )
         self.fine_module_list = nn.ModuleList(self.fine_module_list)
         ###
 
@@ -465,13 +479,14 @@ class Fine_UNet_v2(SegmentationNetwork):
             ## FINE here
             print("layer :",d)
             print("x shape", x.shape)
-            Ws, Wh, Ww = x.size(2), x.size(3), x.size(4)
-            x = x.flatten(2).transpose(1, 2)
-            print("x shape", x.shape)
-            x_out, S, H, W, x, Ws, Wh, Ww = self.fine_module_list[d](x, Ws, Wh, Ww, vt_pos, self.vt_check >= 1)
-            # x_out, S, H, W, x, Ws, Wh, Ww = layer(x, Ws, Wh, Ww, vt_pos, check)
-            # print("x_out shape", x_out.shape)
-            x = x_out.view(-1, S, H, W, self.features_sizes[-1]).permute(0, 4, 1, 2, 3).contiguous()
+            if self.do_fine[d]:
+                Ws, Wh, Ww = x.size(2), x.size(3), x.size(4)
+                x = x.flatten(2).transpose(1, 2)
+                print("x shape", x.shape)
+                x_out, S, H, W, x, Ws, Wh, Ww = self.fine_module_list[d](x, Ws, Wh, Ww, vt_pos, self.vt_check >= 1)
+                # x_out, S, H, W, x, Ws, Wh, Ww = layer(x, Ws, Wh, Ww, vt_pos, check)
+                # print("x_out shape", x_out.shape)
+                x = x_out.view(-1, S, H, W, self.features_sizes[-1]).permute(0, 4, 1, 2, 3).contiguous()
 
 
 

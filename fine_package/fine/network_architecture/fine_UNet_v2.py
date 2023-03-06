@@ -497,6 +497,9 @@ class Fine_UNet_v2(SegmentationNetwork):
 
         x = self.conv_blocks_context[-1](x)
 
+        print("layer :", len(self.conv_blocks_context))
+        print("x shape", x.shape)
+
 
         if self.do_fine[-1]:
             Ws, Wh, Ww = x.size(2), x.size(3), x.size(4)

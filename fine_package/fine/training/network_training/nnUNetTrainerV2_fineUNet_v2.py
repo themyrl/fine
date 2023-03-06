@@ -176,7 +176,7 @@ class nnUNetTrainerV2_fineUNet_v2(nnUNetTrainer):
         grid_size = [int(max_sizes[i]/self.plans['plans_per_stage'][1]['patch_size'][i]) for i in range(3)]
 
 
-        self.network = Fine_UNet(self.num_input_channels, self.base_num_features, self.num_classes,
+        self.network = Fine_UNet_v2(self.num_input_channels, self.base_num_features, self.num_classes,
                                     len(self.net_num_pool_op_kernel_sizes),
                                     self.conv_per_stage, 2, conv_op, norm_op, norm_op_kwargs, dropout_op,
                                     dropout_op_kwargs,

@@ -394,7 +394,7 @@ class Fine_UNet_v2(SegmentationNetwork):
         #             ]
 
 
-        self.do_fine = [False, False, False, False, False, False]
+        self.do_fine = [False, False, False, False, False, True]
         self.fine_module_list = []
         for ii in range(num_pool):
             if self.do_fine[ii]:
@@ -496,22 +496,6 @@ class Fine_UNet_v2(SegmentationNetwork):
 
         x = self.conv_blocks_context[-1](x)
 
-
-
-        # Add transformer here
-        # vt_pos = self.pos2vtpos(pos)
-        # # pr_check = ((self.vt_check >= 1).sum() >= self.vt_map[1]*self.vt_map[2])
-        # self.vt_check[vt_pos] += 1
-        # # check = ((self.vt_check >= 1).sum() >= self.vt_map[1]*self.vt_map[2])
-        # self.iter += 1
-
-
-        # print("x shape", x.shape)
-        # print("inp sizes", self.input_sizes)
-        # print("features sizes", self.features_sizes)
-        # print("pos", pos)
-        # print("vt pos", vt_pos)
-        # print("vt map", self.vt_map)
 
         if self.do_fine[-1]:
             Ws, Wh, Ww = x.size(2), x.size(3), x.size(4)

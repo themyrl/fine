@@ -396,7 +396,7 @@ class Fine_UNet_v2(SegmentationNetwork):
 
         self.do_fine = [False, False, False, False, False, True]
         self.fine_module_list = []
-        for ii in range(num_pool + 1):
+        for ii in range(len(self.input_sizes)):
             if self.do_fine[ii]:
                 self.fine_module_list.append( fine.BasicLayer(
                         dim=self.features_sizes[ii],

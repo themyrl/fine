@@ -377,9 +377,9 @@ class Fine_UNet_v2(SegmentationNetwork):
         self.max_imsize = max_imsize
         self.imsize = patch_size
         #num_heads=[6, 12, 24, 80]
-        num_heads=[5, 10, 20, 40, 80]
+        num_heads=[2, 5, 10, 20, 40, 80]
         # num_heads=[6, 12, 24, 48]
-        depths=[2, 2, 2, 2, 2]
+        depths=[2, 2, 2, 2, 2, 2]
         dpr = [x.item() for x in torch.linspace(0, 0.2, sum(depths))]  # stochastic depth decay rule
 
         # self.patch_embed_list = [PatchEmbed(
@@ -396,7 +396,7 @@ class Fine_UNet_v2(SegmentationNetwork):
 
         self.do_fine = [False, False, False, False, False, True]
         self.fine_module_list = []
-        for ii in range(num_pool):
+        for ii in range(num_pool + 1):
             if self.do_fine[ii]:
                 self.fine_module_list.append( fine.BasicLayer(
                         dim=self.features_sizes[ii],

@@ -394,7 +394,7 @@ class Fine_UNet_v2(SegmentationNetwork):
         #             ]
 
 
-        self.do_fine = [False, False, False, False, False, True]
+        self.do_fine = [False, False, False, False, True, True]
         self.fine_module_list = []
         for ii in range(len(self.input_sizes)):
             if self.do_fine[ii]:
@@ -509,7 +509,7 @@ class Fine_UNet_v2(SegmentationNetwork):
             x_out, S, H, W, x, Ws, Wh, Ww = self.fine_module_list[-1](x, Ws, Wh, Ww, vt_pos, self.vt_check >= 1)
             print("x_out shape", x_out.shape)
             x = x_out.view(-1, S, H, W, self.features_sizes[-1]).permute(0, 4, 1, 2, 3).contiguous()
-            print("out shape", out.shape)
+            print("out shape", x.shape)
 
         print("---------------------------------------------------------------")
         exit(0)

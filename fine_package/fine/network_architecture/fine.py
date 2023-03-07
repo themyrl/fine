@@ -135,6 +135,9 @@ class ClassicAttention(nn.Module):
             m = pe.shape[0]
             strt = m//2-N_//2
             pe = pe[strt:strt+N_,:]
+            print("----> fine x shape",x.shape)
+            print("----> fine pe shape",pe.shape)
+            print("----> fine self.n_vts shape",self.n_vts)
             x[:, self.n_vts:, :] = x[:, self.n_vts:, :] + pe
 
         # print(x.shape)

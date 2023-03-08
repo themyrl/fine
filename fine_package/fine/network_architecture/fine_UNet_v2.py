@@ -455,10 +455,10 @@ class Fine_UNet_v2(SegmentationNetwork):
             # self.apply(print_module_training_status)
 
     def forward(self, x, pos=None):
-        print("---------------------------- DEBUG ----------------------------")
-        print("inp sizes", self.input_sizes)
-        print("features sizes", self.features_sizes)
-        print("x shape start", x.shape)
+        # print("---------------------------- DEBUG ----------------------------")
+        # print("inp sizes", self.input_sizes)
+        # print("features sizes", self.features_sizes)
+        # print("x shape start", x.shape)
 
         ## position
         vt_pos = self.pos2vtpos(pos)
@@ -478,12 +478,12 @@ class Fine_UNet_v2(SegmentationNetwork):
 
 
             ## FINE here
-            print("layer :",d)
-            print("x shape", x.shape)
+            # print("layer :",d)
+            # print("x shape", x.shape)
             if self.do_fine[d]:
                 Ws, Wh, Ww = x.size(2), x.size(3), x.size(4)
                 x = x.flatten(2).transpose(1, 2)
-                print("x shape", x.shape)
+                # print("x shape", x.shape)
                 x_out, S, H, W, x, Ws, Wh, Ww = self.fine_module_list[d](x, Ws, Wh, Ww, vt_pos, self.vt_check >= 1)
                 # x_out, S, H, W, x, Ws, Wh, Ww = layer(x, Ws, Wh, Ww, vt_pos, check)
                 # print("x_out shape", x_out.shape)
@@ -497,22 +497,22 @@ class Fine_UNet_v2(SegmentationNetwork):
 
         x = self.conv_blocks_context[-1](x)
 
-        print("layer :", len(self.conv_blocks_context))
-        print("x shape", x.shape)
+        # print("layer :", len(self.conv_blocks_context))
+        # print("x shape", x.shape)
 
 
         if self.do_fine[-1]:
             Ws, Wh, Ww = x.size(2), x.size(3), x.size(4)
             x = x.flatten(2).transpose(1, 2)
 
-            print("x shape", x.shape)
+            # print("x shape", x.shape)
             x_out, S, H, W, x, Ws, Wh, Ww = self.fine_module_list[-1](x, Ws, Wh, Ww, vt_pos, self.vt_check >= 1)
-            print("x_out shape", x_out.shape)
+            # print("x_out shape", x_out.shape)
             x = x_out.view(-1, S, H, W, self.features_sizes[-1]).permute(0, 4, 1, 2, 3).contiguous()
-            print("out shape", x.shape)
+            # print("out shape", x.shape)
 
-        print("---------------------------------------------------------------")
-        exit(0)
+        # print("---------------------------------------------------------------")
+        # exit(0)
 
         for u in range(len(self.tu)):
             x = self.tu[u](x)

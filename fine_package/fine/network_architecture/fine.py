@@ -355,7 +355,8 @@ class SwinTransformerBlock(nn.Module):
         S, H, W = self.input_resolution
 
         # 
-        
+        print("------> x shape", x.shape)
+        print("------> self.input_resolution ", self.input_resolution)
         assert L == S * H * W, "input feature has wrong size"
         
         

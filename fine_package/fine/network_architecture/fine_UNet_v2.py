@@ -394,7 +394,7 @@ class Fine_UNet_v2(SegmentationNetwork):
         #             ]
 
 
-        self.do_fine = [False, False, False, False, True, True]
+        self.do_fine = [False, False, False, True, True, True]
         self.fine_module_list = []
         for ii in range(len(self.input_sizes)):
             if self.do_fine[ii]:

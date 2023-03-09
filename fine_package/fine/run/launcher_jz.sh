@@ -1,14 +1,14 @@
 #!/bin/bash
-#SBATCH --job-name=finunv2_word     # job name
+#SBATCH --job-name=edebug     # job name
 #SBATCH --ntasks=1                  # number of MP tasks
 #SBATCH --ntasks-per-node=1          # number of MPI tasks per node
 #SBATCH --gres=gpu:1                 # number of GPUs per node
 #SBATCH --cpus-per-task=20   #10           # number of cores per tasks
 #SBATCH --hint=nomultithread         # we get physical cores not logical
-#SBATCH --time=99:10:00             # maximum execution time (HH:MM:SS)
-#SBATCH --qos=qos_gpu-t4
-#SBATCH --output=logs/finunv2_word.out # output file name # add %j to id the job
-#SBATCH --error=logs/finunv2_word.err  # error file name # add %j to id the job
+#SBATCH --time=06:10:00             # maximum execution time (HH:MM:SS)
+#SBATCH --qos=qos_gpu-t3
+#SBATCH --output=logs/edebug.out # output file name # add %j to id the job
+#SBATCH --error=logs/edebug.err  # error file name # add %j to id the job
 #SBATCH -C v100-32g
  
 
@@ -58,13 +58,14 @@ export RESULTS_FOLDER="/gpfsscratch/rech/arf/unm89rb/nnUNet_trained_models"
 # srun python fine_package/fine/run/run.py nnUNetTrainerV2_fineUNet 140 notta_FINENNUNET 1 0 0 #finun_word
 # srun python fine_package/fine/run/run.py nnUNetTrainerV2_CoTR_agno 140 notta_COTR 1 0 0 #cotr_word
 
-srun python fine_package/fine/run/run.py nnUNetTrainerV2_fineUNet_v2 140 notta_FINENNUNETV2 1 0 0 #finunv2_word # we added fine module at each layer of the encoder
+# srun python fine_package/fine/run/run.py nnUNetTrainerV2_fineUNet_v2 140 notta_FINENNUNETV2 1 0 0 #finunv2_word # we added fine module at each layer of the encoder
 
 
 
 ### LIVUS
 # srun python fine_package/fine/run/run.py nnUNetTrainerV2_finedbg 130 DBGFINE 0 0 1 #debug
 # srun python fine_package/fine/run/run.py nnUNetTrainerV2_finedbg 130 DBGFINE 0 0 1 1 #cdebug
+srun python fine_package/fine/run/run.py nnUNetTrainerV2_finedbg 130 DBGFINE 0 1 1 1 #edebug
 
 
 

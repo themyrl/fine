@@ -166,7 +166,7 @@ class Upsample(nn.Module):
                                          align_corners=self.align_corners)
 
 
-class Fine_UNet_v2(SegmentationNetwork):
+class Fine_UNet_v3(SegmentationNetwork):
     DEFAULT_BATCH_SIZE_3D = 2
     DEFAULT_PATCH_SIZE_3D = (64, 192, 160)
     SPACING_FACTOR_BETWEEN_STAGES = 2
@@ -202,7 +202,7 @@ class Fine_UNet_v2(SegmentationNetwork):
 
         Questions? -> f.isensee@dkfz.de
         """
-        super(Fine_UNet_v2, self).__init__()
+        super(Fine_UNet_v3, self).__init__()
 
         # print("\n\n\n\n\nThat's my model !! \n\n\n\n")
         # exit(0)
@@ -463,7 +463,7 @@ class Fine_UNet_v2(SegmentationNetwork):
         seg_outputs = []
         for d in range(len(self.conv_blocks_context) - 1):
             x = self.conv_blocks_context[d](x)
-            skips.append(x)
+            # skips.append(x)
 
 
             ## FINE here
@@ -478,7 +478,7 @@ class Fine_UNet_v2(SegmentationNetwork):
                 # print("x_out shape", x_out.shape)
                 x = x_out.view(-1, S, H, W, self.features_sizes[d]).permute(0, 4, 1, 2, 3).contiguous()
 
-
+            skips.append(x)
 
             if not self.convolutional_pooling:
                 x = self.td[d](x)

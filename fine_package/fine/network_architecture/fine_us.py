@@ -1242,7 +1242,7 @@ class swintransformer(SegmentationNetwork):
         #h, w = grid.shape
         cd, ch, cw = self.imsize
         d, h, w = self.max_imsize
-        grid = np.zeros(self.max_size, dtype = int)
+        grid = np.zeros(self.max_imsize, dtype = int)
         nd, nh, nw = d//cd, h//ch, w//cw
         for i in range(nd):
             for j in range(nh):

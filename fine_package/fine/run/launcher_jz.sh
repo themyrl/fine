@@ -1,14 +1,14 @@
 #!/bin/bash
-#SBATCH --job-name=finunv3_word     # job name
+#SBATCH --job-name=finus_livus     # job name
 #SBATCH --ntasks=1                  # number of MP tasks
 #SBATCH --ntasks-per-node=1          # number of MPI tasks per node
 #SBATCH --gres=gpu:1                 # number of GPUs per node
 #SBATCH --cpus-per-task=20   #10           # number of cores per tasks
 #SBATCH --hint=nomultithread         # we get physical cores not logical
-#SBATCH --time=99:10:00             # maximum execution time (HH:MM:SS)
-#SBATCH --qos=qos_gpu-t4
-#SBATCH --output=logs/finunv3_word.out # output file name # add %j to id the job
-#SBATCH --error=logs/finunv3_word.err  # error file name # add %j to id the job
+#SBATCH --time=00:10:00             # maximum execution time (HH:MM:SS)
+#SBATCH --qos=qos_gpu-dev
+#SBATCH --output=logs/finus_livus.out # output file name # add %j to id the job
+#SBATCH --error=logs/finus_livus.err  # error file name # add %j to id the job
 #SBATCH -C v100-32g
  
 
@@ -61,7 +61,7 @@ export RESULTS_FOLDER="/gpfsscratch/rech/arf/unm89rb/nnUNet_trained_models"
 # srun python fine_package/fine/run/run.py nnUNetTrainerV2_fineUNet_v2 140 notta_FINENNUNETV2 1 0 0 #finunv2_word # we added fine module at each layer of the encoder
 # srun python fine_package/fine/run/run.py nnUNetTrainerV2_fineUNet_v2 140 notta_FINENNUNETV2 1 0 0 1 #finunv2_word_c # we added fine module at each layer of the encoder
 
-srun python fine_package/fine/run/run.py nnUNetTrainerV2_fineUNet_v3 140 notta_FINENNUNETV3 1 0 0 #finunv3_word # we added fine module at each layer of the encoder and skip connection after transformer module
+# srun python fine_package/fine/run/run.py nnUNetTrainerV2_fineUNet_v3 140 notta_FINENNUNETV3 1 0 0 #finunv3_word # we added fine module at each layer of the encoder and skip connection after transformer module
 
 
 ### LIVUS
@@ -69,6 +69,7 @@ srun python fine_package/fine/run/run.py nnUNetTrainerV2_fineUNet_v3 140 notta_F
 # srun python fine_package/fine/run/run.py nnUNetTrainerV2_finedbg 130 DBGFINE 0 0 1 1 #cdebug
 # srun python fine_package/fine/run/run.py nnUNetTrainerV2_finedbg 130 DBGFINE 0 1 1 1 #edebug
 
+srun python fine_package/fine/run/run.py nnUNetTrainerV2_fine_us 130 FINEUS 0 0 1 #finus_livus
 
 
 ## Only eval

@@ -1231,9 +1231,43 @@ class swintransformer(SegmentationNetwork):
             self.final.append(final_patch_expanding(embed_dim*2**i,num_classes,patch_size=(4,4,4)))
         self.final=nn.ModuleList(self.final)
 
-        self.vt_check = torch.nn.Parameter(torch.zeros(vt_map[1]*vt_map[2],1))
+        self.vt_check = torch.nn.Parameter(torch.zeros(vt_map[0]*vt_map[1]*vt_map[2],1))
         self.vt_check.requires_grad = False
+
+        self.pos_grid = self.filled_grid()
+
         self.iter = 0
+
+    def filled_grid(self):
+        #h, w = grid.shape
+        cd, ch, cw = self.imsize
+        d, h, w = self.max_imsize
+        grid = np.zeros(self.max_size, dtype = int)
+        nd, nh, nw = d//cd, h//ch, w//cw
+        for i in range(nd):
+            for j in range(nh):
+                for k in range(nd):
+                    grid[i*cd:(i+1)*cd, j*ch:(j+1)*ch, k*cw:(k+1)*cw] = nh*nw*i nw*j + k
+        return grid
+
+    def border_check(self, pos):
+        ret = [i for i in pos]
+        for i in range(len(ret)):
+            #print(pos[i], crop_size[i])
+            if pos[i]%self.imsize[i] == 0:
+                if pos[i] < self.max_imsize[i]//2:
+                    ret[i] += 1
+                else:
+                    ret[i] -= 1
+        return ret
+
+    def get_tokens_idx(self, pos):
+        pos = border_check(pos, self.imsize, self.max_imsize)
+        z, x, y = pos
+        cd, ch, cw = self.imsize
+        tmp = self.pos_grid[z:z+cd, x:x+ch, y:y+cw]
+        idx = np.unique(tmp)
+        return idx
 
     def pos2vtpos(self, pos):
         # dim = [64,128,128]
@@ -1310,6 +1344,12 @@ class swintransformer(SegmentationNetwork):
     
     def forward(self, x, pos):
         vt_pos = self.pos2vtpos(pos)
+        print("pos2vtpos", vt_pos)
+        vt_pos = []
+        for p in pos:
+            vt_pos.append(self.get_tokens_idx(p))
+        print("get_tokens_idx", vt_pos)
+        exit(0)
 
         
         pr_check = ((self.vt_check >= 1).sum() >= self.vt_map[0]*self.vt_map[1]*self.vt_map[2])

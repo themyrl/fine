@@ -1247,7 +1247,7 @@ class swintransformer(SegmentationNetwork):
         for i in range(nd):
             for j in range(nh):
                 for k in range(nd):
-                    grid[i*cd:(i+1)*cd, j*ch:(j+1)*ch, k*cw:(k+1)*cw] = nh*nw*i nw*j + k
+                    grid[i*cd:(i+1)*cd, j*ch:(j+1)*ch, k*cw:(k+1)*cw] = nh*nw*i + nw*j + k
         return grid
 
     def border_check(self, pos):

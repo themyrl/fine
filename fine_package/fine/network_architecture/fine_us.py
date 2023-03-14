@@ -1262,7 +1262,7 @@ class swintransformer(SegmentationNetwork):
         return ret
 
     def get_tokens_idx(self, pos):
-        pos = border_check(pos, self.imsize, self.max_imsize)
+        pos = self.border_check(pos, self.imsize, self.max_imsize)
         z, x, y = pos
         cd, ch, cw = self.imsize
         tmp = self.pos_grid[z:z+cd, x:x+ch, y:y+cw]

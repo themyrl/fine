@@ -32,7 +32,7 @@ def get_n_params(model):
             nn = nn*s
         pp += nn
     return pp
-class nnUNetTrainerV2_fine(nnUNetTrainer):
+class nnUNetTrainerV2_fine_us(nnUNetTrainer):
 
     def __init__(self, plans_file, fold, output_folder=None, dataset_directory=None, batch_dice=True, stage=None,
                  unpack_data=True, deterministic=True, fp16=False, vt_map=None):

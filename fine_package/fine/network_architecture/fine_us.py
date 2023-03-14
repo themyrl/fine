@@ -1264,6 +1264,7 @@ class swintransformer(SegmentationNetwork):
     def get_tokens_idx(self, pos):
         pos = self.border_check(pos)
         z, x, y = pos
+        z, x, y = int(z), int(x), int(y)
         cd, ch, cw = self.imsize
         tmp = self.pos_grid[z:z+cd, x:x+ch, y:y+cw]
         idx = np.unique(tmp)

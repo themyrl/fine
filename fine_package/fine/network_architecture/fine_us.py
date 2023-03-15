@@ -1263,8 +1263,14 @@ class swintransformer(SegmentationNetwork):
 
     def get_tokens_idx(self, pos):
         pos = self.border_check(pos)
-        z, x, y = pos
-        z, x, y = int(z), int(x), int(y)
+        # z, x, y = pos
+        # z, x, y = int(z), int(x), int(y)
+
+        # Myr : We put the crop in the bigger image referential
+        z, x, y = [int(pos[i] + max_dim[i])//2 for i in range(3)]
+        # z, x, y = pos
+
+
         cd, ch, cw = self.imsize
         tmp = self.pos_grid[z:z+cd, x:x+ch, y:y+cw]
         idx = np.unique(tmp)
@@ -1348,6 +1354,8 @@ class swintransformer(SegmentationNetwork):
         vt_pos = self.pos2vtpos(pos)
         print("pos2vtpos", vt_pos)
         vt_pos = []
+
+        print("self.pos_grid", self.pos_grid.shape)
         for p in pos:
             vt_pos.append(self.get_tokens_idx(p))
         print("get_tokens_idx", vt_pos)

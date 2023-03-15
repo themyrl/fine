@@ -1377,6 +1377,7 @@ class swintransformer(SegmentationNetwork):
         return ret
     
     def forward(self, x, pos):
+        print("self.vt_map", self.vt_map)
         print("pos, max_imsize", pos, self.max_imsize)
         vt_pos = self.pos2vtpos(pos)
         print("pos2vtpos", vt_pos)

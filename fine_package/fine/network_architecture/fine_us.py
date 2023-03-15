@@ -1294,7 +1294,7 @@ class swintransformer(SegmentationNetwork):
         z, x, y = [int(pos[i] + self.max_imsize[i]//2) for i in range(3)]
         # z, x, y = pos
         print('--> pos', pos)
-        print('--> max size', self.max_imsize[i])
+        print('--> max size', self.max_imsize)
         print('--> z, x, y', z, x, y)
 
 

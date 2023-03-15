@@ -1244,21 +1244,45 @@ class swintransformer(SegmentationNetwork):
         d, h, w = self.max_imsize
         grid = np.zeros(self.max_imsize, dtype = int)
         nd, nh, nw = d//cd, h//ch, w//cw
+
+        pd, ph, pw = d%cd, h%ch, w%cw
+
         for i in range(nd):
             for j in range(nh):
-                for k in range(nd):
-                    grid[i*cd:(i+1)*cd, j*ch:(j+1)*ch, k*cw:(k+1)*cw] = nh*nw*i + nw*j + k
+                for k in range(nw):
+                    # grid[i*cd:(i+1)*cd, j*ch:(j+1)*ch, k*cw:(k+1)*cw] = nh*nw*i + nw*j + k
+
+                    tmp_pd_0 = (pd//2)*(0**(i==0))
+                    tmp_pd_1 = pd//2 + (pd//2)*(0**(i!=nd-1)) + pd%2
+
+                    tmp_ph_0 = (ph//2)*(0**(j==0))
+                    tmp_ph_1 = ph//2 + (ph//2)*(0**(j!=nh-1)) + ph%2
+                    
+                    tmp_pw_0 = (pw//2)*(0**(k==0))
+                    tmp_pw_1 = pw//2 + (pw//2)*(0**(k!=nw-1)) + pw%2
+
+                    # grid[i*ch+tmp_ph_0:(i+1)*ch+tmp_ph_1, j*cw+tmp_pw_0:(j+1)*cw+tmp_pw_1] = nw*i + j
+                    grid[i*cd+tmp_pd_0:(i+1)*cd+tmp_pd_1, j*ch+tmp_ph_0:(j+1)*ch+tmp_ph_1, k*cw+tmp_pw_0:(k+1)*cw+tmp_pw_1] = nh*nw*i + nw*j + k
+       
         return grid
 
     def border_check(self, pos):
         ret = [i for i in pos]
+        size = self.max_imsize
+        crop_size = self.imsize
         for i in range(len(ret)):
             #print(pos[i], crop_size[i])
-            if pos[i]%self.imsize[i] == 0:
-                if pos[i] < self.max_imsize[i]//2:
-                    ret[i] += 1
+            # if pos[i]%self.imsize[i] == 0:
+            #     if pos[i] < self.max_imsize[i]//2:
+            #         ret[i] += 1
+            #     else:
+            #         ret[i] -= 1
+            pad_i = (size[i]%crop_size[i])//2
+            if (pos[i]%crop_size[i] == 0) or (pos[i] > size[i] - (crop_size[i] + pad_i)) or (pos[i] < (size[i]%crop_size[i])//2):
+                if pos[i] < size[i]//2:
+                    ret[i] += 1 + pad_i
                 else:
-                    ret[i] -= 1
+                    ret[i] -= 1 + pad_i
         return ret
 
     def get_tokens_idx(self, pos):

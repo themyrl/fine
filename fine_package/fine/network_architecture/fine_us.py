@@ -1267,7 +1267,7 @@ class swintransformer(SegmentationNetwork):
         # z, x, y = int(z), int(x), int(y)
 
         # Myr : We put the crop in the bigger image referential
-        z, x, y = [int(pos[i] + max_dim[i])//2 for i in range(3)]
+        z, x, y = [int(pos[i] + self.max_imsize[i])//2 for i in range(3)]
         # z, x, y = pos
 
 

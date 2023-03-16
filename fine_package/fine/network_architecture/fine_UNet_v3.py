@@ -402,7 +402,7 @@ class Fine_UNet_v3(SegmentationNetwork):
                         # drop_path=dpr[sum(depths[:i_layer]):sum(depths[:i_layer + 1])],
                         norm_layer=nn.LayerNorm,
                         downsample=None,
-                        use_checkpoint=False, gt_num=1, id_layer=ii, vt_map=vt_map,vt_num=1))
+                        use_checkpoint=False, gt_num=1, id_layer=ii, vt_map=vt_map,vt_num=1, clip=True))
             else:
                 self.fine_module_list.append(None)
         self.fine_module_list = nn.ModuleList(self.fine_module_list)

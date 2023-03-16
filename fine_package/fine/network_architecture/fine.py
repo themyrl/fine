@@ -309,7 +309,7 @@ class SwinTransformerBlock(nn.Module):
 
     def __init__(self, dim, input_resolution, num_heads, window_size=7, shift_size=0,
                  mlp_ratio=4., qkv_bias=True, qk_scale=None, drop=0., attn_drop=0., drop_path=0.,
-                 act_layer=nn.GELU, norm_layer=nn.LayerNorm, gt_num=1, n_vts=4,vt_num=1):
+                 act_layer=nn.GELU, norm_layer=nn.LayerNorm, gt_num=1, n_vts=4,vt_num=1, clip=False):
         super().__init__()
         self.n_vts = n_vts
         self.dim = dim
@@ -320,6 +320,7 @@ class SwinTransformerBlock(nn.Module):
         self.mlp_ratio = mlp_ratio
         self.gt_num = gt_num
         self.vt_num=vt_num
+        self.clip = clip
         if min(self.input_resolution) <= self.window_size:
             # if window size is larger than input resolution, we don't partition windows
             self.shift_size = 0
@@ -484,6 +485,12 @@ class SwinTransformerBlock(nn.Module):
         x = shortcut + self.drop_path(x)
         x = x + self.drop_path(self.mlp(self.norm2(x)))
 
+
+        if self.clip:
+            # clamp here
+            gt = torch.clamp(gt, min=-1, max=1)
+            vts = torch.clamp(vts, min=-1, max=1)
+
         return x, gt, vts
 
 
@@ -580,7 +587,7 @@ class BasicLayer(nn.Module):
                  drop_path=0.,
                  norm_layer=nn.LayerNorm,
                  downsample=True,  
-                 use_checkpoint=False, gt_num=1, id_layer=0, vt_map=(3,5,5),vt_num=1):
+                 use_checkpoint=False, gt_num=1, id_layer=0, vt_map=(3,5,5),vt_num=1, clip=False):
         super().__init__()
         self.window_size = window_size
         self.shift_size = window_size // 2
@@ -609,7 +616,7 @@ class BasicLayer(nn.Module):
                 qk_scale=qk_scale,
                 drop=drop,
                 attn_drop=attn_drop,
-                drop_path=drop_path[i] if isinstance(drop_path, list) else drop_path, norm_layer=norm_layer,gt_num=gt_num,vt_num=vt_num)
+                drop_path=drop_path[i] if isinstance(drop_path, list) else drop_path, norm_layer=norm_layer,gt_num=gt_num,vt_num=vt_num, clip=clip)
             for i in range(depth)])
 
         # if self.vt_map==(3,5,5):
@@ -715,7 +722,7 @@ class BasicLayer_up(nn.Module):
                  attn_drop=0.,
                  drop_path=0.,
                  norm_layer=nn.LayerNorm,
-                 upsample=True, gt_num=1,id_layer=0, vt_map=(3,5,5), vt_num=1
+                 upsample=True, gt_num=1,id_layer=0, vt_map=(3,5,5), vt_num=1, clip=False
                 ):
         super().__init__()
         self.window_size = window_size
@@ -747,7 +754,7 @@ class BasicLayer_up(nn.Module):
                 qk_scale=qk_scale,
                 drop=drop,
                 attn_drop=attn_drop,
-                drop_path=drop_path[i] if isinstance(drop_path, list) else drop_path, norm_layer=norm_layer, gt_num=gt_num, vt_num=vt_num)
+                drop_path=drop_path[i] if isinstance(drop_path, list) else drop_path, norm_layer=norm_layer, gt_num=gt_num, vt_num=vt_num, clip=clip)
             for i in range(depth)])
 
         # if self.vt_map==(3,5,5):

@@ -379,8 +379,8 @@ class Fine_UNet_v2(SegmentationNetwork):
         #num_heads=[6, 12, 24, 80]
         num_heads=[1, 2, 4, 8, 10, 10]
         # num_heads=[6, 12, 24, 48]
-        # depths=[2, 2, 2, 2, 2, 2]
-        depths=[3, 3, 3, 3, 3, 3]
+        depths=[2, 2, 2, 2, 2, 2]
+        # depths=[3, 3, 3, 3, 3, 3]
         dpr = [x.item() for x in torch.linspace(0, 0.2, sum(depths))]  # stochastic depth decay rule
 
 

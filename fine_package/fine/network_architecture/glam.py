@@ -1099,7 +1099,7 @@ class swintransformer(SegmentationNetwork):
                  max_num_features=None, basic_block=None,
                  seg_output_use_bias=False, gt_num=1, imsize=[64,128,128], cfg=None, log=None, *args, **kwargs):
     
-        super(model, self).__init__()
+        super(swintransformer, self).__init__()
 
         self.imsize=cfg.imsize
         embed_dim=cfg.embed_dim

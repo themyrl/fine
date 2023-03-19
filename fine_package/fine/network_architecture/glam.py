@@ -5,8 +5,9 @@ from torch import nn
 import torch
 import numpy as np
 from nnunet.network_architecture.initialization import InitWeights_He
-from .utils.fineUtils import SegmentationNetwork
 import torch.nn.functional
+from fine.network_architecture.neural_network_ext import SegmentationNetwork
+
 
 
 import torch.nn.functional as F

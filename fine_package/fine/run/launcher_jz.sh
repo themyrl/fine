@@ -65,7 +65,7 @@ export RESULTS_FOLDER="/gpfsscratch/rech/arf/unm89rb/nnUNet_trained_models"
 
 # srun python fine_package/fine/run/run.py nnUNetTrainerV2_fineUNet_v2 140 notta_FINENNUNETV2_1 1 0 0 #finunv21_word # 3 block in each layer
 
-srun python fine_package/fine/run/run.py nnUNetTrainerV2_glam 140 notta_GLAM 1 0 0 #glam_word
+srun python fine_package/fine/run/run.py nnUNetTrainerV2_glam 140 notta_GLAM 0 0 0 #glam_word
 
 
 ### LIVUS

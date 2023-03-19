@@ -1097,16 +1097,16 @@ class swintransformer(SegmentationNetwork):
                  conv_kernel_sizes=None,
                  upscale_logits=False, convolutional_pooling=False, convolutional_upsampling=False,
                  max_num_features=None, basic_block=None,
-                 seg_output_use_bias=False, gt_num=1, imsize=[64,128,128], cfg=None, log=None, *args, **kwargs):
+                 seg_output_use_bias=False, gt_num=1, imsize=[64,128,128], log=None, *args, **kwargs):
     
         super(swintransformer, self).__init__()
 
-        self.imsize=cfg.imsize
-        embed_dim=cfg.embed_dim
-        num_heads=cfg.num_heads
+        self.imsize=imsize
+        embed_dim=192
+        num_heads=[6, 12, 24, 48]
         depths=[2, 2, 2, 2]
-        patch_size=[i for i in cfg.patch_size]
-        window_size=cfg.window_size
+        patch_size=[i for i in [2,4,4]]
+        window_size=[4,4,4,4]
         self.log = log
         
         

@@ -5,8 +5,8 @@
 #SBATCH --gres=gpu:1                 # number of GPUs per node
 #SBATCH --cpus-per-task=20   #10           # number of cores per tasks
 #SBATCH --hint=nomultithread         # we get physical cores not logical
-#SBATCH --time=00:10:00             # maximum execution time (HH:MM:SS)
-#SBATCH --qos=qos_gpu-dev
+#SBATCH --time=99:10:00             # maximum execution time (HH:MM:SS)
+#SBATCH --qos=qos_gpu-t4
 #SBATCH --output=logs/glam_word.out # output file name # add %j to id the job
 #SBATCH --error=logs/glam_word.err  # error file name # add %j to id the job
 #SBATCH -C v100-32g
@@ -74,6 +74,10 @@ srun python fine_package/fine/run/run.py nnUNetTrainerV2_glam 140 notta_GLAM 0 0
 # srun python fine_package/fine/run/run.py nnUNetTrainerV2_finedbg 130 DBGFINE 0 1 1 1 #edebug
 
 # srun python fine_package/fine/run/run.py nnUNetTrainerV2_fine_us 130 FINEUS 0 0 1 #finus_livus
+
+
+# srun python fine_package/fine/run/run.py nnUNetTrainerV2_glam 130 GLAM 0 0 1 #glam_livus
+
 
 
 ## Only eval

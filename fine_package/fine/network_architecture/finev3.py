@@ -1263,7 +1263,7 @@ class swintransformer(SegmentationNetwork):
         B = x.shape[0]
         vt_pos = []
         
-        tmp_check = torch.zeros(B, self.vt_map[0]*self.vt_map[1]*self.vt_map[2],1, device=self.vt_check.device())
+        tmp_check = torch.zeros(B, self.vt_map[0]*self.vt_map[1]*self.vt_map[2],1, device=self.vt_check.device)
 
         for b, p in enumerate(pos):
             tmp = self.get_tokens_idx(p)

@@ -1,3 +1,4 @@
 tensorboard
 einops
 timm
+matplotlib

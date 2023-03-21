@@ -165,13 +165,18 @@ class nnUNetTrainerV2_finev3(nnUNetTrainer):
             max_sizes = [max(max_sizes[j], i[j]) for j in range(3)]
         grid_size = [int(max_sizes[i]/self.plans['plans_per_stage'][1]['patch_size'][i]) for i in range(3)]
         
-        self.network = swintransformer(self.num_input_channels, self.base_num_features, self.num_classes,
-                                    len(self.net_num_pool_op_kernel_sizes),
-                                    self.conv_per_stage, 2, conv_op, norm_op, norm_op_kwargs, dropout_op,
-                                    dropout_op_kwargs,
-                                    net_nonlin, net_nonlin_kwargs, True, False, lambda x: x, InitWeights_He(1e-2),
-                                    self.net_num_pool_op_kernel_sizes, self.net_conv_kernel_sizes, False, True, True,gt_num=8,
-                                    vt_map=grid_size, max_imsize=max_sizes)
+        # self.network = swintransformer(self.num_input_channels, self.base_num_features, self.num_classes,
+        #                             len(self.net_num_pool_op_kernel_sizes),
+        #                             self.conv_per_stage, 2, conv_op, norm_op, norm_op_kwargs, dropout_op,
+        #                             dropout_op_kwargs,
+        #                             net_nonlin, net_nonlin_kwargs, True, False, lambda x: x, InitWeights_He(1e-2),
+        #                             self.net_num_pool_op_kernel_sizes, self.net_conv_kernel_sizes, False, True, True,gt_num=8,
+        #                             vt_map=grid_size, max_imsize=max_sizes)
+
+        self.network = swintransformer(input_channels=self.num_input_channels, num_classes=self.num_classes, 
+                                    deep_supervision=True, gt_num=8, vt_map=grid_size, 
+                                    imsize=self.plans['plans_per_stage'][1]['patch_size'], vt_num=1, 
+                                    max_imsize=max_sizes)
 
         total = sum([param.nelement() for param in self.network.parameters()])
         print('  + Number of Network Params: %.2f(e6)' % (total / 1e6))

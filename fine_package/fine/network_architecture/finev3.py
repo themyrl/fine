@@ -1192,7 +1192,6 @@ class swintransformer(SegmentationNetwork):
         self.vt_check.requires_grad = False
         self.iter = 0
 
-        self.tmp_check = torch.zeros(B, self.vt_map[0]*self.vt_map[1]*self.vt_map[2],1)
 
         self.pos_grid, self.show_grid, self.vt_map = self.filled_grid()
 
@@ -1264,14 +1263,13 @@ class swintransformer(SegmentationNetwork):
         B = x.shape[0]
         vt_pos = []
         
-        # tmp_check = repeat(self.vt_check, 'n c -> b n c', b=B)
-        # print("-> tmp_check", tmp_check.shape)
+        tmp_check = torch.zeros(B, self.vt_map[0]*self.vt_map[1]*self.vt_map[2],1, device=self.vt_check.device())
 
         for b, p in enumerate(pos):
             tmp = self.get_tokens_idx(p)
             # print("b, tmp pos", b, tmp)
-            self.tmp_check[b,...] = self.vt_check[...]
-            self.tmp_check[b, tmp, :] += 1
+            tmp_check[b,...] = self.vt_check[...]
+            tmp_check[b, tmp, :] += 1
             vt_pos.append(tmp + b*np.array(self.vt_map).prod())
         vt_pos = np.array(vt_pos).flatten()
         # print("vt_pos", vt_pos)
@@ -1284,7 +1282,7 @@ class swintransformer(SegmentationNetwork):
        
         out=self.encoder(neck,skips,vt_pos, self.vt_check >= 1)
 
-        self.vt_check += self.tmp_check.sum(dim=0)
+        self.vt_check += tmp_check.sum(dim=0)
 
         # print("tmp_check 1")
         # shotmp0 = "tmp_chekc0\n"

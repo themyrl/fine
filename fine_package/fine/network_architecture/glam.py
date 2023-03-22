@@ -548,18 +548,18 @@ class BasicLayer(nn.Module):
         #     ws_pe = (16*gt_num//2**id_layer, 8*gt_num//2**id_layer, 8*gt_num//2**id_layer)
         # ws_pe = ((32//window_size)*gt_num//2**id_layer, (32//window_size)*gt_num//2**id_layer, (32//window_size)*gt_num//2**id_layer)
         S, H, W = input_resolution
-        Sp = int(np.ceil(S / window_size)) * window_size
-        Hp = int(np.ceil(H / window_size)) * window_size
-        Wp = int(np.ceil(W / window_size)) * window_size
-        pad_r = (window_size - Wp % window_size) % window_size
-        pad_b = (window_size - Hp % window_size) % window_size
-        pad_g = (window_size - Sp % window_size) % window_size
-        Sp += pad_r
-        Hp += pad_b
-        Wp += pad_g
-        ws_pe = (   (Sp//window_size)*gt_num, 
-                    (Hp//window_size)*gt_num, 
-                    (Wp//window_size)*gt_num    )
+        # Sp = int(np.ceil(S / window_size)) * window_size
+        # Hp = int(np.ceil(H / window_size)) * window_size
+        # Wp = int(np.ceil(W / window_size)) * window_size
+        pad_r = (window_size - W % window_size) % window_size
+        pad_b = (window_size - H % window_size) % window_size
+        pad_g = (window_size - S % window_size) % window_size
+        S += pad_g
+        H += pad_b
+        W += pad_r
+        ws_pe = (   (S//window_size)*gt_num, 
+                    (H//window_size)*gt_num, 
+                    (W//window_size)*gt_num    )
 
         self.pe = nn.Parameter(torch.zeros(ws_pe[0]*ws_pe[1]*ws_pe[2], dim))
         trunc_normal_(self.pe, std=.02)

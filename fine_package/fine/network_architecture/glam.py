@@ -118,6 +118,8 @@ class ClassicAttention(nn.Module):
             strt = m//2-N_//2
             pe = pe[strt:strt+N_,:]
             # x[:, self.n_vts:, :] = x[:, self.n_vts:, :] + pe
+            print("x", x.shape)
+            print("pe", pe.shape)
             x = x + pe
 
         # print(x.shape)

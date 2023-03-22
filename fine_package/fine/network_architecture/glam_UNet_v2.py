@@ -436,9 +436,9 @@ class Glam_UNet_v2(SegmentationNetwork):
             self.upscale_logits_ops = nn.ModuleList(
                 self.upscale_logits_ops)  # lambda x:x is not a Module so we need to distinguish here
 
-        self.vt_check = torch.nn.Parameter(torch.zeros(vt_map[0]*vt_map[1]*vt_map[2],1))
-        self.vt_check.requires_grad = False
-        self.pos_grid, self.show_grid, self.vt_map = self.filled_grid()
+        # self.vt_check = torch.nn.Parameter(torch.zeros(vt_map[0]*vt_map[1]*vt_map[2],1))
+        # self.vt_check.requires_grad = False
+        # self.pos_grid, self.show_grid, self.vt_map = self.filled_grid()
 
 
         if self.weightInitializer is not None:

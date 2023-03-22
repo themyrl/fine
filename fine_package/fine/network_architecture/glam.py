@@ -50,7 +50,6 @@ def window_partition(x, window_size):
         windows: (num_windows*B, window_size, window_size, C)
     """
     B, S, H, W, C = x.shape
-    print("x.shape" ,x.shape)
     x = x.view(B, S // window_size, window_size, H // window_size, window_size, W // window_size, window_size, C)
     windows = x.permute(0, 1, 3, 5, 2, 4, 6, 7).contiguous().view(-1, window_size, window_size, window_size, C)
     return windows
@@ -364,9 +363,10 @@ class SwinTransformerBlock(nn.Module):
 
         # partition windows
         print("shifted_x", shifted_x.shape)
+        print("self.window_size", self.window_size)
         x_windows = window_partition(shifted_x, self.window_size) 
         print("x_windows", x_windows.shape)
-         
+
         x_windows = x_windows.view(-1, self.window_size * self.window_size * self.window_size,
                                    C)  
         

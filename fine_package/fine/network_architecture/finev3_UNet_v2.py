@@ -384,7 +384,7 @@ class Finev3_UNet_v2(SegmentationNetwork):
         dpr = [x.item() for x in torch.linspace(0, 0.2, sum(depths))]  # stochastic depth decay rule
 
 
-        self.do_fine = [False, True, True, True, True, True]
+        self.do_fine = [False, False, True, True, True, True]
         self.fine_module_list = []
         for ii in range(len(self.input_sizes)):
             if self.do_fine[ii]:

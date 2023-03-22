@@ -463,6 +463,7 @@ class Glam_UNet_v2(SegmentationNetwork):
             if self.do_fine[d]:
                 Ws, Wh, Ww = x.size(2), x.size(3), x.size(4)
                 x = x.flatten(2).transpose(1, 2)
+                print("--> Ws, Wh, Ww", Ws, Wh, Ww)
                 x_out, S, H, W, x, Ws, Wh, Ww = self.fine_module_list[d](x, Ws, Wh, Ww)
                 x = x_out.view(-1, S, H, W, self.features_sizes[d]).permute(0, 4, 1, 2, 3).contiguous()
 

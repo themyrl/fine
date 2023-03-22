@@ -551,9 +551,9 @@ class BasicLayer(nn.Module):
         #     ws_pe = (16*gt_num//2**id_layer, 8*gt_num//2**id_layer, 8*gt_num//2**id_layer)
         # ws_pe = ((32//window_size)*gt_num//2**id_layer, (32//window_size)*gt_num//2**id_layer, (32//window_size)*gt_num//2**id_layer)
         S, H, W = input_resolution
-        # Sp = int(np.ceil(S / window_size)) * window_size
-        # Hp = int(np.ceil(H / window_size)) * window_size
-        # Wp = int(np.ceil(W / window_size)) * window_size
+        if min(input_resolution) <= window_size:
+            # if window size is larger than input resolution, we don't partition windows
+            window_size = min(input_resolution)
         pad_r = (window_size - W % window_size) % window_size
         pad_b = (window_size - H % window_size) % window_size
         pad_g = (window_size - S % window_size) % window_size

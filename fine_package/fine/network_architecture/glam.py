@@ -118,8 +118,6 @@ class ClassicAttention(nn.Module):
             strt = m//2-N_//2
             pe = pe[strt:strt+N_,:]
             # x[:, self.n_vts:, :] = x[:, self.n_vts:, :] + pe
-            print("x", x.shape)
-            print("pe", pe.shape)
             x = x + pe
 
         # print(x.shape)
@@ -362,10 +360,7 @@ class SwinTransformerBlock(nn.Module):
             attn_mask = None
 
         # partition windows
-        print("shifted_x", shifted_x.shape)
-        print("self.window_size", self.window_size)
         x_windows = window_partition(shifted_x, self.window_size) 
-        print("x_windows", x_windows.shape)
 
         x_windows = x_windows.view(-1, self.window_size * self.window_size * self.window_size,
                                    C)  

@@ -550,6 +550,12 @@ class BasicLayer(nn.Module):
         Sp = int(np.ceil(S / window_size)) * window_size
         Hp = int(np.ceil(H / window_size)) * window_size
         Wp = int(np.ceil(W / window_size)) * window_size
+        pad_r = (window_size - Wp % window_size) % window_size
+        pad_b = (window_size - Hp % window_size) % window_size
+        pad_g = (window_size - Sp % window_size) % window_size
+        Sp += pad_r
+        Hp += pad_b
+        Wp += pad_g
         ws_pe = (   (Sp//window_size)*gt_num, 
                     (Hp//window_size)*gt_num, 
                     (Wp//window_size)*gt_num    )

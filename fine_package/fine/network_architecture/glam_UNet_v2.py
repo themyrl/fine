@@ -451,7 +451,7 @@ class Glam_UNet_v2(SegmentationNetwork):
 
 
         ## encoder
-
+        print("resolutions", self.input_sizes)
         skips = []
         seg_outputs = []
         for d in range(len(self.conv_blocks_context) - 1):

@@ -546,9 +546,9 @@ class BasicLayer(nn.Module):
         # else:
         #     ws_pe = (16*gt_num//2**id_layer, 8*gt_num//2**id_layer, 8*gt_num//2**id_layer)
         # ws_pe = ((32//window_size)*gt_num//2**id_layer, (32//window_size)*gt_num//2**id_layer, (32//window_size)*gt_num//2**id_layer)
-        ws_pe = (   np.ceil(input_resolution[0]/window_size)*gt_num, 
-                    np.ceil(input_resolution[1]/window_size)*gt_num, 
-                    np.ceil(input_resolution[2]/window_size)*gt_num    )
+        ws_pe = (   int(np.ceil(input_resolution[0]/window_size)*gt_num), 
+                    int(np.ceil(input_resolution[1]/window_size)*gt_num), 
+                    int(np.ceil(input_resolution[2]/window_size)*gt_num)    )
 
         self.pe = nn.Parameter(torch.zeros(ws_pe[0]*ws_pe[1]*ws_pe[2], dim))
         trunc_normal_(self.pe, std=.02)

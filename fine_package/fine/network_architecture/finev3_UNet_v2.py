@@ -403,7 +403,7 @@ class Finev3_UNet_v2(SegmentationNetwork):
                         # drop_path=dpr[sum(depths[:i_layer]):sum(depths[:i_layer + 1])],
                         norm_layer=nn.LayerNorm,
                         downsample=None,
-                        use_checkpoint=False, gt_num=1, id_layer=ii, vt_map=vt_map,vt_num=1))
+                        use_checkpoint=False, gt_num=8, id_layer=ii, vt_map=vt_map,vt_num=1))
             else:
                 self.fine_module_list.append(None)
         self.fine_module_list = nn.ModuleList(self.fine_module_list)
@@ -499,7 +499,7 @@ class Finev3_UNet_v2(SegmentationNetwork):
             seg_outputs.append(self.final_nonlin(self.seg_outputs[u](x)))
 
         self.vt_check += tmp_check.sum(dim=0)
-        
+
 
         if self._deep_supervision and self.do_ds:
             ret = tuple([seg_outputs[-1]] + [i(j) for i, j in

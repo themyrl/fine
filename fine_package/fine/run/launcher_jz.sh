@@ -1,14 +1,14 @@
 #!/bin/bash
-#SBATCH --job-name=glunv2_livus     # job name
+#SBATCH --job-name=glunv2_word     # job name
 #SBATCH --ntasks=1                  # number of MP tasks
 #SBATCH --ntasks-per-node=1          # number of MPI tasks per node
 #SBATCH --gres=gpu:1                 # number of GPUs per node
 #SBATCH --cpus-per-task=20   #10           # number of cores per tasks
 #SBATCH --hint=nomultithread         # we get physical cores not logical
 #SBATCH --time=99:10:00             # maximum execution time (HH:MM:SS)
-#SBATCH --qos=qos_gpu-dev
-#SBATCH --output=logs/glunv2_livus.out # output file name # add %j to id the job
-#SBATCH --error=logs/glunv2_livus.err  # error file name # add %j to id the job
+#SBATCH --qos=qos_gpu-t4
+#SBATCH --output=logs/glunv2_word.out # output file name # add %j to id the job
+#SBATCH --error=logs/glunv2_word.err  # error file name # add %j to id the job
 #SBATCH -C v100-32g
  
 
@@ -71,6 +71,9 @@ export RESULTS_FOLDER="/gpfsscratch/rech/arf/unm89rb/nnUNet_trained_models"
 
 # srun python fine_package/fine/run/run.py nnUNetTrainerV2_finev3UNet_v2 140 notta_FINEV3NNUNETV2 1 0 0 #funv3v2_word # fine+nnunet with fine v3 at almost all encoder stage
 
+srun python fine_package/fine/run/run.py nnUNetTrainerV2_glamUNet_v2 140 notta_GLAMNNUNETV2 1 0 0 #glunv2_word # glam+nnunet with glam at almost all encoder stage
+
+
 
 ### LIVUS
 # srun python fine_package/fine/run/run.py nnUNetTrainerV2_finedbg 130 DBGFINE 0 0 1 #debug
@@ -86,7 +89,7 @@ export RESULTS_FOLDER="/gpfsscratch/rech/arf/unm89rb/nnUNet_trained_models"
 
 # srun python fine_package/fine/run/run.py nnUNetTrainerV2_finev3UNet_v2 130 FINEV3NNUNETV2 1 0 1 #funv3v2_livus # fine+nnunet with fine v3 at all encoder stage
 
-srun python fine_package/fine/run/run.py nnUNetTrainerV2_glamUNet_v2 130 GLAMNNUNETV2 1 0 1 #glunv2_livus # glam+nnunet with glam at almost all encoder stage
+# srun python fine_package/fine/run/run.py nnUNetTrainerV2_glamUNet_v2 130 GLAMNNUNETV2 1 0 1 #glunv2_livus # glam+nnunet with glam at almost all encoder stage
 
 
 

@@ -35,7 +35,7 @@ def get_n_params(model):
 class nnUNetTrainerV2_glam(nnUNetTrainer):
 
     def __init__(self, plans_file, fold, output_folder=None, dataset_directory=None, batch_dice=True, stage=None,
-                 unpack_data=True, deterministic=True, fp16=False, vt_map=None):
+                 unpack_data=True, deterministic=True, fp16=False, vt_map=None, clip=False):
         super().__init__(plans_file, fold, output_folder, dataset_directory, batch_dice, stage, unpack_data,
                          deterministic, fp16)
 
@@ -54,6 +54,8 @@ class nnUNetTrainerV2_glam(nnUNetTrainer):
         self.save_best_checkpoint = True
 
         self.fold=fold
+
+        self.clip = clip
 
 
     def initialize(self, training=True, force_load_plans=False):
@@ -171,7 +173,7 @@ class nnUNetTrainerV2_glam(nnUNetTrainer):
                                     dropout_op_kwargs,
                                     net_nonlin, net_nonlin_kwargs, True, False, lambda x: x, InitWeights_He(1e-2),
                                     self.net_num_pool_op_kernel_sizes, self.net_conv_kernel_sizes, False, True, True,gt_num=1,
-                                    vt_map=grid_size, max_imsize=max_sizes)
+                                    vt_map=grid_size, max_imsize=max_sizes, clip=self.clip)
 
         total = sum([param.nelement() for param in self.network.parameters()])
         print('  + Number of Network Params: %.2f(e6)' % (total / 1e6))

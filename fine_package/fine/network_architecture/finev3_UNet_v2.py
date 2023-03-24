@@ -192,7 +192,7 @@ class Finev3_UNet_v2(SegmentationNetwork):
                  conv_kernel_sizes=None,
                  upscale_logits=False, convolutional_pooling=False, convolutional_upsampling=False,
                  max_num_features=None, basic_block=ConvDropoutNormNonlin,
-                 seg_output_use_bias=False, patch_size=(64,128,128), vt_map=(3,5,5), max_imsize=[218,660,660]):
+                 seg_output_use_bias=False, patch_size=(64,128,128), vt_map=(3,5,5), max_imsize=[218,660,660], clip=False):
         """
         basically more flexible than v1, architecture is the same
 
@@ -403,7 +403,7 @@ class Finev3_UNet_v2(SegmentationNetwork):
                         # drop_path=dpr[sum(depths[:i_layer]):sum(depths[:i_layer + 1])],
                         norm_layer=nn.LayerNorm,
                         downsample=None,
-                        use_checkpoint=False, gt_num=8, id_layer=ii, vt_map=vt_map,vt_num=1))
+                        use_checkpoint=False, gt_num=8, id_layer=ii, vt_map=vt_map,vt_num=1, clip=clip))
             else:
                 self.fine_module_list.append(None)
         self.fine_module_list = nn.ModuleList(self.fine_module_list)

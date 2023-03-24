@@ -49,7 +49,7 @@ class nnUNetTrainerV2_glamUNet_v2(nnUNetTrainer):
     """
 
     def __init__(self, plans_file, fold, norm_cfg=None, activation_cfg=None, output_folder=None, dataset_directory=None, batch_dice=True, stage=None,
-                 unpack_data=True, deterministic=True, fp16=False):
+                 unpack_data=True, deterministic=True, fp16=False, clip=False):
         super().__init__(plans_file, fold, output_folder, dataset_directory, batch_dice, stage, unpack_data,
                          deterministic, fp16)
         self.max_num_epochs = 1000
@@ -59,6 +59,7 @@ class nnUNetTrainerV2_glamUNet_v2(nnUNetTrainer):
 
         self.pin_memory = True
         self.fold=fold
+        self.clip = clip
 
     def initialize(self, training=True, force_load_plans=False):
         """
@@ -178,7 +179,7 @@ class nnUNetTrainerV2_glamUNet_v2(nnUNetTrainer):
                                     dropout_op_kwargs,
                                     net_nonlin, net_nonlin_kwargs, True, False, lambda x: x, InitWeights_He(1e-2),
                                     self.net_num_pool_op_kernel_sizes, self.net_conv_kernel_sizes, False, True, True,
-                                    patch_size=self.plans['plans_per_stage'][1]['patch_size'])
+                                    patch_size=self.plans['plans_per_stage'][1]['patch_size'], clip=self.clip)
         print("####\n#### MODEL PARAMS :{}\n####".format(get_n_params(self.network)))
         if torch.cuda.is_available():
             self.network.cuda()

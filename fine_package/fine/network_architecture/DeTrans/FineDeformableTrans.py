@@ -13,7 +13,7 @@ import torch
 import torch.nn.functional as F
 from torch import nn
 from torch.nn.init import xavier_uniform_, constant_, normal_
-from .ops.modules import MSDeformAttn
+from .ops.modules import FineMSDeformAttn
 from .position_encoding import build_position_encoding
 
 class FineDeformableTransformer(nn.Module):
@@ -39,7 +39,7 @@ class FineDeformableTransformer(nn.Module):
             if p.dim() > 1:
                 nn.init.xavier_uniform_(p)
         for m in self.modules():
-            if isinstance(m, MSDeformAttn):
+            if isinstance(m, FineMSDeformAttn):
                 m._reset_parameters()
         normal_(self.level_embed)
 
@@ -95,7 +95,7 @@ class FineDeformableTransformerEncoderLayer(nn.Module):
         super().__init__()
 
         # self attention
-        self.self_attn = MSDeformAttn(d_model, n_levels, n_heads, n_points)
+        self.self_attn = FineMSDeformAttn(d_model, n_levels, n_heads, n_points)
         self.dropout1 = nn.Dropout(dropout)
         self.norm1 = nn.LayerNorm(d_model)
 
@@ -119,6 +119,7 @@ class FineDeformableTransformerEncoderLayer(nn.Module):
 
     def forward(self, src, pos, reference_points, spatial_shapes, level_start_index, padding_mask=None):
         # self attention
+        # print("-->  !!!! We need to merge volume tokens to src here or higher  (FineDeformableTrans, l122) !!!!")
         src2 = self.self_attn(self.with_pos_embed(src, pos), reference_points, src, spatial_shapes, level_start_index, padding_mask)
         src = src + self.dropout1(src2)
         src = self.norm1(src)

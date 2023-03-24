@@ -16,7 +16,7 @@ import fine
 # import telegram_send as ts
 # os.environ['nnUNet_raw_data_base'] = '/local/DEEPLEARNING/MULTI_ATLAS/MULTI_ATLAS/Task017_BCV/'
 def main(gpu, network, network_trainer, task, fold, outpath, val, npz, c=False, ep=1000, lr=1e-2, 
-    pretrained_weights=None, na=False, vt_map=(3,5,5,1), dbg=False, visu=False, idx=None, tta=True):
+    pretrained_weights=None, na=False, vt_map=(3,5,5,1), dbg=False, visu=False, idx=None, tta=True, clip=False):
     # if not dbg:
         # ts.send(messages=[network_trainer+" "+task +" "+ str(fold) +" "+ outpath +" val="+ str(val)+" ..."])
 
@@ -144,12 +144,12 @@ def main(gpu, network, network_trainer, task, fold, outpath, val, npz, c=False, 
         trainer = trainer_class(plans_file, fold, norm_cfg, activation_cfg, output_folder=output_folder_name, dataset_directory=dataset_directory,
                             batch_dice=batch_dice, stage=stage, unpack_data=decompress_data,
                             deterministic=deterministic,
-                            fp16=run_mixed_precision)
+                            fp16=run_mixed_precision, clip=clip)
     else:   
         trainer = trainer_class(plans_file, fold, output_folder=output_folder_name, dataset_directory=dataset_directory,
                             batch_dice=batch_dice, stage=stage, unpack_data=decompress_data,
                             deterministic=deterministic,
-                            fp16=run_mixed_precision, vt_map=vt_map)
+                            fp16=run_mixed_precision, vt_map=vt_map, clip=clip)
 
     if c:
         trainer.max_num_epochs = ep

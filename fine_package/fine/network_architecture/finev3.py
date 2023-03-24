@@ -922,7 +922,7 @@ class SwinTransformer(nn.Module):
                  patch_norm=True,
                  out_indices=(0, 1, 2, 3),
                  frozen_stages=-1,
-                 use_checkpoint=False, gt_num=8, vt_map=(3,5,5),vt_num=1):
+                 use_checkpoint=False, gt_num=8, vt_map=(3,5,5),vt_num=1, clip=False):
         super().__init__()
 
         self.pretrain_img_size = pretrain_img_size
@@ -976,7 +976,7 @@ class SwinTransformer(nn.Module):
                     depths[:i_layer]):sum(depths[:i_layer + 1])],
                 norm_layer=norm_layer,
                 downsample=PatchMerging,
-                use_checkpoint=use_checkpoint, gt_num=gt_num, id_layer=i_layer, vt_map=vt_map,vt_num=vt_num)
+                use_checkpoint=use_checkpoint, gt_num=gt_num, id_layer=i_layer, vt_map=vt_map,vt_num=vt_num, clip=clip)
             self.layers.append(layer)
 
         num_features = [int(embed_dim * 2 ** i) for i in range(self.num_layers)]
@@ -1060,7 +1060,7 @@ class encoder(nn.Module):
                  drop_rate=0.,
                  attn_drop_rate=0.,
                  drop_path_rate=0.2,
-                 norm_layer=nn.LayerNorm, gt_num=8, vt_map=(3,5,5),vt_num=1
+                 norm_layer=nn.LayerNorm, gt_num=8, vt_map=(3,5,5),vt_num=1, clip=False
                  ):
         super().__init__()
         
@@ -1091,7 +1091,7 @@ class encoder(nn.Module):
                 drop_path=dpr[sum(
                     depths[:i_layer]):sum(depths[:i_layer + 1])],
                 norm_layer=norm_layer,
-                upsample=Patch_Expanding, gt_num=gt_num,id_layer=len(depths)-i_layer-1, vt_map=vt_map,vt_num=vt_num
+                upsample=Patch_Expanding, gt_num=gt_num,id_layer=len(depths)-i_layer-1, vt_map=vt_map,vt_num=vt_num, clip=clip
                 )
             self.layers.append(layer)
         self.num_features = [int(embed_dim * 2 ** i) for i in range(self.num_layers)]
@@ -1144,7 +1144,7 @@ class swintransformer(SegmentationNetwork):
 
     def __init__(self, input_channels=1, num_classes=14, deep_supervision=True,
                 gt_num=8, vt_map=(3,5,5), imsize=[64,128,128], vt_num=1, 
-                 max_imsize=[218,660,660]):
+                 max_imsize=[218,660,660], clip=False):
     
         super(swintransformer, self).__init__()
 
@@ -1178,9 +1178,9 @@ class swintransformer(SegmentationNetwork):
         # num_heads=[6, 12, 24, 48]
         # patch_size=[2,4,4]
         self.model_down=SwinTransformer(pretrain_img_size=self.imsize,window_size=window_size,embed_dim=embed_dim,patch_size=patch_size,
-                                        depths=depths,num_heads=num_heads,in_chans=input_channels, gt_num=gt_num, vt_map=self.vt_map, vt_num=vt_num)
+                                        depths=depths,num_heads=num_heads,in_chans=input_channels, gt_num=gt_num, vt_map=self.vt_map, vt_num=vt_num, clip=clip)
         self.encoder=encoder(pretrain_img_size=self.imsize,embed_dim=embed_dim,window_size=window_size[::-1][1:],patch_size=patch_size,num_heads=[24,12,6],
-                            depths=[2,2,2], gt_num=gt_num, vt_map=self.vt_map, vt_num=vt_num)
+                            depths=[2,2,2], gt_num=gt_num, vt_map=self.vt_map, vt_num=vt_num, clip=clip)
    
         self.final=[]
         self.final.append(final_patch_expanding(embed_dim*2**0,num_classes,patch_size=patch_size))

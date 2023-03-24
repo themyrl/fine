@@ -83,12 +83,12 @@ export RESULTS_FOLDER="/gpfsscratch/rech/arf/unm89rb/nnUNet_trained_models"
 # srun python fine_package/fine/run/run.py nnUNetTrainerV2_fine_us 130 FINEUS 0 0 1 #finus_livus
 
 
-srun python fine_package/fine/run/run.py -netwok nnUNetTrainerV2_glam -task 130 -outpath GLAM -tta -clip #glam_livus
-# srun python fine_package/fine/run/run.py -netwok nnUNetTrainerV2_glamUNet_v2 -task 130 -outpath GLAMNNUNETV2 -na -tta -clip #glunv2_livus # glam+nnunet with glam at almost all encoder stage
+srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_glam -task 130 -outpath GLAM -tta -clip #glam_livus
+# srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_glamUNet_v2 -task 130 -outpath GLAMNNUNETV2 -na -tta -clip #glunv2_livus # glam+nnunet with glam at almost all encoder stage
 
 
-# srun python fine_package/fine/run/run.py -netwok nnUNetTrainerV2_finev3 -task 130 -outpath FINEV3 -tta -clip #finv3_livus
-# srun python fine_package/fine/run/run.py -netwok nnUNetTrainerV2_finev3UNet_v2 -task 130 -outpath FINEV3NNUNETV2 -na -tta -clip #funv3v2_livus # fine+nnunet with fine v3 at all encoder stage
+# srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_finev3 -task 130 -outpath FINEV3 -tta -clip #finv3_livus
+# srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_finev3UNet_v2 -task 130 -outpath FINEV3NNUNETV2 -na -tta -clip #funv3v2_livus # fine+nnunet with fine v3 at all encoder stage
 
 
 

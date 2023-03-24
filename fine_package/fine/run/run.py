@@ -6,17 +6,17 @@ import argparse
 g = '0'
 # ALL
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-network", type=str)
-    parser.add_argument("-task", type=str)
-    parser.add_argument("-outpath", type=str)
-    parser.add_argument("-na", action="store_true")
-    parser.add_argument("-only_val", action="store_true")
-    parser.add_argument("-tta", action="store_true")
-    parser.add_argument("-continu", action="store_true")
-    parser.add_argument("-clip", action="store_true")
+	parser = argparse.ArgumentParser()
+	parser.add_argument("-network", type=str)
+	parser.add_argument("-task", type=str)
+	parser.add_argument("-outpath", type=str)
+	parser.add_argument("-na", action="store_true")
+	parser.add_argument("-only_val", action="store_true")
+	parser.add_argument("-tta", action="store_true")
+	parser.add_argument("-continu", action="store_true")
+	parser.add_argument("-clip", action="store_true")
 
-    args = parser.parse_args()
+	args = parser.parse_args()
 
 
 

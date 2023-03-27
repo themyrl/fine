@@ -32,4 +32,6 @@ def fine_ms_deform_attn_core_pytorch_3D(value, value_spatial_shapes, sampling_lo
     attention_weights = attention_weights.transpose(1, 2).reshape(N_*M_, 1, Lq_, L_*P_)
     print("----> attention_weights", attention_weights.shape)
     output = (torch.stack(sampling_value_list, dim=-2).flatten(-2) * attention_weights).sum(-1).view(N_, M_*D_, Lq_)
+    print("----> output", output.shape)
+    
     return output.transpose(1, 2).contiguous()

@@ -19,7 +19,7 @@ from torch.nn.init import xavier_uniform_, constant_
 from ..functions.fine_ms_deform_attn_func import fine_ms_deform_attn_core_pytorch_3D
 
 class FineMSDeformAttn(nn.Module):
-    def __init__(self, d_model=256, n_levels=4, n_heads=8, n_points=4):
+    def __init__(self, d_model=256, n_levels=4, n_heads=8, n_points=4, n_vt=8):
         """
         Multi-Scale Deformable Attention Module
         :param d_model      hidden dimension
@@ -38,9 +38,11 @@ class FineMSDeformAttn(nn.Module):
         self.n_levels = n_levels
         self.n_heads = n_heads
         self.n_points = n_points
+        self.n_vt = n_vt
 
         self.sampling_offsets = nn.Linear(d_model, n_heads * n_levels * n_points * 3)
-        self.attention_weights = nn.Linear(d_model, n_heads * n_levels * n_points)
+        # self.attention_weights = nn.Linear(d_model, n_heads * n_levels * n_points)
+        self.attention_weights = nn.Linear(d_model, n_heads * n_levels * (n_points + n_vt))
         self.value_proj = nn.Linear(d_model, d_model)
         self.output_proj = nn.Linear(d_model, d_model)
 
@@ -74,17 +76,21 @@ class FineMSDeformAttn(nn.Module):
         :return output                     (N, Length_{query}, C)
         """
         print("---  FineMSDeformAttn ---")
-        
-        N, Len_q, _ = query.shape
+
+        N, Len_q, d = query.shape
         N, Len_in, _ = input_flatten.shape
         assert (input_spatial_shapes[:, 0] * input_spatial_shapes[:, 1] * input_spatial_shapes[:, 2]).sum() == Len_in
 
+        sel_vt = torch.rand((N, self.n_vt, d))
+
         # print("!!!! value = self.value_proj(cat([input_flatten, sel_vt])) !!!!")
 
+        input_flatten = torch.cat([input_flatten, sel_vt], dim=1)
+        print('---> input_padding_mask', input_padding_mask.shape)
         value = self.value_proj(input_flatten)
         if input_padding_mask is not None:
-            value = value.masked_fill(input_padding_mask[..., None], float(0))
-        value = value.view(N, Len_in, self.n_heads, self.d_model // self.n_heads)
+            value[:, :Len_in, :] = value[:, :Len_in, :].masked_fill(input_padding_mask[..., None], float(0))
+        value = value.view(N, (Len_in + self.n_vt), self.n_heads, self.d_model // self.n_heads)
         sampling_offsets = self.sampling_offsets(query).view(N, Len_q, self.n_heads, self.n_levels, self.n_points, 3)
         
         
@@ -92,8 +98,8 @@ class FineMSDeformAttn(nn.Module):
         print("!!!! attention_weights = self.attention_weights(cat([query, sel_vt])).view(N, Len_q, self.n_heads, self.n_levels * (self.n_points + self.n_selvt)) !!!!")
         
 
-        attention_weights = self.attention_weights(query).view(N, Len_q, self.n_heads, self.n_levels * self.n_points)
-        attention_weights = F.softmax(attention_weights, -1).view(N, Len_q, self.n_heads, self.n_levels, self.n_points)
+        attention_weights = self.attention_weights(torch.cat([query, sel_vt], dim=1)).view(N, (Len_q + self.n_vt), self.n_heads, self.n_levels * (self.n_points + self.n_vt))
+        attention_weights = F.softmax(attention_weights, -1).view(N, (Len_q + self.n_vt), self.n_heads, self.n_levels, (self.n_points + self.n_vt))
 
         if reference_points.shape[-1] == 3:
             offset_normalizer = torch.stack([input_spatial_shapes[..., 0], input_spatial_shapes[..., 2], input_spatial_shapes[..., 1]], -1)
@@ -116,7 +122,7 @@ class FineMSDeformAttn(nn.Module):
 
 
 
-        output = fine_ms_deform_attn_core_pytorch_3D(value, input_spatial_shapes, sampling_locations, attention_weights)
+        output = fine_ms_deform_attn_core_pytorch_3D(value, input_spatial_shapes, sampling_locations, attention_weights, self.n_vt)
 
         output = self.output_proj(output)
         return output

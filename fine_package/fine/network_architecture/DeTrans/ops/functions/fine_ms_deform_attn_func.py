@@ -15,10 +15,10 @@ import torch.nn.functional as F
 from torch.autograd import Function
 from torch.autograd.function import once_differentiable
 
-def fine_ms_deform_attn_core_pytorch_3D(value, value_spatial_shapes, sampling_locations, attention_weights):
+def fine_ms_deform_attn_core_pytorch_3D(value, value_spatial_shapes, sampling_locations, attention_weights, n_vt=8):
     N_, S_, M_, D_ = value.shape
     _, Lq_, M_, L_, P_, _ = sampling_locations.shape
-    value_list = value.split([T_ * H_ * W_ for T_, H_, W_ in value_spatial_shapes], dim=1)
+    value_list = value[:, :-n_vt, :].split([T_ * H_ * W_ for T_, H_, W_ in value_spatial_shapes], dim=1)
     sampling_grids = 2 * sampling_locations - 1
     # sampling_grids = 3 * sampling_locations - 1
     sampling_value_list = []
@@ -29,9 +29,17 @@ def fine_ms_deform_attn_core_pytorch_3D(value, value_spatial_shapes, sampling_lo
         sampling_value_l_ = F.grid_sample(value_l_, sampling_grid_l_.to(dtype=value_l_.dtype), mode='bilinear', padding_mode='zeros', align_corners=False)[:,:,0]
         sampling_value_list.append(sampling_value_l_)
         print("----> {} sampling_value_l_".format(lid_), sampling_value_l_.shape)
-    attention_weights = attention_weights.transpose(1, 2).reshape(N_*M_, 1, Lq_, L_*P_)
+    print("----> N_, Lq_, M_, L_, P_", N_, Lq_, M_, L_, P_)
     print("----> attention_weights", attention_weights.shape)
-    output = (torch.stack(sampling_value_list, dim=-2).flatten(-2) * attention_weights).sum(-1).view(N_, M_*D_, Lq_)
+
+    attention_weights = attention_weights.transpose(1, 2).reshape(N_*M_, 1, (Lq_+n_vt), L_*(P_+n_vt))
+    print("----> attention_weights", attention_weights.shape)
+    tmp = torch.stack(sampling_value_list, dim=-2)
+    print("----> tmp", tmp.shape)
+    tmp = tmp.flatten(-2)
+    print("----> tmp", tmp.shape)
+
+    output = (tmp * attention_weights).sum(-1).view(N_, M_*D_, Lq_)
     print("----> output", output.shape)
     
     return output.transpose(1, 2).contiguous()

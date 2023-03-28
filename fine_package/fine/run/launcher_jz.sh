@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=glam_livus     # job name
+#SBATCH --job-name=funv3v2_livus_c     # job name
 #SBATCH --ntasks=1                  # number of MP tasks
 #SBATCH --ntasks-per-node=1          # number of MPI tasks per node
 #SBATCH --gres=gpu:1                 # number of GPUs per node
@@ -7,8 +7,8 @@
 #SBATCH --hint=nomultithread         # we get physical cores not logical
 #SBATCH --time=99:10:00             # maximum execution time (HH:MM:SS)
 #SBATCH --qos=qos_gpu-t4
-#SBATCH --output=logs/glam_livus.out # output file name # add %j to id the job
-#SBATCH --error=logs/glam_livus.err  # error file name # add %j to id the job
+#SBATCH --output=logs/funv3v2_livus_c.out # output file name # add %j to id the job
+#SBATCH --error=logs/funv3v2_livus_c.err  # error file name # add %j to id the job
 #SBATCH -C v100-32g
  
 
@@ -68,7 +68,7 @@ export RESULTS_FOLDER="/gpfsscratch/rech/arf/unm89rb/nnUNet_trained_models"
 # srun python fine_package/fine/run/run.py nnUNetTrainerV2_glam 140 notta_GLAM 0 0 0 #glam_word
 
 # srun python fine_package/fine/run/run.py nnUNetTrainerV2_finev3 140 notta_FINEV3 0 0 0 #finv3_word
-# srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_finev3 -task 140 -outpath notta_FINEV3 -continu #funv3v2_livus_c # fine+nnunet with fine v3 at all encoder stage
+srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_finev3 -task 140 -outpath notta_FINEV3 -continu #funv3v2_livus_c # fine+nnunet with fine v3 at all encoder stage
 
 
 # srun python fine_package/fine/run/run.py nnUNetTrainerV2_finev3UNet_v2 140 notta_FINEV3NNUNETV2 1 0 0 #funv3v2_word # fine+nnunet with fine v3 at almost all encoder stage
@@ -85,7 +85,7 @@ export RESULTS_FOLDER="/gpfsscratch/rech/arf/unm89rb/nnUNet_trained_models"
 # srun python fine_package/fine/run/run.py nnUNetTrainerV2_fine_us 130 FINEUS 0 0 1 #finus_livus
 
 
-srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_glam -task 130 -outpath GLAM -tta -clip #glam_livus
+# srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_glam -task 130 -outpath GLAM -tta -clip #glam_livus
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_glamUNet_v2 -task 130 -outpath GLAMNNUNETV2 -na -tta -clip #glunv2_livus # glam+nnunet with glam at almost all encoder stage
 
 

@@ -192,7 +192,7 @@ class Glam_UNet_v2(SegmentationNetwork):
                  conv_kernel_sizes=None,
                  upscale_logits=False, convolutional_pooling=False, convolutional_upsampling=False,
                  max_num_features=None, basic_block=ConvDropoutNormNonlin,
-                 seg_output_use_bias=False, patch_size=(64,128,128)):
+                 seg_output_use_bias=False, patch_size=(64,128,128), clip=False):
         """
         basically more flexible than v1, architecture is the same
 

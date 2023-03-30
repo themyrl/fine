@@ -55,7 +55,7 @@ class SegmentationNetwork(NeuralNetwork):
         # in y this would be (32, 64)
 
         # we need to know this because we need to know if we are a 2d or a 3d netowrk
-        self.conv_op = None  # nn.Conv2d or nn.Conv3d
+        self.conv_op = nn.Conv3d  # nn.Conv2d or nn.Conv3d
 
         # this tells us how many channely we have in the output. Important for preallocation in inference
         self.num_classes = None  # number of channels in the output

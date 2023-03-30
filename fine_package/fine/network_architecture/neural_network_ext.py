@@ -127,7 +127,7 @@ class SegmentationNetwork(NeuralNetwork):
             if self.conv_op == nn.Conv2d:
                 if max(mirror_axes) > 1:
                     raise ValueError("mirror axes. duh")
-            if self.conv_op == nn.Conv3d or self.conv_op == CoTr.network_architecture.ResTranUnet.Conv3d_wd:
+            if self.conv_op == nn.Conv3d or self.conv_op == fine.network_architecture.ResTranUnet.Conv3d_wd:
                 if max(mirror_axes) > 2:
                     raise ValueError("mirror axes. duh")
 
@@ -143,7 +143,7 @@ class SegmentationNetwork(NeuralNetwork):
 
         with context():
             with torch.no_grad():
-                if self.conv_op == nn.Conv3d or self.conv_op == CoTr.network_architecture.ResTranUnet.Conv3d_wd:
+                if self.conv_op == nn.Conv3d or self.conv_op == fine.network_architecture.ResTranUnet.Conv3d_wd:
                     if use_sliding_window:
                         res = self._internal_predict_3D_3Dconv_tiled(x, step_size, do_mirroring, mirror_axes, patch_size,
                                                                      regions_class_order, use_gaussian, pad_border_mode,

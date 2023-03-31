@@ -623,12 +623,12 @@ class BasicLayer(nn.Module):
                 x = checkpoint.checkpoint(blk, x, attn_mask)
             else:
                 # check = (self.vt_check.sum() >= self.vt_map[0]*self.vt_map[1]*self.vt_map[2])
-                torch.save(x, "/Users/myr/these/tmp/bl{}_bc{}_xb.pt".format(self.id_layer, bk))
-                torch.save(gt, "/Users/myr/these/tmp/bl{}_bc{}_gb.pt".format(self.id_layer, bk))
+                # torch.save(x, "/Users/myr/these/tmp/bl{}_bc{}_xb.pt".format(self.id_layer, bk))
+                # torch.save(gt, "/Users/myr/these/tmp/bl{}_bc{}_gb.pt".format(self.id_layer, bk))
 
                 x, gt = blk(x, attn_mask, gt, self.pe)
-                torch.save(x, "/Users/myr/these/tmp/bl{}_bc{}_xa.pt".format(self.id_layer, bk))
-                torch.save(gt, "/Users/myr/these/tmp/bl{}_bc{}_ga.pt".format(self.id_layer, bk))
+                # torch.save(x, "/Users/myr/these/tmp/bl{}_bc{}_xa.pt".format(self.id_layer, bk))
+                # torch.save(gt, "/Users/myr/these/tmp/bl{}_bc{}_ga.pt".format(self.id_layer, bk))
         if self.downsample is not None:
             x_down = self.downsample(x, S, H, W)
             Ws, Wh, Ww = (S + 1) // 2, (H + 1) // 2, (W + 1) // 2

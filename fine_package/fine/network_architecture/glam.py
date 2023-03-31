@@ -312,6 +312,7 @@ class SwinTransformerBlock(nn.Module):
         self.norm2 = norm_layer(dim)
         mlp_hidden_dim = int(dim * mlp_ratio)
         self.mlp = Mlp(in_features=dim, hidden_features=mlp_hidden_dim, act_layer=act_layer, drop=drop)
+        self.mlp2 = Mlp(in_features=dim, hidden_features=mlp_hidden_dim, act_layer=act_layer, drop=drop)
 
         self.gt_attn = ClassicAttention(dim=dim, window_size=(0,0), num_heads=num_heads, 
                                             qkv_bias=qkv_bias, qk_scale=qk_scale, attn_drop=attn_drop, 
@@ -389,7 +390,13 @@ class SwinTransformerBlock(nn.Module):
         #     vt = rearrange(vt, "b n (v c) -> b (n v) c", v=self.vt_num)
 
         # gt = torch.cat([vt, gt], dim=1)
-        gt = self.gt_attn(gt, pe)
+        skip_gt = gt                #    !!!!!!!! on a modifié ici !!!!!!!!!!
+        gt = self.gt_attn(gt, None)             #    !!!!!!!! on a modifié ici !!!!!!!!!!
+        gt = self.drop_path(gt) + skip_gt               #    !!!!!!!! on a modifié ici !!!!!!!!!!
+        gt = gt + self.drop_path(self.mlp2(self.norm2(gt)))              #    !!!!!!!! on a modifié ici !!!!!!!!!!
+
+
+
         gt = rearrange(gt, "b (n g) c -> (b n) g c",g=ngt, c=C)
 
 
@@ -520,6 +527,7 @@ class BasicLayer(nn.Module):
 
         self.global_token = torch.nn.Parameter(torch.randn(gt_num,dim))
         self.global_token.requires_grad = True
+        self.id_layer = id_layer
 
         # self.volume_token = torch.nn.Parameter(torch.randn(vt_map[0]*vt_map[1]*vt_map[2],dim))
 
@@ -605,13 +613,18 @@ class BasicLayer(nn.Module):
 
         gt = self.global_token
         # self.vt_check[vt_pos] += 1
-        for blk in self.blocks:
+        for bk, blk in enumerate(self.blocks):
             blk.H, blk.W = H, W
             if self.use_checkpoint:
                 x = checkpoint.checkpoint(blk, x, attn_mask)
             else:
                 # check = (self.vt_check.sum() >= self.vt_map[0]*self.vt_map[1]*self.vt_map[2])
+                torch.save(x, "/Users/myr/these/tmp/bl{}_bc{}_xb.pt".format(self.id_layer, bk))
+                torch.save(gt, "/Users/myr/these/tmp/bl{}_bc{}_gb.pt".format(self.id_layer, bk))
+
                 x, gt = blk(x, attn_mask, gt, self.pe)
+                torch.save(x, "/Users/myr/these/tmp/bl{}_bc{}_xa.pt".format(self.id_layer, bk))
+                torch.save(gt, "/Users/myr/these/tmp/bl{}_bc{}_ga.pt".format(self.id_layer, bk))
         if self.downsample is not None:
             x_down = self.downsample(x, S, H, W)
             Ws, Wh, Ww = (S + 1) // 2, (H + 1) // 2, (W + 1) // 2

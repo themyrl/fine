@@ -312,8 +312,10 @@ class SwinTransformerBlock(nn.Module):
         self.norm2 = norm_layer(dim)
         mlp_hidden_dim = int(dim * mlp_ratio)
         self.mlp = Mlp(in_features=dim, hidden_features=mlp_hidden_dim, act_layer=act_layer, drop=drop)
-        self.mlp2 = Mlp(in_features=dim, hidden_features=mlp_hidden_dim, act_layer=act_layer, drop=drop)
 
+        self.mlp2 = Mlp(in_features=dim, hidden_features=mlp_hidden_dim, act_layer=act_layer, drop=drop)
+        self.norm3 = norm_layer(dim)
+        self.norm4 = norm_layer(dim)
         self.gt_attn = ClassicAttention(dim=dim, window_size=(0,0), num_heads=num_heads, 
                                             qkv_bias=qkv_bias, qk_scale=qk_scale, attn_drop=attn_drop, 
                                             proj_drop=drop)
@@ -370,6 +372,7 @@ class SwinTransformerBlock(nn.Module):
             gt = repeat(gt, "g c -> b g c", b=x_windows.shape[0])# shape of (num_windows*B, G, C)
 
         skip_gt = gt
+        gt = self.norm1(gt)
         # W-MSA/SW-MSA
         attn_windows, gt = self.attn(x_windows, mask=attn_mask, gt=gt)  
 
@@ -391,9 +394,10 @@ class SwinTransformerBlock(nn.Module):
 
         # gt = torch.cat([vt, gt], dim=1)
         skip_gt = gt                #    !!!!!!!! on a modifié ici !!!!!!!!!!
+        gt = self.norm3(gt)
         gt = self.gt_attn(gt, None)             #    !!!!!!!! on a modifié ici !!!!!!!!!!
         gt = self.drop_path(gt) + skip_gt               #    !!!!!!!! on a modifié ici !!!!!!!!!!
-        gt = gt + self.drop_path(self.mlp2(self.norm2(gt)))              #    !!!!!!!! on a modifié ici !!!!!!!!!!
+        gt = gt + self.drop_path(self.mlp2(self.norm4(gt)))              #    !!!!!!!! on a modifié ici !!!!!!!!!!
 
 
 

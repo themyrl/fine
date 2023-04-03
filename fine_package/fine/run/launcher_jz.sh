@@ -66,7 +66,7 @@ export RESULTS_FOLDER="/gpfsscratch/rech/arf/unm89rb/nnUNet_trained_models"
 # srun python fine_package/fine/run/run.py nnUNetTrainerV2_fineUNet_v2 140 notta_FINENNUNETV2_1 1 0 0 #finunv21_word # 3 block in each layer
 
 # srun python fine_package/fine/run/run.py nnUNetTrainerV2_glam 140 notta_GLAM 0 0 0 #glam_word
-srun python fine_package/fine/run/run.py nnUNetTrainerV2_glam 140 notta_GLAM_v2 0 0 0 #glamv2_word
+srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_glam -task 140 -outpath GLAMV2 #glamv2_word
 
 # srun python fine_package/fine/run/run.py nnUNetTrainerV2_finev3 140 notta_FINEV3 0 0 0 #finv3_word
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_finev3 -task 140 -outpath notta_FINEV3 -continu #funv3v2_livus_c # fine+nnunet with fine v3 at all encoder stage

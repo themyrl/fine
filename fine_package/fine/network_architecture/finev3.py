@@ -337,6 +337,10 @@ class SwinTransformerBlock(nn.Module):
         mlp_hidden_dim = int(dim * mlp_ratio)
         self.mlp = Mlp(in_features=dim, hidden_features=mlp_hidden_dim, act_layer=act_layer, drop=drop)
 
+
+        self.mlp2 = Mlp(in_features=dim, hidden_features=mlp_hidden_dim, act_layer=act_layer, drop=drop)
+        self.norm3 = norm_layer(dim)
+        self.norm4 = norm_layer(dim)
         self.vt_attn = ClassicAttention(dim=dim, window_size=(0,0), num_heads=num_heads, 
                                             qkv_bias=qkv_bias, qk_scale=qk_scale, attn_drop=attn_drop, 
                                             proj_drop=drop)
@@ -418,8 +422,8 @@ class SwinTransformerBlock(nn.Module):
         nw = tmp//B
         vt = rearrange(vt, "(b n) g c -> b (n g) c", b=B)
 
-        if self.clip:
-            vt = torch.clamp(vt, min=-1, max=1)
+        # if self.clip:
+        #     vt = torch.clamp(vt, min=-1, max=1)
 
 
         
@@ -428,7 +432,14 @@ class SwinTransformerBlock(nn.Module):
             vts = torch.cat([vt, seen_vts], dim=1)
         else:
             vts = vt
-        vts = self.vt_attn(vts, None, None)
+
+        skip_vts = vts                #    !!!!!!!! on a modifié ici !!!!!!!!!!
+        vts = self.norm3(vts)
+        vts = self.vt_attn(vts, None, None)             #    !!!!!!!! on a modifié ici !!!!!!!!!!
+        vts = self.drop_path(vts) + skip_vts               #    !!!!!!!! on a modifié ici !!!!!!!!!!
+        vts = vts + self.drop_path(self.mlp2(self.norm4(vts)))              #    !!!!!!!! on a modifié ici !!!!!!!!!!
+        
+        # vts = self.vt_attn(vts, None, None)
         
 
         # merge windows

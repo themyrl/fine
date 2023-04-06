@@ -101,7 +101,7 @@ srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_glam -task 140
 
 
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_finev3UNet_v2 -task 130 -outpath FINEV3NNUNETV2 -na -tta -clip #funv3v2_livus # fine+nnunet with fine v3 at all encoder stage
-srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_finev3UNet_v2 -task 130 -outpath FINEV32NNUNETV2 -na -tta #fi32u2_livus # fine+nnunet with fine v3 at all encoder stage
+# srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_finev3UNet_v2 -task 130 -outpath FINEV32NNUNETV2 -na -tta #fi32u2_livus # fine+nnunet with fine v3 at all encoder stage
 
 
 

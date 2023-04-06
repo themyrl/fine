@@ -75,54 +75,31 @@ class FineMSDeformAttn(nn.Module):
 
         :return output                     (N, Length_{query}, C)
         """
-        print("---  FineMSDeformAttn ---")
-
-        N, Len_q, d = query.shape
-        N, Len_in, _ = input_flatten.shape
+        N, Len_q, d = query[:, :-self.n_levels*self.n_vt,:].shape
+        N, Len_in, _ = input_flatten[:, :-self.n_levels*self.n_vt,:].shape
         assert (input_spatial_shapes[:, 0] * input_spatial_shapes[:, 1] * input_spatial_shapes[:, 2]).sum() == Len_in
 
-        sel_vt = torch.rand((N, self.n_vt, d))
+        # sel_vt = torch.rand((N, self.n_levels*self.n_vt, d))
+        # print("reference_points")
+        # rp_vt = torch.rand((N, self.n_levels*self.n_vt, self.n_levels, 3))
+        # reference_points = torch.cat([reference_points, rp_vt], dim=1)
 
-        # print("!!!! value = self.value_proj(cat([input_flatten, sel_vt])) !!!!")
 
-        input_flatten = torch.cat([input_flatten, sel_vt], dim=1)
-        query = torch.cat([query, sel_vt], dim=1)
 
-        print('---> input_padding_mask', input_padding_mask.shape)
         value = self.value_proj(input_flatten)
         if input_padding_mask is not None:
             value[:, :Len_in, :] = value[:, :Len_in, :].masked_fill(input_padding_mask[..., None], float(0))
-        value = value.view(N, (Len_in + self.n_vt), self.n_heads, self.d_model // self.n_heads)
-        sampling_offsets = self.sampling_offsets(query).view(N, Len_q + self.n_vt, self.n_heads, self.n_levels, self.n_points, 3)
-        print('---> sampling_offsets', sampling_offsets.shape)
-        
-        
-        print("!!!! self.attention_weights = nn.Linear(d_model, n_heads * n_levels * (n_points + n_selvt)) !!!!")
-        print("!!!! attention_weights = self.attention_weights(cat([query, sel_vt])).view(N, Len_q, self.n_heads, self.n_levels * (self.n_points + self.n_selvt)) !!!!")
-        
+        value = value.view(N, (Len_in + (self.n_vt * self.n_levels)), self.n_heads, self.d_model // self.n_heads)
+        sampling_offsets = self.sampling_offsets(query).view(N, Len_q + (self.n_vt * self.n_levels), self.n_heads, self.n_levels, self.n_points, 3)
 
-        attention_weights = self.attention_weights(query).view(N, (Len_q + self.n_vt), self.n_heads, self.n_levels * (self.n_points + self.n_vt))
-        attention_weights = F.softmax(attention_weights, -1).view(N, (Len_q + self.n_vt), self.n_heads, self.n_levels, (self.n_points + self.n_vt))
-
-        print('---> reference_points', reference_points.shape)
+        attention_weights = self.attention_weights(query).view(N, (Len_q + self.n_vt*self.n_levels), self.n_heads, self.n_levels * (self.n_points + self.n_vt))
+        attention_weights = F.softmax(attention_weights, -1).view(N, (Len_q + self.n_vt*self.n_levels), self.n_heads, self.n_levels, (self.n_points + self.n_vt))
 
         if reference_points.shape[-1] == 3:
             offset_normalizer = torch.stack([input_spatial_shapes[..., 0], input_spatial_shapes[..., 2], input_spatial_shapes[..., 1]], -1)
             sampling_locations = reference_points[:, :, None, :, None, :] \
                                  + sampling_offsets / offset_normalizer[None, None, None, :, None, :]
 
-        print('---> n_points', self.n_points)
-        print('---> n_levels', self.n_levels)
-        print('---> n_heads', self.n_heads)
-        print('---> d_model', self.d_model)
-        print('---> input_spatial_shapes', input_spatial_shapes)
-        print('---> query', query.shape)
-        print('---> input_flatten', input_flatten.shape)
-        print('---> value', value.shape)
-        print('---> sampling_locations', sampling_locations.shape)
-        print('---> attention_weights', attention_weights.shape)
-
-        # 
 
 
 

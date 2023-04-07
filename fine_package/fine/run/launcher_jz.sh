@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=cofi_word     # job name
+#SBATCH --job-name=cofi_livus     # job name
 #SBATCH --ntasks=1                  # number of MP tasks
 #SBATCH --ntasks-per-node=1          # number of MPI tasks per node
 #SBATCH --gres=gpu:1                 # number of GPUs per node
@@ -7,8 +7,8 @@
 #SBATCH --hint=nomultithread         # we get physical cores not logical
 #SBATCH --time=99:10:00             # maximum execution time (HH:MM:SS)
 #SBATCH --qos=qos_gpu-t4
-#SBATCH --output=logs/cofi_word.out # output file name # add %j to id the job
-#SBATCH --error=logs/cofi_word.err  # error file name # add %j to id the job
+#SBATCH --output=logs/cofi_livus.out # output file name # add %j to id the job
+#SBATCH --error=logs/cofi_livus.err  # error file name # add %j to id the job
 #SBATCH -C v100-32g
  
 
@@ -83,7 +83,7 @@ export RESULTS_FOLDER="/gpfsscratch/rech/arf/unm89rb/nnUNet_trained_models"
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_glamUNet_v2 -task 140 -outpath notta_GLAMV2NNUNET -na #glv2un_word # glamv2+nnunet with glam at almost all encoder stage
 
 
-srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_CoTR_FINE -task 140 -outpath notta_COTRFINE -na # cofi_word
+# srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_CoTR_FINE -task 140 -outpath notta_COTRFINE -na # cofi_word
 
 
 
@@ -109,7 +109,7 @@ srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_CoTR_FINE -tas
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_finev3UNet_v2 -task 130 -outpath FINEV3NNUNETV2 -na -tta -clip #funv3v2_livus # fine+nnunet with fine v3 at all encoder stage
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_finev3UNet_v2 -task 130 -outpath FINEV32NNUNETV2 -na -tta #fi32u2_livus # fine+nnunet with fine v3 at all encoder stage
 
-# srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_CoTR_FINE -task 130 -outpath COTRFINE -na # cofi_livus
+srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_CoTR_FINE -task 130 -outpath COTRFINE -na -tta # cofi_livus
 
 
 

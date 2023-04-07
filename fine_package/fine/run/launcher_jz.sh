@@ -1,14 +1,14 @@
 #!/bin/bash
-#SBATCH --job-name=glv2un_word_eval     # job name
+#SBATCH --job-name=cofi_word     # job name
 #SBATCH --ntasks=1                  # number of MP tasks
 #SBATCH --ntasks-per-node=1          # number of MPI tasks per node
 #SBATCH --gres=gpu:1                 # number of GPUs per node
 #SBATCH --cpus-per-task=20   #10           # number of cores per tasks
 #SBATCH --hint=nomultithread         # we get physical cores not logical
-#SBATCH --time=02:10:00             # maximum execution time (HH:MM:SS)
-#SBATCH --qos=qos_gpu-t3
-#SBATCH --output=logs/glv2un_word_eval.out # output file name # add %j to id the job
-#SBATCH --error=logs/glv2un_word_eval.err  # error file name # add %j to id the job
+#SBATCH --time=00:10:00             # maximum execution time (HH:MM:SS)
+#SBATCH --qos=qos_gpu-dev
+#SBATCH --output=logs/cofi_word.out # output file name # add %j to id the job
+#SBATCH --error=logs/cofi_word.err  # error file name # add %j to id the job
 #SBATCH -C v100-32g
  
 
@@ -81,6 +81,9 @@ export RESULTS_FOLDER="/gpfsscratch/rech/arf/unm89rb/nnUNet_trained_models"
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_glamUNet_v2 -task 140 -outpath notta_GLAMV2NNUNET -na #glv2un_word # glamv2+nnunet with glam at almost all encoder stage
 
 
+srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_CoTR_FINE_agno -task 140 -outpath notta_COTRFINE -na # cofi_word
+
+
 
 ### LIVUS
 # srun python fine_package/fine/run/run.py nnUNetTrainerV2_finedbg 130 DBGFINE 0 0 1 #debug
@@ -128,7 +131,7 @@ export RESULTS_FOLDER="/gpfsscratch/rech/arf/unm89rb/nnUNet_trained_models"
 
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_finev3UNet_v2 -task 140 -outpath notta_FINEV32NNUNETV2 -na -only_val #fi32u2_word_eval # fine v32+nnunet v2 with fine v3 at almost all encoder stage
 
-srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_glamUNet_v2 -task 140 -outpath notta_GLAMV2NNUNET -na -only_val #glv2un_word_eval # glamv2+nnunet with glam at almost all encoder stage
+# srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_glamUNet_v2 -task 140 -outpath notta_GLAMV2NNUNET -na -only_val #glv2un_word_eval # glamv2+nnunet with glam at almost all encoder stage
 
 
 

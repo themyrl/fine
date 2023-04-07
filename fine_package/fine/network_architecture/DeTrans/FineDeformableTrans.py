@@ -19,30 +19,42 @@ from .ops.modules import FineMSDeformAttn
 from .position_encoding import build_position_encoding
 
 from fine.network_architecture.finev3 import ClassicAttention, Mlp
+from timm.models.layers import DropPath
 
 class FineDeformableTransformer(nn.Module):
     def __init__(self, d_model=256, nhead=8,
                  num_encoder_layers=6, dim_feedforward=1024, dropout=0.1,
                  activation="relu", num_feature_levels=4, enc_n_points=4, 
-                 n_vt=8, vt_map=[3,5,5]):
+                 n_vt=8, imsize=[64,128,128], max_imsize=[218,660,660]):
         super().__init__()
 
         self.d_model = d_model
         self.nhead = nhead
         self.n_vt = n_vt
         self.n_levels = num_feature_levels
-        self.vt_map = vt_map
+        # self.vt_map = vt_map
+        self.imsize = imsize
+        self.max_imsize = max_imsize
+
+        # FINE
+        self.pos_grid, self.show_grid, self.vt_map = self.filled_grid()
+        self.vt_check = torch.nn.Parameter(torch.zeros(self.vt_map[0]*self.vt_map[1]*self.vt_map[2],1))
+        self.vt_check.requires_grad = False
+
+        self.all_volume_tokens = torch.nn.Parameter(torch.randn(num_feature_levels, self.vt_map[0]*self.vt_map[1]*self.vt_map[2], d_model))
+        self.all_volume_tokens.requires_grad = True
 
 
         # encoder_layer = FineDeformableTransformerEncoderLayer(d_model, dim_feedforward, dropout, activation, num_feature_levels, nhead, enc_n_points)
 
-        self.encoder = FineDeformableTransformerEncoder(num_encoder_layers, d_model, dim_feedforward, dropout, activation, num_feature_levels, nhead, enc_n_points, num_feature_levels, n_vt, vt_map)
+        self.encoder = FineDeformableTransformerEncoder(num_encoder_layers, d_model, dim_feedforward, 
+                                                        dropout, activation, num_feature_levels, 
+                                                        nhead, enc_n_points, num_feature_levels, 
+                                                        n_vt, self.vt_map)
 
         self.level_embed = nn.Parameter(torch.Tensor(num_feature_levels, d_model))
 
-        # FINE
-        self.all_volume_tokens = torch.nn.Parameter(torch.randn(num_feature_levels, vt_map[0]*vt_map[1]*vt_map[2], d_model))
-        self.all_volume_tokens.requires_grad = True
+        
 
 
         self._reset_parameters()
@@ -68,8 +80,66 @@ class FineDeformableTransformer(nn.Module):
         valid_ratio = torch.stack([valid_ratio_d, valid_ratio_w, valid_ratio_h], -1)
         return valid_ratio
 
-    def forward(self, srcs, masks, pos_embeds, vt_pos=None, check=None):
+    def filled_grid(self):
+        cd, ch, cw = self.imsize
+        d, h, w = self.max_imsize
+        grid = np.zeros(self.max_imsize, dtype = int)
+        nd, nh, nw = d//cd, h//ch, w//cw
+        vtm = [nd, nh, nw]
+        pd, ph, pw = d%cd, h%ch, w%cw
+        show = ""
+        for i in range(nd):
+            for j in range(nh):
+                for k in range(nw):
+                    show += str(nh*nw*i + nw*j + k)+" "
+                    tmp_pd_0 = (pd//2)*(0**(i==0))
+                    tmp_pd_1 = pd//2 + (pd//2)*(0**(i!=nd-1)) + pd%2
 
+                    tmp_ph_0 = (ph//2)*(0**(j==0))
+                    tmp_ph_1 = ph//2 + (ph//2)*(0**(j!=nh-1)) + ph%2
+                    
+                    tmp_pw_0 = (pw//2)*(0**(k==0))
+                    tmp_pw_1 = pw//2 + (pw//2)*(0**(k!=nw-1)) + pw%2
+
+                    grid[i*cd+tmp_pd_0:(i+1)*cd+tmp_pd_1, j*ch+tmp_ph_0:(j+1)*ch+tmp_ph_1, k*cw+tmp_pw_0:(k+1)*cw+tmp_pw_1] = nh*nw*i + nw*j + k
+                    
+                show += "\n"
+            show += "\n"
+        return grid, show, vtm
+
+    def border_check(self, pos):
+        ret = [i for i in pos]
+        size = self.max_imsize
+        crop_size = self.imsize
+        for i in range(len(ret)):
+            pad_i = (size[i]%crop_size[i])//2
+            
+            check_if_pos_on_frontiere = (pos[i]-pad_i)%crop_size[i] == 0
+            check_if_pos_over_border_marge = (pos[i] + crop_size[i] >= size[i] -  pad_i)
+            check_if_pos_under_border_marge = (pos[i] <= (size[i]%crop_size[i])//2)
+            
+            if check_if_pos_on_frontiere or check_if_pos_over_border_marge or check_if_pos_under_border_marge:
+                if pos[i] < size[i]//2:
+                    ret[i] += 1 + pad_i
+                else:
+                    tmp = 0
+                    if pos[i]+crop_size[i] > size[i]:
+                        tmp = pos[i]+crop_size[i] - size[i]
+                    ret[i] -= 1 + pad_i + tmp + (size[i]%crop_size[i])%2
+        return ret
+
+    def get_tokens_idx(self, pos):
+        # Myr : We put the crop in the bigger image referential
+        z, x, y = [int(pos[i] + self.max_imsize[i]//2) for i in range(3)]
+        pos = (z, x, y)
+        pos = self.border_check(pos)
+        z, x, y = pos
+        cd, ch, cw = self.imsize
+        tmp = self.pos_grid[z:z+cd, x:x+ch, y:y+cw]
+        idx = np.unique(tmp)
+        return idx
+
+    def forward(self, srcs, masks, pos_embeds, pos=None):
         # prepare input for encoder
         src_flatten = []
         mask_flatten = []
@@ -93,10 +163,23 @@ class FineDeformableTransformer(nn.Module):
         level_start_index = torch.cat((spatial_shapes.new_zeros((1, )), spatial_shapes.prod(1).cumsum(0)[:-1]))
         valid_ratios = torch.stack([self.get_valid_ratio(m) for m in masks], 1)
 
-        # Get the selected volume tokens from all volume tokens for the encoder
-        vt_pos = np.random.randint(0, 3*5*5, 16)
-        print('* vt_pos', vt_pos)
+
+        # Prepare vt_pos and check
         B = src_flatten.shape[0]
+        vt_pos = []
+        tmp_check = torch.zeros(B, self.vt_map[0]*self.vt_map[1]*self.vt_map[2],1, device=self.vt_check.device)
+        for b, p in enumerate(pos):
+            tmp = self.get_tokens_idx(p)
+            # print("b, tmp pos", b, tmp)
+            tmp_check[b,...] = self.vt_check[...]
+            tmp_check[b, tmp, :] += 1
+            vt_pos.append(tmp + b*np.array(self.vt_map).prod())
+        vt_pos = np.array(vt_pos).flatten()
+
+
+
+        # Get the selected volume tokens from all volume tokens for the encoder
+        # vt_pos = np.random.randint(0, 3*5*5, 16)
         tmp = rearrange(self.all_volume_tokens, "l v d -> v l d")
         tmp = repeat(tmp, "v l d -> b v l d", b=B)
         tmp = rearrange(tmp, "b v l d -> (b v) l d")
@@ -106,18 +189,15 @@ class FineDeformableTransformer(nn.Module):
         sel_vt = rearrange(sel_vt, "b l n d -> b (l n) d", b=B) # (batch, n_levels*n_vt,  d_model)
 
         # Get all seen volume tokens for the WG-MSA
-        check = torch.nn.Parameter(torch.rand(self.vt_map[0]*self.vt_map[1]*self.vt_map[2],1)) > 1
-        check_pos = repeat(check, 'n c -> (b n c)', b=B) # in fact c=1
-        print("---> check", check.shape)
-        print("---> check_pos", check_pos.shape)
-        print("---> tmp", tmp.shape)
+        # check = torch.nn.Parameter(torch.rand(self.vt_map[0]*self.vt_map[1]*self.vt_map[2],1)) > 0.5
+        check_pos = repeat(self.vt_check >= 1, 'n c -> (b n c)', b=B) # in fact c=1
+        self.vt_check += tmp_check.sum(dim=0)
+
+        # print("---> check", check.shape)
         # tmp = rearrange(tmp, "n l d -> n (l d)")
-        # print("---> tmp", tmp.shape)
         seen_vts = tmp[check_pos, :, :]
-        print("---> seen_vts", seen_vts.shape)
         # if seen_vts.shape[0] != 0:
         seen_vts = rearrange(seen_vts, "(b n) p c -> b n p c", b=B)
-        print("---> seen_vts", seen_vts.shape)
 
 
         # encoder
@@ -125,7 +205,7 @@ class FineDeformableTransformer(nn.Module):
 
         
 
-        return memory#[:, :-self.n_vt*self.n_levels, :]
+        return memory
 
 
 
@@ -154,15 +234,10 @@ class FineDeformableTransformerEncoderLayer(nn.Module):
         self.norm2 = nn.LayerNorm(d_model)
 
         # FINE
-        self.drop_path = DropPath(drop_path) if drop_path > 0. else nn.Identity()
-
-        mlp_hidden_dim = int(d_model * mlp_ratio)
-        self.mlp2 = Mlp(in_features=d_model, hidden_features=mlp_hidden_dim, act_layer=nn.GELU, drop=0.)
-        self.norm3 = nn.LayerNorm(d_model)
-        self.norm4 = nn.LayerNorm(d_model)
-        self.vt_attn = ClassicAttention(dim=d_model, window_size=(0,0), num_heads=n_heads, 
-                                        qkv_bias=True, qk_scale=None, attn_drop=0., 
-                                        proj_drop=0.)
+        self.vttrans = []
+        for i in range(n_levels):
+            self.vttrans.append(VTTransformerLayer(d_model=d_model, n_heads=n_heads, drop_path=drop_path, mlp_ratio=mlp_ratio))
+        self.vttrans = nn.ModuleList(self.vttrans)
 
 
 
@@ -189,23 +264,49 @@ class FineDeformableTransformerEncoderLayer(nn.Module):
         src = self.forward_ffn(src)
 
         # FINE: G-MSA
+        sel_vt = rearrange(src[:, L_:, :], "b (l n) d -> b l n d", l=self.n_levels)
+        for i in range(self.n_levels):
+            sel_vt[:,:,i,:], seen_vts[:,:,i,:] = self.vttrans[i](sel_vt[:,:,i,:], seen_vts[:,:,i,:])
+        
+        sel_vt = rearrange(sel_vt, "b l n d -> b (l n) d")
+
+        return src[:, :L_, :], seen_vts, sel_vt
+
+class VTTransformerLayer(nn.Module):
+    """docstring for volume_tokens_transformer_layer"""
+    def __init__(self, d_model=256, n_heads=8, drop_path=0.2, mlp_ratio=4.):
+        super(VTTransformerLayer, self).__init__()
+
+        self.drop_path = DropPath(drop_path) if drop_path > 0. else nn.Identity()
+
+        mlp_hidden_dim = int(d_model * mlp_ratio)
+        self.mlp2 = Mlp(in_features=d_model, hidden_features=mlp_hidden_dim, act_layer=nn.GELU, drop=0.)
+        self.norm3 = nn.LayerNorm(d_model)
+        self.norm4 = nn.LayerNorm(d_model)
+        self.vt_attn = ClassicAttention(dim=d_model, window_size=(0,0), num_heads=n_heads, 
+                                        qkv_bias=True, qk_scale=None, attn_drop=0., 
+                                        proj_drop=0.)
+
+    def forward(self, sel_vt, seen_vts):
+        B, N, D = sel_vt.shape
+        _, N_, _ = seen_vts.shape
+
         if seen_vts.shape[1] != 0:
             vts = torch.cat([sel_vt, seen_vts], dim=1)
         else:
             vts = sel_vt
 
-        print("wait we maybe need to separate into two transformer for each resolution")
-        skip_vts = vts                #    !!!!!!!! on a modifié ici !!!!!!!!!!
+        skip_vts = vts
+        # vts = self.norm3(vts)
+        vts = self.vt_attn(vts, None, None)
+        vts = self.drop_path(vts) + skip_vts
         vts = self.norm3(vts)
-        vts = self.vt_attn(vts, None, None)             #    !!!!!!!! on a modifié ici !!!!!!!!!!
-        vts = self.drop_path(vts) + skip_vts               #    !!!!!!!! on a modifié ici !!!!!!!!!!
-        vts = vts + self.drop_path(self.mlp2(self.norm4(vts)))              #    !!!!!!!! on a modifié ici !!!!!!!!!!
-        
-        sel_vt = vts[]
-        
 
-        return src[:, :L_, :], seen_vts, src[:, L_:, :]
-
+        # vts = vts + self.drop_path(self.mlp2(self.norm4(vts)))
+        vts = self.norm4(vts + self.drop_path(self.mlp2(vts)))
+        
+        return vts[:, :N, :], vts[:, N:, :]
+        
 
 class FineDeformableTransformerEncoder(nn.Module):
     def __init__(self, num_layers, d_model, dim_feedforward, dropout, activation, num_feature_levels, nhead, enc_n_points, n_levels, n_vt, vt_map):

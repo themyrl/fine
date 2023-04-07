@@ -7,7 +7,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
 from fine.network_architecture import CNNBackbone
-from nnunet.network_architecture.neural_network import SegmentationNetwork
+from nnunet.network_architecture.neural_network_ext import SegmentationNetwork
 from fine.network_architecture.DeTrans.FineDeformableTrans import FineDeformableTransformer
 from fine.network_architecture.DeTrans.position_encoding import build_position_encoding
 
@@ -87,7 +87,8 @@ class ResBlock(nn.Module):
         return out
 
 class U_ResTran3D(nn.Module):
-    def __init__(self, norm_cfg='BN', activation_cfg='ReLU', img_size=None, num_classes=None, weight_std=False):
+    def __init__(self, norm_cfg='BN', activation_cfg='ReLU', img_size=None, num_classes=None, weight_std=False,
+                       n_vt=8, imsize=[64,128,128], max_imsize=[218,660,660]):
         super(U_ResTran3D, self).__init__()
 
         self.MODEL_NUM_CLASSES = num_classes
@@ -122,7 +123,9 @@ class U_ResTran3D(nn.Module):
         print('  + Number of Backbone Params: %.2f(e6)' % (total / 1e6))
 
         self.position_embed = build_position_encoding(mode='v2', hidden_dim=384)
-        self.encoder_Detrans = FineDeformableTransformer(d_model=384, dim_feedforward=1536, dropout=0.1, activation='gelu', num_feature_levels=2, nhead=6, num_encoder_layers=6, enc_n_points=4)
+        self.encoder_Detrans = FineDeformableTransformer(d_model=384, dim_feedforward=1536, dropout=0.1, activation='gelu', num_feature_levels=2, 
+                                                        nhead=6, num_encoder_layers=6, enc_n_points=4,
+                                                        n_vt=n_vt, imsize=imsize, max_imsize=max_imsize)
         total = sum([param.nelement() for param in self.encoder_Detrans.parameters()])
         print('  + Number of Transformer Params: %.2f(e6)' % (total / 1e6))
 
@@ -140,7 +143,7 @@ class U_ResTran3D(nn.Module):
         return x_fea, masks, x_posemb
 
 
-    def forward(self, inputs):
+    def forward(self, inputs, pos=None):
         # # %%%%%%%%%%%%% fine
         # print("inputs", inputs.shape)
         # exit(0)
@@ -148,7 +151,7 @@ class U_ResTran3D(nn.Module):
         x_fea, masks, x_posemb = self.posi_mask(x_convs)
 
         # myr: here is the transformer
-        x_trans = self.encoder_Detrans(x_fea, masks, x_posemb)
+        x_trans = self.encoder_Detrans(x_fea, masks, x_posemb, pos=pos)
 
         # # Single_scale
         # # x = self.transposeconv_stage2(x_trans.transpose(-1, -2).view(x_convs[-1].shape))
@@ -198,10 +201,12 @@ class ResTranUnet(SegmentationNetwork):
     """
     ResTran-3D Unet
     """
-    def __init__(self, norm_cfg='BN', activation_cfg='ReLU', img_size=None, num_classes=None, weight_std=False, deep_supervision=False):
+    def __init__(self, norm_cfg='BN', activation_cfg='ReLU', img_size=None, num_classes=None, weight_std=False, deep_supervision=False,
+                        n_vt=8, imsize=[64,128,128], max_imsize=[218,660,660]):
         super().__init__()
         self.do_ds = False
-        self.U_ResTran3D = U_ResTran3D(norm_cfg, activation_cfg, img_size, num_classes, weight_std) # U_ResTran3D
+        self.U_ResTran3D = U_ResTran3D(norm_cfg, activation_cfg, img_size, num_classes, weight_std,
+                            n_vt=n_vt, imsize=imsize, max_imsize=max_imsize) # U_ResTran3D
 
         if weight_std==False:
             self.conv_op = nn.Conv3d
@@ -220,8 +225,8 @@ class ResTranUnet(SegmentationNetwork):
         self._deep_supervision = deep_supervision
         self.do_ds = deep_supervision
 
-    def forward(self, x):
-        seg_output = self.U_ResTran3D(x)
+    def forward(self, x, pos):
+        seg_output = self.U_ResTran3D(x, pos)
         if self._deep_supervision and self.do_ds:
             return seg_output
         else:

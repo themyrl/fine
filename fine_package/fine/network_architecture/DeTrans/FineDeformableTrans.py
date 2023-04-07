@@ -254,7 +254,7 @@ class FineDeformableTransformerEncoderLayer(nn.Module):
     def forward(self, src, pos, reference_points, spatial_shapes, level_start_index, padding_mask=None, seen_vts=None, sel_vt=None):
         # self attention
         N, L, D = src.shape
-        L_ = np.sum([np.prod(spatial_shapes[i].numpy()) for i in range(spatial_shapes.shape[0])])
+        L_ = np.sum([np.prod([s.item() for s in spatial_shapes[i]]) for i in range(spatial_shapes.shape[0])])
 
         src2 = self.self_attn(torch.cat([self.with_pos_embed(src, pos), sel_vt], dim=1), reference_points, torch.cat([src, sel_vt], dim=1), spatial_shapes, level_start_index, padding_mask)
         src = torch.cat([src, sel_vt], dim=1) + self.dropout1(src2)

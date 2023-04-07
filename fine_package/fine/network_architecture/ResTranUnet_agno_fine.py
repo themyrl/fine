@@ -7,7 +7,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
 from fine.network_architecture import CNNBackbone
-from nnunet.network_architecture.neural_network_ext import SegmentationNetwork
+from fine.network_architecture.neural_network_ext import SegmentationNetwork
 from fine.network_architecture.DeTrans.FineDeformableTrans import FineDeformableTransformer
 from fine.network_architecture.DeTrans.position_encoding import build_position_encoding
 

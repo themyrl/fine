@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=fi32u2_word_eval     # job name
+#SBATCH --job-name=glv2un_word_eval     # job name
 #SBATCH --ntasks=1                  # number of MP tasks
 #SBATCH --ntasks-per-node=1          # number of MPI tasks per node
 #SBATCH --gres=gpu:1                 # number of GPUs per node
@@ -7,8 +7,8 @@
 #SBATCH --hint=nomultithread         # we get physical cores not logical
 #SBATCH --time=99:10:00             # maximum execution time (HH:MM:SS)
 #SBATCH --qos=qos_gpu-t4
-#SBATCH --output=logs/fi32u2_word_eval.out # output file name # add %j to id the job
-#SBATCH --error=logs/fi32u2_word_eval.err  # error file name # add %j to id the job
+#SBATCH --output=logs/glv2un_word_eval.out # output file name # add %j to id the job
+#SBATCH --error=logs/glv2un_word_eval.err  # error file name # add %j to id the job
 #SBATCH -C v100-32g
  
 
@@ -126,9 +126,9 @@ export RESULTS_FOLDER="/gpfsscratch/rech/arf/unm89rb/nnUNet_trained_models"
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_finev3 -task 140 -outpath notta_FINEV3 -only_val #funv3v2_word_eval # fine+nnunet with fine v3 at all encoder stage
 
 
-srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_finev3UNet_v2 -task 140 -outpath notta_FINEV32NNUNETV2 -na -only_val #fi32u2_word_eval # fine v32+nnunet v2 with fine v3 at almost all encoder stage
+# srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_finev3UNet_v2 -task 140 -outpath notta_FINEV32NNUNETV2 -na -only_val #fi32u2_word_eval # fine v32+nnunet v2 with fine v3 at almost all encoder stage
 
-# srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_glamUNet_v2 -task 140 -outpath notta_GLAMV2NNUNET -na -only_val #glv2un_word_eval # glamv2+nnunet with glam at almost all encoder stage
+srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_glamUNet_v2 -task 140 -outpath notta_GLAMV2NNUNET -na -only_val #glv2un_word_eval # glamv2+nnunet with glam at almost all encoder stage
 
 
 

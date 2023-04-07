@@ -79,12 +79,6 @@ class FineMSDeformAttn(nn.Module):
         N, Len_in, _ = input_flatten[:, :-self.n_levels*self.n_vt,:].shape
         assert (input_spatial_shapes[:, 0] * input_spatial_shapes[:, 1] * input_spatial_shapes[:, 2]).sum() == Len_in
 
-        # sel_vt = torch.rand((N, self.n_levels*self.n_vt, d))
-        # print("reference_points")
-        # rp_vt = torch.rand((N, self.n_levels*self.n_vt, self.n_levels, 3))
-        # reference_points = torch.cat([reference_points, rp_vt], dim=1)
-
-
 
         value = self.value_proj(input_flatten)
         if input_padding_mask is not None:

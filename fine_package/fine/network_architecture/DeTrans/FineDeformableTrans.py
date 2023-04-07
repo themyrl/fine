@@ -18,6 +18,8 @@ from torch.nn.init import xavier_uniform_, constant_, normal_
 from .ops.modules import FineMSDeformAttn
 from .position_encoding import build_position_encoding
 
+from fine.network_architecture.finev3 import ClassicAttention, Mlp
+
 class FineDeformableTransformer(nn.Module):
     def __init__(self, d_model=256, nhead=8,
                  num_encoder_layers=6, dim_feedforward=1024, dropout=0.1,
@@ -31,10 +33,10 @@ class FineDeformableTransformer(nn.Module):
         self.n_levels = num_feature_levels
         self.vt_map = vt_map
 
-        encoder_layer = FineDeformableTransformerEncoderLayer(d_model, dim_feedforward,
-                                                          dropout, activation,
-                                                          num_feature_levels, nhead, enc_n_points)
-        self.encoder = FineDeformableTransformerEncoder(encoder_layer, num_encoder_layers, num_feature_levels, n_vt)
+
+        # encoder_layer = FineDeformableTransformerEncoderLayer(d_model, dim_feedforward, dropout, activation, num_feature_levels, nhead, enc_n_points)
+
+        self.encoder = FineDeformableTransformerEncoder(num_encoder_layers, d_model, dim_feedforward, dropout, activation, num_feature_levels, nhead, enc_n_points, num_feature_levels, n_vt, vt_map)
 
         self.level_embed = nn.Parameter(torch.Tensor(num_feature_levels, d_model))
 
@@ -104,7 +106,7 @@ class FineDeformableTransformer(nn.Module):
         sel_vt = rearrange(sel_vt, "b l n d -> b (l n) d", b=B) # (batch, n_levels*n_vt,  d_model)
 
         # Get all seen volume tokens for the WG-MSA
-        check = torch.nn.Parameter(torch.zeros(self.vt_map[0]*self.vt_map[1]*self.vt_map[2],1)) >= 1
+        check = torch.nn.Parameter(torch.rand(self.vt_map[0]*self.vt_map[1]*self.vt_map[2],1)) > 1
         check_pos = repeat(check, 'n c -> (b n c)', b=B) # in fact c=1
         print("---> check", check.shape)
         print("---> check_pos", check_pos.shape)
@@ -113,11 +115,13 @@ class FineDeformableTransformer(nn.Module):
         # print("---> tmp", tmp.shape)
         seen_vts = tmp[check_pos, :, :]
         print("---> seen_vts", seen_vts.shape)
-        if seen_vts.shape[0] != 0:
-            seen_vts = rearrange(seen_vts, "(b n) c -> b n c", b=B)
+        # if seen_vts.shape[0] != 0:
+        seen_vts = rearrange(seen_vts, "(b n) p c -> b n p c", b=B)
+        print("---> seen_vts", seen_vts.shape)
+
 
         # encoder
-        memory = self.encoder(src_flatten, spatial_shapes, level_start_index, valid_ratios, lvl_pos_embed_flatten, mask_flatten, all_vt=seen_vts, sel_vt=sel_vt)
+        memory = self.encoder(src_flatten, spatial_shapes, level_start_index, valid_ratios, lvl_pos_embed_flatten, mask_flatten, seen_vts=seen_vts, sel_vt=sel_vt)
 
         
 
@@ -130,7 +134,7 @@ class FineDeformableTransformerEncoderLayer(nn.Module):
                  d_model=256, d_ffn=1024,
                  dropout=0.1, activation="relu",
                  n_levels=4, n_heads=8, n_points=4, 
-                 n_vt=8, vt_map = [3, 5, 5]):
+                 n_vt=8, vt_map = [3, 5, 5], drop_path=0.2, mlp_ratio=4.):
         super().__init__()
         self.n_levels = n_levels
         self.n_vt = n_vt
@@ -150,7 +154,15 @@ class FineDeformableTransformerEncoderLayer(nn.Module):
         self.norm2 = nn.LayerNorm(d_model)
 
         # FINE
+        self.drop_path = DropPath(drop_path) if drop_path > 0. else nn.Identity()
 
+        mlp_hidden_dim = int(d_model * mlp_ratio)
+        self.mlp2 = Mlp(in_features=d_model, hidden_features=mlp_hidden_dim, act_layer=nn.GELU, drop=0.)
+        self.norm3 = nn.LayerNorm(d_model)
+        self.norm4 = nn.LayerNorm(d_model)
+        self.vt_attn = ClassicAttention(dim=d_model, window_size=(0,0), num_heads=n_heads, 
+                                        qkv_bias=True, qk_scale=None, attn_drop=0., 
+                                        proj_drop=0.)
 
 
 
@@ -164,7 +176,7 @@ class FineDeformableTransformerEncoderLayer(nn.Module):
         src = self.norm2(src)
         return src
 
-    def forward(self, src, pos, reference_points, spatial_shapes, level_start_index, padding_mask=None, all_vt=None, sel_vt=None):
+    def forward(self, src, pos, reference_points, spatial_shapes, level_start_index, padding_mask=None, seen_vts=None, sel_vt=None):
         # self attention
         N, L, D = src.shape
         L_ = np.sum([np.prod(spatial_shapes[i].numpy()) for i in range(spatial_shapes.shape[0])])
@@ -177,15 +189,41 @@ class FineDeformableTransformerEncoderLayer(nn.Module):
         src = self.forward_ffn(src)
 
         # FINE: G-MSA
+        if seen_vts.shape[1] != 0:
+            vts = torch.cat([sel_vt, seen_vts], dim=1)
+        else:
+            vts = sel_vt
+
+        print("wait we maybe need to separate into two transformer for each resolution")
+        skip_vts = vts                #    !!!!!!!! on a modifié ici !!!!!!!!!!
+        vts = self.norm3(vts)
+        vts = self.vt_attn(vts, None, None)             #    !!!!!!!! on a modifié ici !!!!!!!!!!
+        vts = self.drop_path(vts) + skip_vts               #    !!!!!!!! on a modifié ici !!!!!!!!!!
+        vts = vts + self.drop_path(self.mlp2(self.norm4(vts)))              #    !!!!!!!! on a modifié ici !!!!!!!!!!
+        
+        sel_vt = vts[]
         
 
-        return src[:, :L_, :], all_vt, src[:, L_:, :]
+        return src[:, :L_, :], seen_vts, src[:, L_:, :]
 
 
 class FineDeformableTransformerEncoder(nn.Module):
-    def __init__(self, encoder_layer, num_layers, n_levels, n_vt):
+    def __init__(self, num_layers, d_model, dim_feedforward, dropout, activation, num_feature_levels, nhead, enc_n_points, n_levels, n_vt, vt_map):
         super().__init__()
-        self.layers = _get_clones(encoder_layer, num_layers)
+        self.dpr = [x.item() for x in torch.linspace(0, 0.2, num_layers)]
+
+        self.layers = []
+        for i in range(num_layers):
+            self.layers.append(
+                FineDeformableTransformerEncoderLayer(d_model, dim_feedforward, 
+                                                    dropout, activation, 
+                                                    num_feature_levels, nhead, 
+                                                    enc_n_points,
+                                                    n_vt=n_vt, vt_map=vt_map,
+                                                    drop_path=self.dpr[i])
+                )
+        self.layers = nn.ModuleList(self.layers)
+        # self.layers = _get_clones(encoder_layer, num_layers)
         self.num_layers = num_layers
         self.n_levels = n_levels
         self.n_vt = n_vt
@@ -212,7 +250,7 @@ class FineDeformableTransformerEncoder(nn.Module):
 
         return reference_points
 
-    def forward(self, src, spatial_shapes, level_start_index, valid_ratios, pos=None, padding_mask=None, all_vt=None, sel_vt=None):
+    def forward(self, src, spatial_shapes, level_start_index, valid_ratios, pos=None, padding_mask=None, seen_vts=None, sel_vt=None):
         output = src
         reference_points = self.get_reference_points(spatial_shapes, valid_ratios, device=src.device)
 
@@ -237,7 +275,7 @@ class FineDeformableTransformerEncoder(nn.Module):
         reference_points = torch.cat([reference_points, rp_vt], dim=1)
 
         for _, layer in enumerate(self.layers):
-            output, all_vt, sel_vt = layer(output, pos, reference_points, spatial_shapes, level_start_index, padding_mask, all_vt=all_vt, sel_vt=sel_vt)
+            output, seen_vts, sel_vt = layer(output, pos, reference_points, spatial_shapes, level_start_index, padding_mask, seen_vts=seen_vts, sel_vt=sel_vt)
 
         return output
 

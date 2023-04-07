@@ -5,8 +5,8 @@
 #SBATCH --gres=gpu:1                 # number of GPUs per node
 #SBATCH --cpus-per-task=20   #10           # number of cores per tasks
 #SBATCH --hint=nomultithread         # we get physical cores not logical
-#SBATCH --time=00:10:00             # maximum execution time (HH:MM:SS)
-#SBATCH --qos=qos_gpu-dev
+#SBATCH --time=99:10:00             # maximum execution time (HH:MM:SS)
+#SBATCH --qos=qos_gpu-t4
 #SBATCH --output=logs/cofi_word.out # output file name # add %j to id the job
 #SBATCH --error=logs/cofi_word.err  # error file name # add %j to id the job
 #SBATCH -C v100-32g
@@ -109,6 +109,7 @@ srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_CoTR_FINE -tas
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_finev3UNet_v2 -task 130 -outpath FINEV3NNUNETV2 -na -tta -clip #funv3v2_livus # fine+nnunet with fine v3 at all encoder stage
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_finev3UNet_v2 -task 130 -outpath FINEV32NNUNETV2 -na -tta #fi32u2_livus # fine+nnunet with fine v3 at all encoder stage
 
+# srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_CoTR_FINE -task 130 -outpath COTRFINE -na # cofi_livus
 
 
 

@@ -145,7 +145,7 @@ srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_glam -task 130
 
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_glamUNet_v2 -task 140 -outpath notta_GLAMV2NNUNET -na -only_val #glv2un_word_eval # glamv2+nnunet with glam at almost all encoder stage
 
-srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_CoTR_FINE -task 140 -outpath notta_COTRFINE -na -only_val # cofi_word_eval
+# srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_CoTR_FINE -task 140 -outpath notta_COTRFINE -na -only_val # cofi_word_eval
 
 
 

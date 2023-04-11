@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=cofi_word_eval     # job name
+#SBATCH --job-name=dataset     # job name
 #SBATCH --ntasks=1                  # number of MP tasks
 #SBATCH --ntasks-per-node=1          # number of MPI tasks per node
 #SBATCH --gres=gpu:1                 # number of GPUs per node
@@ -7,8 +7,8 @@
 #SBATCH --hint=nomultithread         # we get physical cores not logical
 #SBATCH --time=10:10:00             # maximum execution time (HH:MM:SS)
 #SBATCH --qos=qos_gpu-t3
-#SBATCH --output=logs/cofi_word_eval.out # output file name # add %j to id the job
-#SBATCH --error=logs/cofi_word_eval.err  # error file name # add %j to id the job
+#SBATCH --output=logs/dataset.out # output file name # add %j to id the job
+#SBATCH --error=logs/dataset.err  # error file name # add %j to id the job
 #SBATCH -C v100-32g
  
 
@@ -35,7 +35,7 @@ export RESULTS_FOLDER="/gpfsscratch/rech/arf/unm89rb/nnUNet_trained_models"
 # srun python nnUNet/nnunet/dataset_conversion/Task140_WORD.py
 
 ## planning and pre-processing
-# srun python nnUNet/nnunet/experiment_planning/nnUNet_plan_and_preprocess.py -t 017 --verify_dataset_integrity
+srun python nnUNet/nnunet/experiment_planning/nnUNet_plan_and_preprocess.py -t 017 --verify_dataset_integrity
 # srun python nnUNet/nnunet/experiment_planning/nnUNet_plan_and_preprocess.py -t 130 --verify_dataset_integrity
 # srun python nnUNet/nnunet/experiment_planning/nnUNet_plan_and_preprocess.py -t 140 --verify_dataset_integrity
 
@@ -145,7 +145,7 @@ export RESULTS_FOLDER="/gpfsscratch/rech/arf/unm89rb/nnUNet_trained_models"
 
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_glamUNet_v2 -task 140 -outpath notta_GLAMV2NNUNET -na -only_val #glv2un_word_eval # glamv2+nnunet with glam at almost all encoder stage
 
-srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_CoTR_FINE -task 140 -outpath notta_COTRFINE -na -only_val # cofi_word_eval
+# srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_CoTR_FINE -task 140 -outpath notta_COTRFINE -na -only_val # cofi_word_eval
 
 
 

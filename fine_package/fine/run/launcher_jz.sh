@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=cotr_livus_nta     # job name
+#SBATCH --job-name=nnun_livus_nta     # job name
 #SBATCH --ntasks=1                  # number of MP tasks
 #SBATCH --ntasks-per-node=1          # number of MPI tasks per node
 #SBATCH --gres=gpu:1                 # number of GPUs per node
@@ -7,8 +7,8 @@
 #SBATCH --hint=nomultithread         # we get physical cores not logical
 #SBATCH --time=99:10:00             # maximum execution time (HH:MM:SS)
 #SBATCH --qos=qos_gpu-t4
-#SBATCH --output=logs/cotr_livus_nta.out # output file name # add %j to id the job
-#SBATCH --error=logs/cotr_livus_nta.err  # error file name # add %j to id the job
+#SBATCH --output=logs/nnun_livus_nta.out # output file name # add %j to id the job
+#SBATCH --error=logs/nnun_livus_nta.err  # error file name # add %j to id the job
 #SBATCH -C v100-32g
  
 
@@ -115,8 +115,8 @@ export RESULTS_FOLDER="/gpfsscratch/rech/arf/unm89rb/nnUNet_trained_models"
 
 
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_nnFormer -task 130 -outpath notta_NNFORMER #nnf_livus_nta
-# srun python fine_package/fine/run/run.py -network nnUNetTrainerV2 -task 130 -outpath notta_NNUNET -na #nnun_livus_nta 
-srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_CoTR_agno -task 130 -outpath notta_COTR -na # cotr_livus_nta
+srun python fine_package/fine/run/run.py -network nnUNetTrainerV2 -task 130 -outpath notta_NNUNET -na #nnun_livus_nta 
+# srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_CoTR_agno -task 130 -outpath notta_COTR -na # cotr_livus_nta
 
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_glamUNet_v2 -task 130 -outpath notta_GLAMV2NNUNET -na #glv2un_livus_nta # glamv2+nnunet with glam at almost all encoder stage
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_finev3UNet_v2 -task 130 -outpath notta_FINEV32NNUNETV2 -na #fi32u2_livus_nta # fine+nnunet with fine v3 at all encoder stage

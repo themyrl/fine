@@ -176,7 +176,8 @@ class nnUNetTrainerV2_finev3UNet_v2(nnUNetTrainer):
         for i in self.plans['dataset_properties']['all_sizes']:
             max_sizes = [max(max_sizes[j], i[j]) for j in range(3)]
         grid_size = [int(max_sizes[i]/self.plans['plans_per_stage'][1]['patch_size'][i]) for i in range(3)]
-
+        print("----> grid_size", grid_size)
+        print("----> max_sizes", max_sizes)
 
         self.network = Finev3_UNet_v2(self.num_input_channels, self.base_num_features, self.num_classes,
                                     len(self.net_num_pool_op_kernel_sizes),

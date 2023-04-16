@@ -163,8 +163,11 @@ class nnUNetTrainerV2_finev3(nnUNetTrainer):
 
         # get the volume token grid size depending on the images max size
         max_sizes = [0,0,0]
-        for i in self.plans['dataset_properties']['all_sizes']:
-            max_sizes = [max(max_sizes[j], i[j]) for j in range(3)]
+        if not '017' in self.plans_file:
+            for i in self.plans['dataset_properties']['all_sizes']:
+                max_sizes = [max(max_sizes[j], i[j]) for j in range(3)]
+        else:
+            max_sizes = [218, 660, 660]
         grid_size = [int(max_sizes[i]/self.plans['plans_per_stage'][1]['patch_size'][i]) for i in range(3)]
         
         # self.network = swintransformer(self.num_input_channels, self.base_num_features, self.num_classes,

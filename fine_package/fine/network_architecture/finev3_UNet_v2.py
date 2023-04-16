@@ -459,8 +459,8 @@ class Finev3_UNet_v2(SegmentationNetwork):
             vt_pos.append(tmp + b*np.array(self.vt_map).prod())
         vt_pos = np.array(vt_pos).flatten()
         
-        print("------> pos", pos)
-        print("------> vt_pos", vt_pos)
+        # print("------> pos", pos)
+        # print("------> vt_pos", vt_pos)
 
         ## encoder
 

@@ -62,6 +62,10 @@ class nnUNetTrainerV2_finev3UNet_v2(nnUNetTrainer):
 
         self.clip = clip
 
+        self.plans_file = plans_file
+
+
+
     def initialize(self, training=True, force_load_plans=False):
         """
         - replaced get_moreDA_augmentation with get_moreDA_augmentation
@@ -173,8 +177,11 @@ class nnUNetTrainerV2_finev3UNet_v2(nnUNetTrainer):
 
         # get the volume token grid size depending on the images max size
         max_sizes = [0,0,0]
-        for i in self.plans['dataset_properties']['all_sizes']:
-            max_sizes = [max(max_sizes[j], i[j]) for j in range(3)]
+        if not '017' in self.plans_file:
+            for i in self.plans['dataset_properties']['all_sizes']:
+                max_sizes = [max(max_sizes[j], i[j]) for j in range(3)]
+        else:
+            max_sizes = [218, 660, 660]
         grid_size = [int(max_sizes[i]/self.plans['plans_per_stage'][1]['patch_size'][i]) for i in range(3)]
         print("----> grid_size", grid_size)
         print("----> max_sizes", max_sizes)

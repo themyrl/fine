@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=finv32_bcv_nta     # job name
+#SBATCH --job-name=cofi_bcv_nta     # job name
 #SBATCH --ntasks=1                  # number of MP tasks
 #SBATCH --ntasks-per-node=1          # number of MPI tasks per node
 #SBATCH --gres=gpu:1                 # number of GPUs per node
@@ -7,8 +7,8 @@
 #SBATCH --hint=nomultithread         # we get physical cores not logical
 #SBATCH --time=99:15:00             # maximum execution time (HH:MM:SS)
 #SBATCH --qos=qos_gpu-dev
-#SBATCH --output=logs/finv32_bcv_nta.out # output file name # add %j to id the job
-#SBATCH --error=logs/finv32_bcv_nta.err  # error file name # add %j to id the job
+#SBATCH --output=logs/cofi_bcv_nta.out # output file name # add %j to id the job
+#SBATCH --error=logs/cofi_bcv_nta.err  # error file name # add %j to id the job
 #SBATCH -C v100-32g
  
 
@@ -35,10 +35,10 @@ export RESULTS_FOLDER="/gpfsscratch/rech/arf/unm89rb/nnUNet_trained_models"
 
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_nnFormer -task 017 -outpath notta_NNFORMER #nnf_bcv_nta
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_glam -task 017 -outpath notta_GLAMV2 #glamv2_bcv_nta
-srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_finev3 -task 017 -outpath notta_FINEV32 #finv32_bcv_nta
+# srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_finev3 -task 017 -outpath notta_FINEV32 #finv32_bcv_nta
 
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_CoTR_agno -task 017 -outpath notta_COTR -na # cotr_bcv_nta
-# srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_CoTR_FINE -task 017 -outpath notta_COTRFINE -na # cofi_bcv_nta
+srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_CoTR_FINE -task 017 -outpath notta_COTRFINE -na # cofi_bcv_nta
 
 
 ## convert dataset

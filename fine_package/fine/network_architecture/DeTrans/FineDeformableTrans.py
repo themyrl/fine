@@ -371,7 +371,7 @@ class FineDeformableTransformerEncoder(nn.Module):
                     H_*W_*(D_-1) + H_-1,  
                     H_*W_*(D_-1) + H_*(W_-1) -1,  
                     H_*W_*(D_-1) + H_*W_ -1]
-                n_gt = self.n_vt//8
+            n_gt = self.n_vt//8
 
             # for i in range(self.n_vt):
             for i in range(8):

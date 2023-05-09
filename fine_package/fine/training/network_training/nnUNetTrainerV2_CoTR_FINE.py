@@ -35,7 +35,7 @@ def get_n_params(model):
 class nnUNetTrainerV2_CoTR_FINE(nnUNetTrainer):
 
     def __init__(self, plans_file, fold, norm_cfg, activation_cfg, output_folder=None, dataset_directory=None, batch_dice=True, stage=None,
-                 unpack_data=True, deterministic=True, fp16=False*args, **kwargs):
+                 unpack_data=True, deterministic=True, fp16=False, *args, **kwargs):
         super().__init__(plans_file, fold, output_folder, dataset_directory, batch_dice, stage, unpack_data,
                          deterministic, fp16)
 

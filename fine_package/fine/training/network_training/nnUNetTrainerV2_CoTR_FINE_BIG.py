@@ -163,6 +163,7 @@ class nnUNetTrainerV2_CoTR_FINE_BIG(nnUNetTrainer):
 
         total = sum([param.nelement() for param in self.network.parameters()])
         print('  + Number of Network Params: %.2f(e6)' % (total / 1e6))
+        print("####\n#### FINE N NVGT :{}\n####".format(8*2))
 
         print("####\n#### MODEL PARAMS :{}\n####".format(get_n_params(self.network)))
         # exit(0)

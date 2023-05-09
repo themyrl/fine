@@ -159,11 +159,11 @@ class nnUNetTrainerV2_CoTR_FINE_BIG(nnUNetTrainer):
 
         self.network = ResTranUnet(norm_cfg=self.norm_cfg, activation_cfg=self.activation_cfg, img_size=self.plans['plans_per_stage'][1]['patch_size'],
                                  num_classes=self.num_classes, weight_std=False, deep_supervision=True,
-                                 n_vt=8, n_gt=2, imsize=self.plans['plans_per_stage'][1]['patch_size'], max_imsize=max_sizes).cuda()
+                                 n_vt=8, n_gt=10, imsize=self.plans['plans_per_stage'][1]['patch_size'], max_imsize=max_sizes).cuda()
 
         total = sum([param.nelement() for param in self.network.parameters()])
         print('  + Number of Network Params: %.2f(e6)' % (total / 1e6))
-        print("####\n#### FINE N NVGT :{}\n####".format(8*2))
+        print("####\n#### FINE N NVGT :{}\n####".format(8*10))
 
         print("####\n#### MODEL PARAMS :{}\n####".format(get_n_params(self.network)))
         # exit(0)

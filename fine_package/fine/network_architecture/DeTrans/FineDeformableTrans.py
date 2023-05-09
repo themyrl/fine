@@ -224,7 +224,7 @@ class FineDeformableTransformerEncoderLayer(nn.Module):
         self.d_model = d_model
 
         # self attention
-        self.self_attn = FineMSDeformAttn(d_model, n_levels, n_heads, n_points)
+        self.self_attn = FineMSDeformAttn(d_model, n_levels, n_heads, n_points, n_vt)
         self.dropout1 = nn.Dropout(dropout)
         self.norm1 = nn.LayerNorm(d_model)
 

@@ -269,7 +269,8 @@ class FineDeformableTransformerEncoderLayer(nn.Module):
         # FINE: G-MSA
         sel_vt = rearrange(src[:, L_:, :], "b (l n) d -> b l n d", l=self.n_levels)
         for i in range(self.n_levels):
-            sel_vt[:,:,i,:], seen_vts[:,:,i,:] = self.vttrans[i](sel_vt[:,:,i,:], seen_vts[:,:,i,:])
+            # sel_vt[:,:,i,:], seen_vts[:,:,i,:] = self.vttrans[i](sel_vt[:,:,i,:], seen_vts[:,:,i,:])
+            sel_vt[:,i,:,:], seen_vts[:,i,:,:] = self.vttrans[i](sel_vt[:,i,:,:], seen_vts[:,i,:,:])
         
         sel_vt = rearrange(sel_vt, "b l n d -> b (l n) d")
 

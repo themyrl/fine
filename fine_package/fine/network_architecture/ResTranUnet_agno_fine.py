@@ -88,7 +88,7 @@ class ResBlock(nn.Module):
 
 class U_ResTran3D(nn.Module):
     def __init__(self, norm_cfg='BN', activation_cfg='ReLU', img_size=None, num_classes=None, weight_std=False,
-                       n_vt=8, imsize=[64,128,128], max_imsize=[218,660,660]):
+                       n_vt=8, n_gt=1, imsize=[64,128,128], max_imsize=[218,660,660]):
         super(U_ResTran3D, self).__init__()
 
         self.MODEL_NUM_CLASSES = num_classes
@@ -125,7 +125,7 @@ class U_ResTran3D(nn.Module):
         self.position_embed = build_position_encoding(mode='v2', hidden_dim=384)
         self.encoder_Detrans = FineDeformableTransformer(d_model=384, dim_feedforward=1536, dropout=0.1, activation='gelu', num_feature_levels=2, 
                                                         nhead=6, num_encoder_layers=6, enc_n_points=4,
-                                                        n_vt=n_vt, imsize=imsize, max_imsize=max_imsize)
+                                                        n_vt=n_vt, n_gt=n_gt, imsize=imsize, max_imsize=max_imsize)
         total = sum([param.nelement() for param in self.encoder_Detrans.parameters()])
         print('  + Number of Transformer Params: %.2f(e6)' % (total / 1e6))
 
@@ -202,11 +202,11 @@ class ResTranUnet(SegmentationNetwork):
     ResTran-3D Unet
     """
     def __init__(self, norm_cfg='BN', activation_cfg='ReLU', img_size=None, num_classes=None, weight_std=False, deep_supervision=False,
-                        n_vt=8, imsize=[64,128,128], max_imsize=[218,660,660]):
+                        n_vt=8, n_gt=1, imsize=[64,128,128], max_imsize=[218,660,660]):
         super().__init__()
         self.do_ds = False
         self.U_ResTran3D = U_ResTran3D(norm_cfg, activation_cfg, img_size, num_classes, weight_std,
-                            n_vt=n_vt, imsize=imsize, max_imsize=max_imsize) # U_ResTran3D
+                            n_vt=n_vt, n_gt=n_gt, imsize=imsize, max_imsize=max_imsize) # U_ResTran3D
 
         if weight_std==False:
             self.conv_op = nn.Conv3d

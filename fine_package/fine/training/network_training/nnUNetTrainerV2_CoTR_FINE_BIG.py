@@ -32,7 +32,7 @@ def get_n_params(model):
             nn = nn*s
         pp += nn
     return pp
-class nnUNetTrainerV2_CoTR_FINE(nnUNetTrainer):
+class nnUNetTrainerV2_CoTR_FINE_BIG(nnUNetTrainer):
 
     def __init__(self, plans_file, fold, norm_cfg, activation_cfg, output_folder=None, dataset_directory=None, batch_dice=True, stage=None,
                  unpack_data=True, deterministic=True, fp16=False*args, **kwargs):
@@ -159,7 +159,7 @@ class nnUNetTrainerV2_CoTR_FINE(nnUNetTrainer):
 
         self.network = ResTranUnet(norm_cfg=self.norm_cfg, activation_cfg=self.activation_cfg, img_size=self.plans['plans_per_stage'][1]['patch_size'],
                                  num_classes=self.num_classes, weight_std=False, deep_supervision=True,
-                                 n_vt=8, imsize=self.plans['plans_per_stage'][1]['patch_size'], max_imsize=max_sizes).cuda()
+                                 n_vt=8, n_gt=2, imsize=self.plans['plans_per_stage'][1]['patch_size'], max_imsize=max_sizes).cuda()
 
         total = sum([param.nelement() for param in self.network.parameters()])
         print('  + Number of Network Params: %.2f(e6)' % (total / 1e6))

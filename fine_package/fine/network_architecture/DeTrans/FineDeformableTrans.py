@@ -25,12 +25,13 @@ class FineDeformableTransformer(nn.Module):
     def __init__(self, d_model=256, nhead=8,
                  num_encoder_layers=6, dim_feedforward=1024, dropout=0.1,
                  activation="relu", num_feature_levels=4, enc_n_points=4, 
-                 n_vt=8, imsize=[64,128,128], max_imsize=[218,660,660]):
+                 n_vt=8, n_gt=1, imsize=[64,128,128], max_imsize=[218,660,660]):
         super().__init__()
 
         self.d_model = d_model
         self.nhead = nhead
         self.n_vt = n_vt
+        self.n_gt = n_gt
         self.n_levels = num_feature_levels
         # self.vt_map = vt_map
         self.imsize = imsize
@@ -41,7 +42,7 @@ class FineDeformableTransformer(nn.Module):
         self.vt_check = torch.nn.Parameter(torch.zeros(self.vt_map[0]*self.vt_map[1]*self.vt_map[2],1))
         self.vt_check.requires_grad = False
 
-        self.all_volume_tokens = torch.nn.Parameter(torch.randn(num_feature_levels, self.vt_map[0]*self.vt_map[1]*self.vt_map[2], d_model))
+        self.all_volume_tokens = torch.nn.Parameter(torch.randn(num_feature_levels, self.vt_map[0]*self.vt_map[1]*self.vt_map[2], d_model*n_gt))
         self.all_volume_tokens.requires_grad = True
 
 
@@ -50,7 +51,7 @@ class FineDeformableTransformer(nn.Module):
         self.encoder = FineDeformableTransformerEncoder(num_encoder_layers, d_model, dim_feedforward, 
                                                         dropout, activation, num_feature_levels, 
                                                         nhead, enc_n_points, num_feature_levels, 
-                                                        n_vt, self.vt_map)
+                                                        n_vt*n_gt, self.vt_map)
 
         self.level_embed = nn.Parameter(torch.Tensor(num_feature_levels, d_model))
 
@@ -181,12 +182,14 @@ class FineDeformableTransformer(nn.Module):
         # Get the selected volume tokens from all volume tokens for the encoder
         # vt_pos = np.random.randint(0, 3*5*5, 16)
         tmp = rearrange(self.all_volume_tokens, "l v d -> v l d")
-        tmp = repeat(tmp, "v l d -> b v l d", b=B)
-        tmp = rearrange(tmp, "b v l d -> (b v) l d")
-        sel_vt =  tmp[vt_pos] #(batch*n_vt, n_levels, d_model)
-        sel_vt = rearrange(sel_vt, "(b n) l d -> b n l d", b=B) # (batch, n_vt, n_levels, d_model)
-        sel_vt = rearrange(sel_vt, "b n l d -> b l n d", b=B)   # (batch, n_levels, n_vt, d_model)
-        sel_vt = rearrange(sel_vt, "b l n d -> b (l n) d", b=B) # (batch, n_levels*n_vt,  d_model)
+        tmp = repeat(tmp, "v l d -> b v l d", b=B) # repeat on batch
+        tmp = rearrange(tmp, "b v l d -> (b v) l d") # align batch/volume tokens
+        sel_vt =  tmp[vt_pos] #(batch*n_vt, n_levels, n_gt*d_model)
+        sel_vt = rearrange(sel_vt, "(b n) l d -> b n l d", b=B) # (batch, n_vt, n_levels, n_gt*d_model)
+        sel_vt = rearrange(sel_vt, "b n l d -> b l n d", b=B)   # (batch, n_levels, n_vt, n_gt*d_model)
+        sel_vt = rearrange(sel_vt, "b l n (g d) -> b l n g d", g=self.n_gt)   # (batch, n_levels, n_vt, n_gt, d_model)
+        sel_vt = rearrange(sel_vt, "b l n g d -> b l (n g) d", g=self.n_gt)   # (batch, n_levels, n_vt*n_gt, d_model)
+        sel_vt = rearrange(sel_vt, "b l n d -> b (l n) d", b=B) # (batch, n_levels*n_vt*n_gt,  d_model)
 
         # Get all seen volume tokens for the WG-MSA
         # check = torch.nn.Parameter(torch.rand(self.vt_map[0]*self.vt_map[1]*self.vt_map[2],1)) > 0.5

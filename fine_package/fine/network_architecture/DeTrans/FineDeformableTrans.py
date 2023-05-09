@@ -371,9 +371,11 @@ class FineDeformableTransformerEncoder(nn.Module):
                     H_*W_*(D_-1) + H_-1,  
                     H_*W_*(D_-1) + H_*(W_-1) -1,  
                     H_*W_*(D_-1) + H_*W_ -1]
+                n_gt = self.n_vt//8
 
-            for i in range(self.n_vt):
-                rp_vt[:, lvl, i, :, :] = reference_points[:, tmp[i], :, :]
+            # for i in range(self.n_vt):
+            for i in range(8):
+                rp_vt[:, lvl, i*n_gt:(i+1)*n_gt:, :, :] = reference_points[:, tmp[i], :, :]
 
         rp_vt = rearrange(rp_vt, 'b l v p s -> b (l v) p s')
         reference_points = torch.cat([reference_points, rp_vt], dim=1)

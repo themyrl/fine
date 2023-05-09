@@ -200,7 +200,9 @@ class FineDeformableTransformer(nn.Module):
         # tmp = rearrange(tmp, "n l d -> n (l d)")
         seen_vts = tmp[check_pos, :, :]
         # if seen_vts.shape[0] != 0:
-        seen_vts = rearrange(seen_vts, "(b n) p c -> b n p c", b=B)
+        seen_vts = rearrange(seen_vts, "(b n) p c -> b n p c", b=B) # (batch, n_seen, n_levels, n_gt*d_model)
+        seen_vts = rearrange(seen_vts, "b n p (g c) -> b n p g c", g=self.n_gt) # (batch, n_seen, n_levels, n_gt, d_model)
+        seen_vts = rearrange(seen_vts, "b n p g c -> b p (n g) c") # (batch, n_levels, n_seen*n_gt, d_model)
 
 
         # encoder
@@ -268,10 +270,9 @@ class FineDeformableTransformerEncoderLayer(nn.Module):
 
         # FINE: G-MSA
         sel_vt = rearrange(src[:, L_:, :], "b (l n) d -> b l n d", l=self.n_levels)
-        print("------> sel_vt.shape", sel_vt.shape)
         for i in range(self.n_levels):
-            sel_vt[:,:,i,:], seen_vts[:,:,i,:] = self.vttrans[i](sel_vt[:,:,i,:], seen_vts[:,:,i,:])
-            # sel_vt[:,i,:,:], seen_vts[:,i,:,:] = self.vttrans[i](sel_vt[:,i,:,:], seen_vts[:,i,:,:])
+            # sel_vt[:,:,i,:], seen_vts[:,:,i,:] = self.vttrans[i](sel_vt[:,:,i,:], seen_vts[:,:,i,:])
+            sel_vt[:,i,:,:], seen_vts[:,i,:,:] = self.vttrans[i](sel_vt[:,i,:,:], seen_vts[:,i,:,:])
         
         sel_vt = rearrange(sel_vt, "b l n d -> b (l n) d")
 
@@ -374,10 +375,18 @@ class FineDeformableTransformerEncoder(nn.Module):
                     H_*W_*(D_-1) + H_*(W_-1) -1,  
                     H_*W_*(D_-1) + H_*W_ -1]
             n_gt = self.n_vt//8
+            # print("-------> ngt", n_gt)
 
-            # for i in range(self.n_vt):
-            for i in range(8):
-                rp_vt[:, lvl, i*n_gt:(i+1)*n_gt:, :, :] = reference_points[:, tmp[i], :, :]
+            k = -1
+            for i in range(self.n_vt):
+            # for i in range(8):
+                if i%n_gt == 0:
+                    k += 1
+                # print(k)
+                rp_vt[:, lvl, i, :, :] = reference_points[:, tmp[k], :, :]
+                # rp_vt[:, lvl, i*n_gt:(i+1)*n_gt, :, :] = reference_points[:, tmp[i], :, :]
+
+                
 
         rp_vt = rearrange(rp_vt, 'b l v p s -> b (l v) p s')
         reference_points = torch.cat([reference_points, rp_vt], dim=1)

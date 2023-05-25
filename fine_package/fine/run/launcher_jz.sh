@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=cofiv2_bcv_nta_f0     # job name
+#SBATCH --job-name=finv4_bcv_nta_f0     # job name
 #SBATCH --ntasks=1                  # number of MP tasks
 #SBATCH --ntasks-per-node=1          # number of MPI tasks per node
 #SBATCH --gres=gpu:1                 # number of GPUs per node
@@ -7,8 +7,8 @@
 #SBATCH --hint=nomultithread         # we get physical cores not logical
 #SBATCH --time=99:15:00             # maximum execution time (HH:MM:SS)
 #SBATCH --qos=qos_gpu-t4
-#SBATCH --output=logs/cofiv2_bcv_nta_f0.out # output file name # add %j to id the job
-#SBATCH --error=logs/cofiv2_bcv_nta_f0.err  # error file name # add %j to id the job
+#SBATCH --output=logs/finv4_bcv_nta_f0.out # output file name # add %j to id the job
+#SBATCH --error=logs/finv4_bcv_nta_f0.err  # error file name # add %j to id the job
 #SBATCH -C v100-32g
  
 
@@ -36,12 +36,13 @@ export RESULTS_FOLDER="/gpfsscratch/rech/arf/unm89rb/nnUNet_trained_models"
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_nnFormer -task 017 -outpath f0notta_NNFORMER #nnf_bcv_nta ; nnf_bcv_nta_f0
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_glam -task 017 -outpath f0notta_GLAMV2 #glamv2_bcv_nta ; glamv2_bcv_nta_f0
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_finev3 -task 017 -outpath f0notta_FINEV32 -continu #-continu #finv32_bcv_nta ; finv32_bcv_nta_c ; finv32_bcv_nta_f0 ; finv32_bcv_nta_f0_c
+srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_finev4 -task 017 -outpath f0notta_FINEV4 #-continu # finv4_bcv_nta_f0
 
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_CoTR_agno -task 017 -outpath f0notta_COTR -na # cotr_bcv_nta ; cotr_bcv_nta_f0
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_CoTR_FINE -task 017 -outpath f0notta_COTRFINE -na # cofi_bcv_nta ; cofi_bcv_nta_f0
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_CoTR_FINE -task 017 -outpath f0notta_COTRFINE_dbg -na # cofi_bcv_nta_f0_dbg
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_CoTR_FINE_BIG -task 017 -outpath f0notta_COTRFINE_BIG -na # cofibi_bcv_nta_f0
-srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_CoTR_FINE_v2 -task 017 -outpath f0notta_COTRFINEV2 -na # cofiv2_bcv_nta_f0
+# srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_CoTR_FINE_v2 -task 017 -outpath f0notta_COTRFINEV2 -na # cofiv2_bcv_nta_f0
 
 
 ## convert dataset

@@ -473,6 +473,7 @@ class Fine_UNet_v4(SegmentationNetwork):
                 Ws, Wh, Ww = x.size(2), x.size(3), x.size(4)
                 x = x.flatten(2).transpose(1, 2)
                 # print("x shape", x.shape)
+                print("--> self.vt_check", self.vt_check.shape)
                 x_out, S, H, W, x, Ws, Wh, Ww = self.fine_module_list[d](x, Ws, Wh, Ww, vt_pos, self.vt_check >= 1)
                 # x_out, S, H, W, x, Ws, Wh, Ww = layer(x, Ws, Wh, Ww, vt_pos, check)
                 # print("x_out shape", x_out.shape)

@@ -407,8 +407,8 @@ class SwinTransformerBlock(nn.Module):
             # vts = rearrange(vts, "(b n) c -> b n c", b=B)
             vt = repeat(vt, "b n c -> (b w) n c", w=x_windows.shape[0]//B)
             check_pos = repeat(check, 'n c -> (b n c)', b=B)
-            # print("---> vts.shape", vts.shape)
-            # print("---> check_pos.shape", check_pos.shape)
+            print("---> vts.shape", vts.shape)
+            print("---> check_pos.shape", check_pos.shape)
             seen_vts = vts[check_pos, :]
             seen_vts = rearrange(seen_vts, "(b n) c -> b n c", b=B)
         else:

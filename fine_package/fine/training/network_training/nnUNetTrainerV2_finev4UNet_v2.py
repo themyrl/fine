@@ -186,7 +186,7 @@ class nnUNetTrainerV2_finev4UNet_v2(nnUNetTrainer):
         print("----> grid_size", grid_size)
         print("----> max_sizes", max_sizes)
 
-        self.network = Finev3_UNet_v2(self.num_input_channels, self.base_num_features, self.num_classes,
+        self.network = Finev4_UNet_v2(self.num_input_channels, self.base_num_features, self.num_classes,
                                     len(self.net_num_pool_op_kernel_sizes),
                                     self.conv_per_stage, 2, conv_op, norm_op, norm_op_kwargs, dropout_op,
                                     dropout_op_kwargs,

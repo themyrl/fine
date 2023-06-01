@@ -59,6 +59,9 @@ if __name__ == '__main__':
 			target = np.array(nib.load(os.path.join(target_fold, i)))
 			pred = np.array(nib.load(os.path.join(pred_fold, i)))
 
+			print(np.unique(target))
+			print(np.unique(pred))
+
 			for j in range(1, n_classe+1):
 				res[str(j)] = assd(1*(pred == j), 1*(target == j))
 				res_per_classes_[str(j)].append(res[str(j)])

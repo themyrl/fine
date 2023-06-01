@@ -85,7 +85,7 @@ if __name__ == '__main__':
 	results["all"] = alls
 
 	with open(outpath, 'w', encoding='utf-8') as f:
-    	json.dump(results, f, ensure_ascii=False, indent=4)
+		json.dump(results, f, ensure_ascii=False, indent=4)
 
 
 

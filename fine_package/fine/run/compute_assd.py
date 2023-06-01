@@ -30,7 +30,7 @@ if __name__ == '__main__':
 	path = args.path
 	all_tasks = os.listdir(path)
 	for task in all_tasks:
-		all_network = os.listdir(os.join(path, task))
+		all_network = os.listdir(os.path.join(path, task))
 		for network in all_network:
 			pps = ["fold_0/validation_raw", "fold_0/validation_raw_postprocessed"]
 			p = 0

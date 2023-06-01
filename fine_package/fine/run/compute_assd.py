@@ -29,10 +29,10 @@ if __name__ == '__main__':
 
 	path = args.path
 	n_classe = args.n_classe
-	network = "{}_IN_LeakyReLU/fold_0/".format(args.network)
+	network = "{}_IN_LeakyReLU/".format(args.network)
 	task = "Task{}_{}/".format(args.task, all_tasks[args.task])
 
-	pred = "validation_raw"
+	pred = "fold_0/validation_raw"
 	if args.pp:
 		pred += "_postprocessed"
 	pred += "/"

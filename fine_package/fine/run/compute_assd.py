@@ -56,9 +56,10 @@ if __name__ == '__main__':
 
 			res = {}
 
-			target = np.array(nib.load(os.path.join(target_fold, i)))
-			pred = np.array(nib.load(os.path.join(pred_fold, i)))
+			target = nib.load(os.path.join(target_fold, i)).get_fdata()
+			pred = nib.load(os.path.join(pred_fold, i)).get_fdata()
 
+			print()
 			print(np.unique(target))
 			print(np.unique(pred))
 

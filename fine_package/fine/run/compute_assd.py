@@ -39,7 +39,7 @@ if __name__ == '__main__':
 			for pp in pps:
 				outpath = os.path.join(path, task, network, "assd_results_{}.json".format(1))
 
-				if not os.path.exist(outpath):
+				if not os.path.exists(outpath):
 					try:
 						# network = "{}_IN_LeakyReLU/".format(args.network)
 						# task = "Task{}_{}/".format(args.task, all_tasks[args.task])

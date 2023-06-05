@@ -402,7 +402,7 @@ class Finev5_UNet_v2(SegmentationNetwork):
                         drop_path=dpr[sum(depths[:ii]):sum(depths[:ii + 1])],
                         # drop_path=dpr[sum(depths[:i_layer]):sum(depths[:i_layer + 1])],
                         norm_layer=nn.LayerNorm,
-                        downsample=None,
+                        downsample=fine.PatchMerging,
                         use_checkpoint=False, gt_num=8, id_layer=ii, vt_map=vt_map,vt_num=1, clip=clip))
             else:
                 self.fine_module_list.append(None)

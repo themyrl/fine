@@ -35,7 +35,7 @@ export RESULTS_FOLDER="/gpfsscratch/rech/arf/unm89rb/nnUNet_trained_models"
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_glamUNet_v2 -task 017 -outpath f0notta_GLAMV2NNUNET -na #glv2un_bcv_nta ; glv2un_bcv_nta_f0
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_finev3UNet_v2 -task 017 -outpath f0notta_FINEV32NNUNETV2 -na #funv32_bcv_nta ; funv32_bcv_nta_f0
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_finev4UNet_v2 -task 017 -outpath f0notta_FINEV4NNUNET -na #funv4_bcv_nta_f0
-srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_finev4UNet_v2 -task 017 -outpath f0notta_FINEV5NNUNET -na #funv5_bcv_nta_f0
+srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_finev5UNet_v2 -task 017 -outpath f0notta_FINEV5NNUNET -na #funv5_bcv_nta_f0
 
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_nnFormer -task 017 -outpath f0notta_NNFORMER #nnf_bcv_nta ; nnf_bcv_nta_f0
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_glam -task 017 -outpath f0notta_GLAMV2 #glamv2_bcv_nta ; glamv2_bcv_nta_f0

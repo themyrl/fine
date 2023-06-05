@@ -490,7 +490,7 @@ class Finev5_UNet_v2(SegmentationNetwork):
                     vts_pro = rearrange(vts_pro, "(b n) g d -> b n g d", b=x.shape[0])
                     vts_pro = rearrange(vts_pro, "b n g d -> (b g) n d")
 
-                    vts_pro = self.self.fine_downsample_list[d](vts_pro, S//4, H//4, W//4)
+                    vts_pro = self.fine_downsample_list[d](vts_pro, S//4, H//4, W//4)
                     vts_pro = rearrange(vts_pro, "(b g) n d -> b n g d", b=x.shape[0])
                     vts_pro = rearrange(vts_pro, "b n g d -> (b n) g d")
 

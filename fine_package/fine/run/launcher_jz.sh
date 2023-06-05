@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=funv5_bcv_nta_f0     # job name
+#SBATCH --job-name=debug     # job name
 #SBATCH --ntasks=1                  # number of MP tasks
 #SBATCH --ntasks-per-node=1          # number of MPI tasks per node
 #SBATCH --gres=gpu:1                 # number of GPUs per node
@@ -7,8 +7,8 @@
 #SBATCH --hint=nomultithread         # we get physical cores not logical
 #SBATCH --time=00:15:00             # maximum execution time (HH:MM:SS)
 #SBATCH --qos=qos_gpu-dev
-#SBATCH --output=logs/funv5_bcv_nta_f0.out # output file name # add %j to id the job
-#SBATCH --error=logs/funv5_bcv_nta_f0.err  # error file name # add %j to id the job
+#SBATCH --output=logs/debug.out # output file name # add %j to id the job
+#SBATCH --error=logs/debug.err  # error file name # add %j to id the job
 #SBATCH -C v100-32g
  
 

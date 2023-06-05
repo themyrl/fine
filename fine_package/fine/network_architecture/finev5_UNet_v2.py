@@ -386,8 +386,13 @@ class Finev5_UNet_v2(SegmentationNetwork):
 
         self.do_fine = [False, False, True, True, True, True]
         self.fine_module_list = []
+        self.fine_downsample_list = []
         for ii in range(len(self.input_sizes)):
             if self.do_fine[ii]:
+                if ii != len(self.input_sizes)-1:
+                    self.fine_downsample_list.append(fine.PatchMerging(dim=self.features_sizes[ii], dim_out=self.features_sizes[ii+1]))
+                else:
+                    self.fine_downsample_list.append(None)
                 self.fine_module_list.append( fine.BasicLayer(
                         dim=self.features_sizes[ii],
                         input_resolution=self.input_sizes[ii],
@@ -402,11 +407,13 @@ class Finev5_UNet_v2(SegmentationNetwork):
                         drop_path=dpr[sum(depths[:ii]):sum(depths[:ii + 1])],
                         # drop_path=dpr[sum(depths[:i_layer]):sum(depths[:i_layer + 1])],
                         norm_layer=nn.LayerNorm,
-                        downsample=fine.PatchMerging,
+                        downsample=None,
                         use_checkpoint=False, gt_num=8, id_layer=ii, vt_map=vt_map,vt_num=1, clip=clip))
             else:
                 self.fine_module_list.append(None)
+                self.fine_downsample_list.append(None)
         self.fine_module_list = nn.ModuleList(self.fine_module_list)
+        self.fine_downsample_list = nn.ModuleList(self.fine_downsample_list)
         ###
 
 
@@ -479,6 +486,13 @@ class Finev5_UNet_v2(SegmentationNetwork):
                 x_out, S, H, W, x, Ws, Wh, Ww, vts_pro = self.fine_module_list[d](x, Ws, Wh, Ww, vt_pos, self.vt_check >= 1, vts_pro)
                 x = x_out.view(-1, S, H, W, self.features_sizes[d]).permute(0, 4, 1, 2, 3).contiguous()
 
+                if self.fine_downsample_list[d] != None:
+                    vts_pro = rearrange(vts_pro, "(b n) g d -> b n g d", b=x.shape[0])
+                    vts_pro = rearrange(vts_pro, "b n g d -> (b g) n d")
+
+                    vts_pro = self.self.fine_downsample_list[d](vts_pro, S//4, H//4, W//4)
+                    vts_pro = rearrange(vts_pro, "(b g) n d -> b n g d", b=x.shape[0])
+                    vts_pro = rearrange(vts_pro, "b n g d -> (b n) g d")
 
 
             if not self.convolutional_pooling:

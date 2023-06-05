@@ -486,10 +486,13 @@ class PatchMerging(nn.Module):
         norm_layer (nn.Module, optional): Normalization layer.  Default: nn.LayerNorm
     """
 
-    def __init__(self, dim, norm_layer=nn.LayerNorm):
+    def __init__(self, dim, norm_layer=nn.LayerNorm, dim_out=None):
         super().__init__()
         self.dim = dim
-        self.reduction = nn.Conv3d(dim,dim*2,kernel_size=2,stride=2)
+        if dim_out == None:
+            self.reduction = nn.Conv3d(dim,dim*2,kernel_size=2,stride=2)
+        else:
+            self.reduction = nn.Conv3d(dim,dim_out,kernel_size=2,stride=2)
         self.norm = norm_layer(dim)
 
     def forward(self, x, S, H, W):

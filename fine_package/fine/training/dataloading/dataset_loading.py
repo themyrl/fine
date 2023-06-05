@@ -88,13 +88,13 @@ def delete_npy(folder):
 
 def load_dataset(folder, num_cases_properties_loading_threshold=1000):
     # we don't load the actual data but instead return the filename to the np file.
-    print('loading dataset')
-    print("folder", folder)
+    # print('loading dataset')
+    # print("folder", folder)
     case_identifiers = get_case_identifiers(folder)
     case_identifiers.sort()
     dataset = OrderedDict()
     for c in case_identifiers:
-        print("--> c", c)
+        # print("--> c", c)
         dataset[c] = OrderedDict()
         dataset[c]['data_file'] = join(folder, "%s.npz" % c)
 

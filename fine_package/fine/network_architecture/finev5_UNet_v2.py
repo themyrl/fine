@@ -487,9 +487,13 @@ class Finev5_UNet_v2(SegmentationNetwork):
                 x = x_out.view(-1, S, H, W, self.features_sizes[d]).permute(0, 4, 1, 2, 3).contiguous()
 
                 if self.fine_downsample_list[d] != None:
+                    print("--> x.shape", x.shape)
+                    print("--> vts_pro", vts_pro.shape)
+
                     vts_pro = rearrange(vts_pro, "(b n) g d -> b n g d", b=x.shape[0])
                     vts_pro = rearrange(vts_pro, "b n g d -> (b g) n d")
-
+                    print("--> vts_pro", vts_pro.shape)
+                    print("\n\n")
                     vts_pro = self.fine_downsample_list[d](vts_pro, S//4, H//4, W//4)
                     vts_pro = rearrange(vts_pro, "(b g) n d -> b n g d", b=x.shape[0])
                     vts_pro = rearrange(vts_pro, "b n g d -> (b n) g d")

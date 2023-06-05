@@ -89,6 +89,7 @@ def delete_npy(folder):
 def load_dataset(folder, num_cases_properties_loading_threshold=1000):
     # we don't load the actual data but instead return the filename to the np file.
     print('loading dataset')
+    print("folder", folder)
     case_identifiers = get_case_identifiers(folder)
     case_identifiers.sort()
     dataset = OrderedDict()

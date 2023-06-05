@@ -23,7 +23,7 @@ from fine.network_architecture.neural_network_ext import SegmentationNetwork
 import torch.nn.functional
 
 import fine.network_architecture.finev5 as fine
-
+from einops import rearrange
 
 class ConvDropoutNormNonlin(nn.Module):
     """

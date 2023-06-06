@@ -483,11 +483,12 @@ class Finev5_UNet_v2(SegmentationNetwork):
             if self.do_fine[d]:
                 Ws, Wh, Ww = x.size(2), x.size(3), x.size(4)
                 x = x.flatten(2).transpose(1, 2)
+                print("--> x.shape", x.shape)
+                print("--> vts_pro", vts_pro.shape)
                 x_out, S, H, W, x, Ws, Wh, Ww, vts_pro = self.fine_module_list[d](x, Ws, Wh, Ww, vt_pos, self.vt_check >= 1, vts_pro)
                 x = x_out.view(-1, S, H, W, self.features_sizes[d]).permute(0, 4, 1, 2, 3).contiguous()
 
                 if self.fine_downsample_list[d] != None:
-                    print("--> x.shape", x.shape)
                     print("--> vts_pro", vts_pro.shape)
 
                     vts_pro = rearrange(vts_pro, "(b n) g d -> b n g d", b=x.shape[0])

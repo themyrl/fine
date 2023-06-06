@@ -30,7 +30,11 @@ if __name__ == '__main__':
 	path = args.path
 	# all_tasks = os.listdir(path)
 	all_tasks = ["Task140_WORD", "Task017_BCV"]
+	all_classes = [16, 13]
+	k=0
 	for task in all_tasks:
+		n_classe = all_classes[k]
+		k+=1
 		all_network = os.listdir(os.path.join(path, task))
 		for network in all_network:
 			# pps = ["fold_0/validation_raw", "fold_0/validation_raw_postprocessed"]
@@ -39,74 +43,74 @@ if __name__ == '__main__':
 			for pp in pps:
 				outpath = os.path.join(path, task, network, "assd_results_{}.json".format(1))
 
-				if not os.path.exists(outpath):
-					try:
-						# network = "{}_IN_LeakyReLU/".format(args.network)
-						# task = "Task{}_{}/".format(args.task, all_tasks[args.task])
+				# if not os.path.exists(outpath):
+				try:
+					# network = "{}_IN_LeakyReLU/".format(args.network)
+					# task = "Task{}_{}/".format(args.task, all_tasks[args.task])
 
-						# pred = "fold_0/validation_raw"
-						# if args.pp:
-							# pred += "_postprocessed"
-						# pred += "/"
-
-
-						target_fold = os.path.join(path, task, network, "gt_niftis/")
-						pred_fold = os.path.join(path, task, network, pp)
-						# outpath = os.path.join(path, task, network, "assd_results_{}.json".format(p))
-
-						print("------------------------------------------------------------------------------")
-						print(pred_fold)
+					# pred = "fold_0/validation_raw"
+					# if args.pp:
+						# pred += "_postprocessed"
+					# pred += "/"
 
 
-						results = {}
-						res_per_classes_ = {}
-						for i in range(1, n_classe+1):
-							res_per_classes_[str(i)] = []
+					target_fold = os.path.join(path, task, network, "gt_niftis/")
+					pred_fold = os.path.join(path, task, network, pp)
+					# outpath = os.path.join(path, task, network, "assd_results_{}.json".format(p))
 
-						# compute assd per patient
-						for i in os.listdir(pred_fold):
-							if "nii.gz" in i:
-								patient_id = i.split(".")[0]
-								print(patient_id)
+					print("------------------------------------------------------------------------------")
+					print(pred_fold)
 
-								res = {}
 
-								target = nib.load(os.path.join(target_fold, i)).get_fdata()
-								pred = nib.load(os.path.join(pred_fold, i)).get_fdata()
+					results = {}
+					res_per_classes_ = {}
+					for i in range(1, n_classe+1):
+						res_per_classes_[str(i)] = []
 
-								# print()
-								# print(np.unique(target))
-								# print(np.unique(pred))
+					# compute assd per patient
+					for i in os.listdir(pred_fold):
+						if "nii.gz" in i:
+							patient_id = i.split(".")[0]
+							print(patient_id)
 
-								for j in range(1, n_classe+1):
-									res[str(j)] = assd(1*(pred == j), 1*(target == j))
-									res_per_classes_[str(j)].append(res[str(j)])
-									print(res[str(j)], end=" ")
+							res = {}
 
-								results[patient_id] = res
-								print("\n\n")
+							target = nib.load(os.path.join(target_fold, i)).get_fdata()
+							pred = nib.load(os.path.join(pred_fold, i)).get_fdata()
 
-						# compute mean and std
-						alls = {}
-						means = []
-						stds = []
-						for i in range(1, n_classe+1):
-							alls[str(i)] = {"mean": np.mean(res_per_classes_[str(i)]),
-											"std": np.std(res_per_classes_[str(i)])}
-							means.append(alls[str(i)]["mean"])
-							stds.append(alls[str(i)]["std"])
+							# print()
+							# print(np.unique(target))
+							# print(np.unique(pred))
 
-						alls["mean_all"] = {"mean": np.mean(means),
-											"std": np.mean(stds)}
+							for j in range(1, n_classe+1):
+								res[str(j)] = assd(1*(pred == j), 1*(target == j))
+								res_per_classes_[str(j)].append(res[str(j)])
+								print(res[str(j)], end=" ")
 
-						print(alls)
+							results[patient_id] = res
+							print("\n\n")
 
-						results["all"] = alls
+					# compute mean and std
+					alls = {}
+					means = []
+					stds = []
+					for i in range(1, n_classe+1):
+						alls[str(i)] = {"mean": np.mean(res_per_classes_[str(i)]),
+										"std": np.std(res_per_classes_[str(i)])}
+						means.append(alls[str(i)]["mean"])
+						stds.append(alls[str(i)]["std"])
 
-						with open(outpath, 'w', encoding='utf-8') as f:
-							json.dump(results, f, ensure_ascii=False, indent=4)
-					except:
-						pass
+					alls["mean_all"] = {"mean": np.mean(means),
+										"std": np.mean(stds)}
+
+					print(alls)
+
+					results["all"] = alls
+
+					with open(outpath, 'w', encoding='utf-8') as f:
+						json.dump(results, f, ensure_ascii=False, indent=4)
+				except:
+					pass
 				else:
 					print("File already exists:", outpath)
 

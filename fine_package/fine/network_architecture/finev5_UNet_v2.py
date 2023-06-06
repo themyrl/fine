@@ -389,11 +389,10 @@ class Finev5_UNet_v2(SegmentationNetwork):
         self.fine_downsample_list = []
         for ii in range(len(self.input_sizes)):
             if self.do_fine[ii]:
-                self.fine_downsample_list.append(fine.PatchMerging(dim=self.features_sizes[ii], dim_out=self.features_sizes[ii+1]))
-                # if ii != len(self.input_sizes)-1:
-                #     self.fine_downsample_list.append(fine.PatchMerging(dim=self.features_sizes[ii], dim_out=self.features_sizes[ii+1]))
-                # else:
-                #     self.fine_downsample_list.append(None)
+                if ii != len(self.input_sizes)-1:
+                    self.fine_downsample_list.append(fine.PatchMerging(dim=self.features_sizes[ii], dim_out=self.features_sizes[ii+1]))
+                else:
+                    self.fine_downsample_list.append(None)
                 self.fine_module_list.append( fine.BasicLayer(
                         dim=self.features_sizes[ii],
                         input_resolution=self.input_sizes[ii],

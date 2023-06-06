@@ -489,6 +489,7 @@ class PatchMerging(nn.Module):
     def __init__(self, dim, norm_layer=nn.LayerNorm, dim_out=None):
         super().__init__()
         self.dim = dim
+        self.dim_out = dim_out
         if dim_out == None:
             self.reduction = nn.Conv3d(dim,dim*2,kernel_size=2,stride=2)
         else:
@@ -511,7 +512,10 @@ class PatchMerging(nn.Module):
         x = self.norm(x)
         x=x.permute(0,4,1,2,3)
         x=self.reduction(x)
-        x=x.permute(0,2,3,4,1).view(B,-1,2*C)
+        if self.dim_out == None:
+            x=x.permute(0,2,3,4,1).view(B,-1,2*C)
+        else:
+            x=x.permute(0,2,3,4,1).view(B,-1,self.dim_out)
         return x
     
 class Patch_Expanding(nn.Module):

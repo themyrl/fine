@@ -28,7 +28,7 @@ export nnUNet_preprocessed="/gpfsscratch/rech/arf/unm89rb/nnUNet_preprocessed"
 export RESULTS_FOLDER="/gpfsscratch/rech/arf/unm89rb/nnUNet_trained_models"
 
 
-srun python fine_package/fine/run/compute_assd.py -network notta_FINEV32NNUNETV2 -task 130 -n_classe 4 #assd, assd_2
+# srun python fine_package/fine/run/compute_assd.py -network notta_FINEV32NNUNETV2 -task 130 -n_classe 4 #assd, assd_2
 
 ### BCV
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2 -task 017 -outpath f0notta_NNUNET -na #nnun_bcv_nta ; nnun_bcv_nta_f0 

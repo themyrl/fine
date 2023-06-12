@@ -15,6 +15,7 @@ if __name__ == '__main__':
 	parser.add_argument("-tta", action="store_true")
 	parser.add_argument("-continu", action="store_true")
 	parser.add_argument("-clip", action="store_true")
+	parser.add_argument("-nodeter", action="store_true")
 
 	args = parser.parse_args()
 
@@ -40,6 +41,7 @@ if __name__ == '__main__':
 	tta = args.tta
 	c = args.continu
 	clip = args.clip
+	deterministic = not args.nodeter
 
 
 	if not ov:
@@ -47,10 +49,10 @@ if __name__ == '__main__':
 		# 	run.main(gpu=g, network='3d_fullres', network_trainer=network_trainer, task=task, fold=0, outpath=outpath, val=False, npz=True, na=na, tta=tta, c=c, clip=clip)
 		# 	run.main(gpu=g, network='3d_fullres', network_trainer=network_trainer, task=task, fold=0, outpath=outpath, val=True, npz=True, na=na, tta=tta, clip=clip)
 		# else:
-		run.main(gpu=g, network='3d_fullres', network_trainer=network_trainer, task=task, fold=0, outpath=outpath, val=False, npz=True, na=na, tta=tta, c=c)
-		run.main(gpu=g, network='3d_fullres', network_trainer=network_trainer, task=task, fold=0, outpath=outpath, val=True, npz=True, na=na, tta=tta)
+		run.main(gpu=g, network='3d_fullres', network_trainer=network_trainer, task=task, fold=0, outpath=outpath, val=False, npz=True, na=na, tta=tta, c=c, deterministic=deterministic)
+		run.main(gpu=g, network='3d_fullres', network_trainer=network_trainer, task=task, fold=0, outpath=outpath, val=True, npz=True, na=na, tta=tta, deterministic=deterministic)
 	else:
 		# if clip:
 		# 	run.main(gpu=g, network='3d_fullres', network_trainer=network_trainer, task=task, fold=0, outpath=outpath, val=True, npz=True, na=na, tta=tta, clip=clip)
 		# else:
-		run.main(gpu=g, network='3d_fullres', network_trainer=network_trainer, task=task, fold=0, outpath=outpath, val=True, npz=True, na=na, tta=tta)
+		run.main(gpu=g, network='3d_fullres', network_trainer=network_trainer, task=task, fold=0, outpath=outpath, val=True, npz=True, na=na, tta=tta, deterministic=deterministic)

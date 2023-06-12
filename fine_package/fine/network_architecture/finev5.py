@@ -419,7 +419,7 @@ class SwinTransformerBlock(nn.Module):
 
 
         if vts_pro != None:
-            vt += vts_pro
+            vt = vt + vts_pro
         else:
             vts_pro = vt
 

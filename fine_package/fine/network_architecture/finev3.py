@@ -443,9 +443,9 @@ class SwinTransformerBlock(nn.Module):
         vts = vts + self.drop_path(self.mlp2(self.norm4(vts)))              #    !!!!!!!! on a modifié ici !!!!!!!!!!
         
         if self.vt_num != 1:
-            print(vts.shape)
+            # print(vts.shape)
             vts = rearrange(vts, "b (g n) c -> b g (n c)", n=self.vt_num)
-            print(vts.shape)
+            # print(vts.shape)
                
 
         # merge windows

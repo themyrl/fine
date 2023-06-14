@@ -410,7 +410,10 @@ class SwinTransformerBlock(nn.Module):
 
             seen_vts = vts[:, (x_windows.shape[0]//B)*self.gt_num:, :]
 
-
+        if self.vt_num != 1:
+            vt = rearrange(vt, "b g (n c) -> b (g n) c", n=self.vt_num)
+            if seen_vts.shape[1] != 0:
+                seen_vts = rearrange(seen_vts, "b g (n c) -> b (g n) c", n=self.vt_num)
         
         skip_vt = vt
 
@@ -439,8 +442,9 @@ class SwinTransformerBlock(nn.Module):
         vts = self.drop_path(vts) + skip_vts               #    !!!!!!!! on a modifié ici !!!!!!!!!!
         vts = vts + self.drop_path(self.mlp2(self.norm4(vts)))              #    !!!!!!!! on a modifié ici !!!!!!!!!!
         
-        # vts = self.vt_attn(vts, None, None)
-        
+        if self.vt_num != 1:
+            vts = rearrange(vts, "b (g n) c -> b g (n c)", n=self.vt_num)
+               
 
         # merge windows
         attn_windows = attn_windows.view(-1, self.window_size, self.window_size, self.window_size, C)
@@ -571,7 +575,7 @@ class BasicLayer(nn.Module):
         # self.global_token = torch.nn.Parameter(torch.randn(gt_num,dim))
         # self.global_token.requires_grad = True
 
-        self.volume_token = torch.nn.Parameter(torch.randn(vt_map[0]*vt_map[1]*vt_map[2],dim))
+        self.volume_token = torch.nn.Parameter(torch.randn(vt_map[0]*vt_map[1]*vt_map[2],vt_num*dim))
         # self.volume_token = torch.nn.Parameter(torch.randn(vt_map[1]*vt_map[2],dim*vt_num))
         self.volume_token.requires_grad = True
 

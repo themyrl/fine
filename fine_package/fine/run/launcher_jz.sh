@@ -32,7 +32,7 @@ export RESULTS_FOLDER="/gpfsscratch/rech/arf/unm89rb/nnUNet_trained_models"
 
 
 ### Ablation
-srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_finev3UNet_v2_abla -task 140 -outpath abla_notta_FINEV32NNUNETV2 -na # at5w ; at10w
+srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_finev3UNet_v2_abla -task 140 -outpath abla_notta_FINEV32NNUNETV2 -na -ntok 5 # at5w ; at10w
 
 
 

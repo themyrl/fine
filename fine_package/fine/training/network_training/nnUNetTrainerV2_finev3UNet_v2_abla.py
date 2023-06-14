@@ -49,7 +49,7 @@ class nnUNetTrainerV2_finev3UNet_v2_abla(nnUNetTrainer):
     """
 
     def __init__(self, plans_file, fold, norm_cfg=None, activation_cfg=None, output_folder=None, dataset_directory=None, batch_dice=True, stage=None,
-                 unpack_data=True, deterministic=True, fp16=False, clip=False, vt_num=1, depths=[2, 2, 2, 2, 2, 2]):
+                 unpack_data=True, deterministic=True, fp16=False, clip=False, vt_num=1, depths=[2, 2, 2, 2, 2, 2], dofine=[0,0,1,1,1,1]):
         super().__init__(plans_file, fold, output_folder, dataset_directory, batch_dice, stage, unpack_data,
                          deterministic, fp16)
         self.max_num_epochs = 1000
@@ -66,6 +66,7 @@ class nnUNetTrainerV2_finev3UNet_v2_abla(nnUNetTrainer):
 
         self.vt_num = vt_num
         self.depths = depths
+        self.dofine = dofine
 
 
 
@@ -190,6 +191,7 @@ class nnUNetTrainerV2_finev3UNet_v2_abla(nnUNetTrainer):
         print("----> max_sizes", max_sizes)
         print("----> self.vt_num", self.vt_num)
         print("----> self.depths", self.depths)
+        print("----> self.dofine", self.dofine)
 
         self.network = Finev3_UNet_v2(self.num_input_channels, self.base_num_features, self.num_classes,
                                     len(self.net_num_pool_op_kernel_sizes),
@@ -199,7 +201,7 @@ class nnUNetTrainerV2_finev3UNet_v2_abla(nnUNetTrainer):
                                     self.net_num_pool_op_kernel_sizes, self.net_conv_kernel_sizes, False, True, True,
                                     patch_size=self.plans['plans_per_stage'][1]['patch_size'], 
                                     vt_map=grid_size, max_imsize=max_sizes, clip=self.clip, vt_num=self.vt_num, 
-                                    depths=self.depths)
+                                    depths=self.depths, dofine=self.dofine)
         print("####\n#### MODEL PARAMS :{}\n####".format(get_n_params(self.network)))
         if torch.cuda.is_available():
             self.network.cuda()

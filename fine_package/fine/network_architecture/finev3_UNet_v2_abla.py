@@ -193,7 +193,7 @@ class Finev3_UNet_v2(SegmentationNetwork):
                  upscale_logits=False, convolutional_pooling=False, convolutional_upsampling=False,
                  max_num_features=None, basic_block=ConvDropoutNormNonlin,
                  seg_output_use_bias=False, patch_size=(64,128,128), vt_map=(3,5,5), max_imsize=[218,660,660], clip=False,
-                 vt_num=1):
+                 vt_num=1, depths=[2, 2, 2, 2, 2, 2]):
         """
         basically more flexible than v1, architecture is the same
 
@@ -380,7 +380,8 @@ class Finev3_UNet_v2(SegmentationNetwork):
         #num_heads=[6, 12, 24, 80]
         num_heads=[1, 2, 4, 8, 10, 10]
         # num_heads=[6, 12, 24, 48]
-        depths=[2, 2, 2, 2, 2, 2]
+        # depths=[2, 2, 2, 2, 2, 2]
+        # depths=[d, 2, 2, 2, 2, 2]
         # depths=[3, 3, 3, 3, 3, 3]
         dpr = [x.item() for x in torch.linspace(0, 0.2, sum(depths))]  # stochastic depth decay rule
 

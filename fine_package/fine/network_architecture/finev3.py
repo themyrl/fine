@@ -330,7 +330,7 @@ class SwinTransformerBlock(nn.Module):
         self.norm1 = norm_layer(dim)
         self.attn = WindowAttention(
             dim, window_size=to_3tuple(self.window_size), num_heads=num_heads,
-            qkv_bias=qkv_bias, qk_scale=qk_scale, attn_drop=attn_drop, proj_drop=drop, gt_num=gt_num)
+            qkv_bias=qkv_bias, qk_scale=qk_scale, attn_drop=attn_drop, proj_drop=drop, gt_num=gt_num*vt_num)
 
         self.drop_path = DropPath(drop_path) if drop_path > 0. else nn.Identity()
         self.norm2 = norm_layer(dim)

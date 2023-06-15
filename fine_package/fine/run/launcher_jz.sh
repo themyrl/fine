@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=at4w     # job name
+#SBATCH --job-name=am4w     # job name
 #SBATCH --ntasks=1                  # number of MP tasks
 #SBATCH --ntasks-per-node=1          # number of MPI tasks per node
 #SBATCH --gres=gpu:1                 # number of GPUs per node
@@ -7,8 +7,8 @@
 #SBATCH --hint=nomultithread         # we get physical cores not logical
 #SBATCH --time=99:02:00             # maximum execution time (HH:MM:SS)
 #SBATCH --qos=qos_gpu-t4
-#SBATCH --output=logs/at4w.out # output file name # add %j to id the job
-#SBATCH --error=logs/at4w.err  # error file name # add %j to id the job
+#SBATCH --output=logs/am4w.out # output file name # add %j to id the job
+#SBATCH --error=logs/am4w.err  # error file name # add %j to id the job
 #SBATCH -C v100-32g
  
 
@@ -33,8 +33,8 @@ export RESULTS_FOLDER="/gpfsscratch/rech/arf/unm89rb/nnUNet_trained_models"
 
 ### Ablation
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_finev3UNet_v2_abla -task 140 -outpath abla_notta_FINEV32NNUNETV2_NT2 -na -ntok 2 # at2w 
-srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_finev3UNet_v2_abla -task 140 -outpath abla_notta_FINEV32NNUNETV2_NT4 -na -ntok 4 # at4w 
-# srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_finev3UNet_v2_abla -task 140 -outpath abla_notta_FINEV32NNUNETV2_M4 -na -depths 4 4 4 4 4 4  # am4w 
+# srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_finev3UNet_v2_abla -task 140 -outpath abla_notta_FINEV32NNUNETV2_NT4 -na -ntok 4 # at4w 
+srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_finev3UNet_v2_abla -task 140 -outpath abla_notta_FINEV32NNUNETV2_M4 -na -depths 4 4 4 4 4 4  # am4w 
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_finev3UNet_v2_abla -task 140 -outpath abla_notta_FINEV32NNUNETV2_M6 -na -depths 6 6 6 6 6 6  # am6w 
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_finev3UNet_v2_abla -task 140 -outpath abla_notta_FINEV32NNUNETV2_L1 -na -dofine 0 0 0 0 0 1  # al1w 
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_finev3UNet_v2_abla -task 140 -outpath abla_notta_FINEV32NNUNETV2_L2 -na -dofine 0 0 0 0 1 1  # al2w 

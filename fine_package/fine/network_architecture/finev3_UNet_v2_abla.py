@@ -204,7 +204,9 @@ class Finev3_UNet_v2(SegmentationNetwork):
         Questions? -> f.isensee@dkfz.de
         """
         super(Finev3_UNet_v2, self).__init__()
-
+        print("-----> depths", depths)
+        print("-----> dofine", dofine)
+        print("-----> vt_num", vt_num)
         # print("\n\n\n\n\nThat's my model !! \n\n\n\n")
         # exit(0)
         self.convolutional_upsampling = convolutional_upsampling

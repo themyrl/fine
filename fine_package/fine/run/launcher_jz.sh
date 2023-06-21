@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=debug_1     # job name
+#SBATCH --job-name=debug_2     # job name
 #SBATCH --ntasks=1                  # number of MP tasks
 #SBATCH --ntasks-per-node=1          # number of MPI tasks per node
 #SBATCH --gres=gpu:1                 # number of GPUs per node
@@ -7,8 +7,8 @@
 #SBATCH --hint=nomultithread         # we get physical cores not logical
 #SBATCH --time=00:10:00             # maximum execution time (HH:MM:SS)
 #SBATCH --qos=qos_gpu-dev
-#SBATCH --output=logs/debug_1.out # output file name # add %j to id the job
-#SBATCH --error=logs/debug_1.err  # error file name # add %j to id the job
+#SBATCH --output=logs/debug_2.out # output file name # add %j to id the job
+#SBATCH --error=logs/debug_2.err  # error file name # add %j to id the job
 #SBATCH -C v100-32g
  
 
@@ -32,8 +32,8 @@ export RESULTS_FOLDER="/gpfsscratch/rech/arf/unm89rb/nnUNet_trained_models"
 
 
 ### Debug
-srun python fine_package/fine/run/run.py -network nnUNetTrainerV2 -task 140 -outpath DEBUG -na #debug_1
-# srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_glamUNet_v2 -task 140 -outpath DEBUG -na #debug_2
+# srun python fine_package/fine/run/run.py -network nnUNetTrainerV2 -task 140 -outpath DEBUG -na #debug_1
+srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_glamUNet_v2 -task 140 -outpath DEBUG -na #debug_2
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_finev3UNet_v2 -task 140 -outpath DEBUG -na #debug_3
 
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_nnFormer -task 140 -outpath DEBUG #debug_4

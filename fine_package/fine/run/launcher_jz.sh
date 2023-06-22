@@ -1,14 +1,14 @@
 #!/bin/bash
-#SBATCH --job-name=debug_8     # job name
+#SBATCH --job-name=al1wev     # job name
 #SBATCH --ntasks=1                  # number of MP tasks
 #SBATCH --ntasks-per-node=1          # number of MPI tasks per node
 #SBATCH --gres=gpu:1                 # number of GPUs per node
 #SBATCH --cpus-per-task=20   #10           # number of cores per tasks
 #SBATCH --hint=nomultithread         # we get physical cores not logical
-#SBATCH --time=00:10:00             # maximum execution time (HH:MM:SS)
-#SBATCH --qos=qos_gpu-dev
-#SBATCH --output=logs/debug_8.out # output file name # add %j to id the job
-#SBATCH --error=logs/debug_8.err  # error file name # add %j to id the job
+#SBATCH --time=99:10:00             # maximum execution time (HH:MM:SS)
+#SBATCH --qos=qos_gpu-t4
+#SBATCH --output=logs/al1wev.out # output file name # add %j to id the job
+#SBATCH --error=logs/al1wev.err  # error file name # add %j to id the job
 #SBATCH -C v100-32g
  
 
@@ -41,7 +41,7 @@ export RESULTS_FOLDER="/gpfsscratch/rech/arf/unm89rb/nnUNet_trained_models"
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_finev3 -task 140 -outpath DEBUG #debug_6
 
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_CoTR_agno -task 140 -outpath DEBUG -na #debug_7
-srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_CoTR_FINE -task 140 -outpath DEBUG -na #debug_8
+# srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_CoTR_FINE -task 140 -outpath DEBUG -na #debug_8
 
 
 
@@ -52,7 +52,7 @@ srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_CoTR_FINE -tas
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_finev3UNet_v2_abla -task 140 -outpath abla_notta_FINEV32NNUNETV2_NT3 -na -only_val -ntok 3 # at3w; at3wev
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_finev3UNet_v2_abla -task 140 -outpath abla_notta_FINEV32NNUNETV2_M4 -na -only_val -depths 4 4 4 4 4 4  # am4w; am4wev
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_finev3UNet_v2_abla -task 140 -outpath abla_notta_FINEV32NNUNETV2_M6 -na -only_val -depths 6 6 6 6 6 6  # am6w; am6wev
-# srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_finev3UNet_v2_abla -task 140 -outpath abla_notta_FINEV32NNUNETV2_L1 -na -only_val -dofine 0 0 0 0 0 1  # al1w; al1wev
+srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_finev3UNet_v2_abla -task 140 -outpath abla_notta_FINEV32NNUNETV2_L1 -na -only_val -dofine 0 0 0 0 0 1  # al1w; al1wev
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_finev3UNet_v2_abla -task 140 -outpath abla_notta_FINEV32NNUNETV2_L2 -na -only_val -dofine 0 0 0 0 1 1  # al2w; al2wev
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_finev3UNet_v2_abla -task 140 -outpath abla_notta_FINEV32NNUNETV2_L3 -na -only_val -dofine 0 0 0 1 1 1  # al3w; al3wev
 

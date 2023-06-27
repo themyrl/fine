@@ -16,6 +16,7 @@ if __name__ == '__main__':
 	parser.add_argument("-continu", action="store_true")
 	parser.add_argument("-clip", action="store_true")
 	parser.add_argument("-nodeter", action="store_true")
+	parser.add_argument("-visu", action="store_true")
 	parser.add_argument("-ntok", type=int, default=1)
 	parser.add_argument("-depths", nargs='+', type=int, default=[2])
 	parser.add_argument("-dofine", nargs='+', type=int, default=[0,0,1,1,1,1])
@@ -46,6 +47,7 @@ if __name__ == '__main__':
 	clip = args.clip
 	deterministic = not args.nodeter
 	ntok = args.ntok
+	visu = args.visu
 	depths = args.depths
 	if len(depths) == 1:
 		depths = [depths[0] for i in range(6)]
@@ -72,8 +74,8 @@ if __name__ == '__main__':
 	else:
 		if ntok != 1 or depths != [2, 2, 2, 2, 2, 2]  or dofine!=[0,0,1,1,1,1]:
 			run.main(gpu=g, network='3d_fullres', network_trainer=network_trainer, task=task, fold=0, outpath=outpath, val=True, npz=True, na=na, tta=tta, deterministic=deterministic, 
-				vt_num=ntok, depths=depths, dofine=dofine)
+				vt_num=ntok, depths=depths, dofine=dofine, visu=visu)
 		# if clip:
 		# 	run.main(gpu=g, network='3d_fullres', network_trainer=network_trainer, task=task, fold=0, outpath=outpath, val=True, npz=True, na=na, tta=tta, clip=clip)
 		else:
-			run.main(gpu=g, network='3d_fullres', network_trainer=network_trainer, task=task, fold=0, outpath=outpath, val=True, npz=True, na=na, tta=tta, deterministic=deterministic)
+			run.main(gpu=g, network='3d_fullres', network_trainer=network_trainer, task=task, fold=0, outpath=outpath, val=True, npz=True, na=na, tta=tta, deterministic=deterministic, visu=visu)

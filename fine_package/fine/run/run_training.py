@@ -190,7 +190,7 @@ def main(gpu, network, network_trainer, task, fold, outpath, val, npz, c=False, 
 
         # predict validation
         if visu:
-            trainer.validate(idx=idx, save_softmax=npz, validation_folder_name=val_folder, do_mirroring=False, overwrite=True)
+            trainer.validate(save_softmax=npz, validation_folder_name=val_folder, do_mirroring=False, overwrite=True)
         else:
             trainer.validate(save_softmax=npz, validation_folder_name=val_folder, do_mirroring=tta, overwrite=False)
 

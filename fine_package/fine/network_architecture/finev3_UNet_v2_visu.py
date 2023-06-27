@@ -445,6 +445,9 @@ class Finev3_UNet_v2_visu(SegmentationNetwork):
             self.apply(self.weightInitializer)
             # self.apply(print_module_training_status)
 
+        self.idx = 0
+        self.path_visu = "/gpfsscratch/rech/arf/unm89rb/nnUNet_trained_models/nnUNet/3d_fullres_nnUNetPlansv2.1/Task140_WORD/visu_notta_FINEV32NNUNETV2_IN_LeakyReLU/visu/"
+
     def forward(self, x, pos=None):
         B = x.shape[0]
         vt_pos = []
@@ -501,6 +504,8 @@ class Finev3_UNet_v2_visu(SegmentationNetwork):
 
         self.vt_check += tmp_check.sum(dim=0)
 
+        torch.save(seg_outputs[-1], self.path_visu+"idx_{}__seg.pt")
+        self.idx += 1
 
         if self._deep_supervision and self.do_ds:
             ret = tuple([seg_outputs[-1]] + [i(j) for i, j in

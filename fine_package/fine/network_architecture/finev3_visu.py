@@ -278,8 +278,8 @@ class WindowAttention(nn.Module):
         else:
             attn = self.softmax(attn)
 
-        print("--------> attn" ,attn.shape)
-        exit(0)
+        # print("--------> attn" ,attn.shape)
+        # exit(0)
         attn = self.attn_drop(attn)
 
         x = (attn @ v).transpose(1, 2).reshape(B_, N, C)

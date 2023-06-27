@@ -504,7 +504,7 @@ class Finev3_UNet_v2_visu(SegmentationNetwork):
 
         self.vt_check += tmp_check.sum(dim=0)
 
-        torch.save(seg_outputs[-1], self.path_visu+"idx_{}__seg.pt")
+        torch.save(seg_outputs[-1], self.path_visu+"idx_{}__seg.pt".format(self.idx))
         self.idx += 1
 
         if self._deep_supervision and self.do_ds:

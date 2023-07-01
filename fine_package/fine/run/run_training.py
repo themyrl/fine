@@ -13,10 +13,12 @@ from fine.training.network_training.nnUNetTrainer import nnUNetTrainer
 from nnunet.utilities.task_name_id_conversion import convert_id_to_task_name
 import os
 import fine
+
+import time
 # import telegram_send as ts
 # os.environ['nnUNet_raw_data_base'] = '/local/DEEPLEARNING/MULTI_ATLAS/MULTI_ATLAS/Task017_BCV/'
 def main(gpu, network, network_trainer, task, fold, outpath, val, npz, c=False, ep=1000, lr=1e-2, 
-    pretrained_weights=None, na=False, vt_map=(3,5,5,1), dbg=False, visu=False, idx=None, tta=True, clip=False,
+    pretrained_weights=None, na=False, vt_map=(3,5,5,1), dbg=False, visu=False, idx=-1, tta=True, clip=False,
     deterministic = True, vt_num=1, depths=[2, 2, 2, 2, 2, 2], dofine=[0,0,1,1,1,1]):
     # if not dbg:
         # ts.send(messages=[network_trainer+" "+task +" "+ str(fold) +" "+ outpath +" val="+ str(val)+" ..."])
@@ -190,7 +192,7 @@ def main(gpu, network, network_trainer, task, fold, outpath, val, npz, c=False, 
 
         # predict validation
         if visu:
-            trainer.validate(save_softmax=npz, validation_folder_name=val_folder, do_mirroring=False, overwrite=True)
+            trainer.validate(save_softmax=npz, validation_folder_name=val_folder, do_mirroring=False, overwrite=True, idx=idx)        
         else:
             trainer.validate(save_softmax=npz, validation_folder_name=val_folder, do_mirroring=tta, overwrite=False)
 

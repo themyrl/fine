@@ -553,7 +553,7 @@ class nnUNetTrainer(NetworkTrainer):
     def validate(self, do_mirroring: bool = True, use_sliding_window: bool = True, step_size: float = 0.5,
                  save_softmax: bool = True, use_gaussian: bool = True, overwrite: bool = True,
                  validation_folder_name: str = 'validation_raw', debug: bool = False, all_in_gpu: bool = False,
-                 segmentation_export_kwargs: dict = None):
+                 segmentation_export_kwargs: dict = None, idx: int = -1):
         """
         if debug=True then the temporary files generated for postprocessing determination will be kept
         """
@@ -609,7 +609,11 @@ class nnUNetTrainer(NetworkTrainer):
         export_pool = Pool(default_num_threads)
         results = []
 
-        for k in self.dataset_val.keys():
+        all_keys = self.dataset_val.keys()
+        if idx != -1:
+            all_keys = [all_keys[idx]]
+        for k in all_keys:
+        # for k in self.dataset_val.keys():
             properties = load_pickle(self.dataset[k]['properties_file'])
             fname = properties['list_of_data_files'][0].split("/")[-1][:-12]
             if overwrite or (not isfile(join(output_folder, fname + ".nii.gz"))) or \

@@ -673,6 +673,7 @@ class BasicLayer(nn.Module):
                 x = checkpoint.checkpoint(blk, x, attn_mask)
             else:
                 # check = (self.vt_check.sum() >= self.vt_map[0]*self.vt_map[1]*self.vt_map[2])
+                print("visu", idx, lyr, bii)
                 x, vts = blk(x, attn_mask, vts, vt_pos, check, idx=idx, lyr=lyr, blc=bii)
         if self.downsample is not None:
             x_down = self.downsample(x, S, H, W)

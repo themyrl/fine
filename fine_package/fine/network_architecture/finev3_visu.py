@@ -160,7 +160,7 @@ class ClassicAttention(nn.Module):
             
         attn = self.softmax(attn)
 
-        pth = "idx_{}__lyr_{}__blc_{}__B.pt".format(idx, lyr, blc)
+        pth = PTHVISU + "idx_{}__lyr_{}__blc_{}__B.pt".format(idx, lyr, blc)
         torch.save(attn, pth)
 
         attn = self.attn_drop(attn)
@@ -284,7 +284,7 @@ class WindowAttention(nn.Module):
         else:
             attn = self.softmax(attn)
 
-        pth = "idx_{}__lyr_{}__blc_{}__A.pt".format(idx, lyr, blc)
+        pth = PTHVISU + "idx_{}__lyr_{}__blc_{}__A.pt".format(idx, lyr, blc)
         torch.save(attn, pth)
 
         # print("--------> attn" ,attn.shape)
@@ -673,7 +673,6 @@ class BasicLayer(nn.Module):
                 x = checkpoint.checkpoint(blk, x, attn_mask)
             else:
                 # check = (self.vt_check.sum() >= self.vt_map[0]*self.vt_map[1]*self.vt_map[2])
-                print("visu", idx, lyr, bii)
                 x, vts = blk(x, attn_mask, vts, vt_pos, check, idx=idx, lyr=lyr, blc=bii)
         if self.downsample is not None:
             x_down = self.downsample(x, S, H, W)

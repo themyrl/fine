@@ -37,6 +37,8 @@ SYNAPSE_MAX=[218,660,660]
 #MAX NCROP : 2 2 \2
 BRAIN_TUMOR_MAX=[149,187,160]
 
+PTHVISU = "/gpfsscratch/rech/arf/unm89rb/nnUNet_trained_models/nnUNet/3d_fullres_nnUNetPlansv2.1/Task140_WORD/visu_notta_FINEV32NNUNETV2_IN_LeakyReLU/visu/"
+
 class Mlp(nn.Module):
     """ Multilayer perceptron."""
 
@@ -122,7 +124,7 @@ class ClassicAttention(nn.Module):
         self.softmax = nn.Softmax(dim=-1)
 
 
-    def forward(self, x, pe, mask=None):
+    def forward(self, x, pe, mask=None, idx=-1, lyr=-1, blc=-1):
         """
         Args:
             x: input features with shape of (num_windows*B, N, C)
@@ -157,6 +159,10 @@ class ClassicAttention(nn.Module):
             attn = attn + repeat(mask, "b m n -> b h m n", h=self.num_heads)
             
         attn = self.softmax(attn)
+
+        pth = "idx_{}__lyr_{}__blc_{}__B.pt".format(idx, lyr, blc)
+        torch.save(attn, pth)
+
         attn = self.attn_drop(attn)
 
         x = (attn @ v).transpose(1, 2).reshape(B_, N, C)
@@ -236,7 +242,7 @@ class WindowAttention(nn.Module):
         trunc_normal_(self.relative_position_bias_table, std=.02)
         self.softmax = nn.Softmax(dim=-1)
 
-    def forward(self, x, mask=None, gt=None):
+    def forward(self, x, mask=None, gt=None, idx=-1, lyr=-1, blc=-1):
         """ Forward function.
 
         Args:
@@ -277,6 +283,9 @@ class WindowAttention(nn.Module):
             attn = self.softmax(attn)
         else:
             attn = self.softmax(attn)
+
+        pth = "idx_{}__lyr_{}__blc_{}__A.pt".format(idx, lyr, blc)
+        torch.save(attn, pth)
 
         # print("--------> attn" ,attn.shape)
         # exit(0)
@@ -347,7 +356,7 @@ class SwinTransformerBlock(nn.Module):
                                             qkv_bias=qkv_bias, qk_scale=qk_scale, attn_drop=attn_drop, 
                                             proj_drop=drop)
 
-    def forward(self, x, mask_matrix, vts, vt_pos, check):
+    def forward(self, x, mask_matrix, vts, vt_pos, check, idx=-1, lyr=-1, blc=-1):
         """ Forward function.
 
         Args:
@@ -419,7 +428,7 @@ class SwinTransformerBlock(nn.Module):
         
         skip_vt = vt
 
-        attn_windows, vt = self.attn(x_windows, mask=attn_mask, gt=vt)  
+        attn_windows, vt = self.attn(x_windows, mask=attn_mask, gt=vt, idx=idx, lyr=lyr, blc=blc)  
 
         vt = skip_vt + self.drop_path(vt)
         vt = vt + self.drop_path(self.mlp(self.norm2(vt)))
@@ -440,7 +449,7 @@ class SwinTransformerBlock(nn.Module):
 
         skip_vts = vts                #    !!!!!!!! on a modifié ici !!!!!!!!!!
         vts = self.norm3(vts)
-        vts = self.vt_attn(vts, None, None)             #    !!!!!!!! on a modifié ici !!!!!!!!!!
+        vts = self.vt_attn(vts, None, None, idx=idx, lyr=lyr, blc=blc)             #    !!!!!!!! on a modifié ici !!!!!!!!!!
         vts = self.drop_path(vts) + skip_vts               #    !!!!!!!! on a modifié ici !!!!!!!!!!
         vts = vts + self.drop_path(self.mlp2(self.norm4(vts)))              #    !!!!!!!! on a modifié ici !!!!!!!!!!
         
@@ -597,7 +606,8 @@ class BasicLayer(nn.Module):
                 qk_scale=qk_scale,
                 drop=drop,
                 attn_drop=attn_drop,
-                drop_path=drop_path[i] if isinstance(drop_path, list) else drop_path, norm_layer=norm_layer,gt_num=gt_num,vt_num=vt_num, clip=clip)
+                drop_path=drop_path[i] if isinstance(drop_path, list) else drop_path, 
+                norm_layer=norm_layer,gt_num=gt_num,vt_num=vt_num, clip=clip)
             for i in range(depth)])
 
         # if self.vt_map==(3,5,5):
@@ -619,7 +629,7 @@ class BasicLayer(nn.Module):
         else:
             self.downsample = None
 
-    def forward(self, x, S, H, W, vt_pos, check):
+    def forward(self, x, S, H, W, vt_pos, check, idx=-1, lyr=-1):
         """ Forward function.
 
         Args:
@@ -657,13 +667,13 @@ class BasicLayer(nn.Module):
         # gt = self.global_token
         vts = self.volume_token
         # self.vt_check[vt_pos] += 1
-        for blk in self.blocks:
+        for bii, blk in enumerate(self.blocks):
             blk.H, blk.W = H, W
             if self.use_checkpoint:
                 x = checkpoint.checkpoint(blk, x, attn_mask)
             else:
                 # check = (self.vt_check.sum() >= self.vt_map[0]*self.vt_map[1]*self.vt_map[2])
-                x, vts = blk(x, attn_mask, vts, vt_pos, check)
+                x, vts = blk(x, attn_mask, vts, vt_pos, check, idx=idx, lyr=lyr, blc=bii)
         if self.downsample is not None:
             x_down = self.downsample(x, S, H, W)
             Ws, Wh, Ww = (S + 1) // 2, (H + 1) // 2, (W + 1) // 2

@@ -478,7 +478,7 @@ class Finev3_UNet_v2_visu(SegmentationNetwork):
             if self.do_fine[d]:
                 Ws, Wh, Ww = x.size(2), x.size(3), x.size(4)
                 x = x.flatten(2).transpose(1, 2)
-                x_out, S, H, W, x, Ws, Wh, Ww = self.fine_module_list[d](x, Ws, Wh, Ww, vt_pos, self.vt_check >= 1)
+                x_out, S, H, W, x, Ws, Wh, Ww = self.fine_module_list[d](x, Ws, Wh, Ww, vt_pos, self.vt_check >= 1, idx=self.idx, lyr=d)
                 x = x_out.view(-1, S, H, W, self.features_sizes[d]).permute(0, 4, 1, 2, 3).contiguous()
 
 
@@ -493,7 +493,7 @@ class Finev3_UNet_v2_visu(SegmentationNetwork):
         if self.do_fine[-1]:
             Ws, Wh, Ww = x.size(2), x.size(3), x.size(4)
             x = x.flatten(2).transpose(1, 2)
-            x_out, S, H, W, x, Ws, Wh, Ww = self.fine_module_list[-1](x, Ws, Wh, Ww, vt_pos, self.vt_check >= 1)
+            x_out, S, H, W, x, Ws, Wh, Ww = self.fine_module_list[-1](x, Ws, Wh, Ww, vt_pos, self.vt_check >= 1, idx=self.idx, lyr=len(self.fine_module_list)-1)
             x = x_out.view(-1, S, H, W, self.features_sizes[-1]).permute(0, 4, 1, 2, 3).contiguous()
 
         for u in range(len(self.tu)):

@@ -5,7 +5,7 @@
 #SBATCH --gres=gpu:1                 # number of GPUs per node
 #SBATCH --cpus-per-task=20   #10           # number of cores per tasks
 #SBATCH --hint=nomultithread         # we get physical cores not logical
-#SBATCH --time=20:30:00             # maximum execution time (HH:MM:SS)
+#SBATCH --time=20:00:00             # maximum execution time (HH:MM:SS)
 #SBATCH --qos=qos_gpu-t3
 #SBATCH --output=logs/ofw_e.out # output file name # add %j to id the job
 #SBATCH --error=logs/ofw_e.err  # error file name # add %j to id the job

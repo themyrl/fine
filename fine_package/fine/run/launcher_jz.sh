@@ -1,14 +1,14 @@
 #!/bin/bash
-#SBATCH --job-name=ofl     # job name
+#SBATCH --job-name=ofw_e     # job name
 #SBATCH --ntasks=1                  # number of MP tasks
 #SBATCH --ntasks-per-node=1          # number of MPI tasks per node
 #SBATCH --gres=gpu:1                 # number of GPUs per node
 #SBATCH --cpus-per-task=20   #10           # number of cores per tasks
 #SBATCH --hint=nomultithread         # we get physical cores not logical
-#SBATCH --time=99:30:00             # maximum execution time (HH:MM:SS)
-#SBATCH --qos=qos_gpu-t4
-#SBATCH --output=logs/ofl.out # output file name # add %j to id the job
-#SBATCH --error=logs/ofl.err  # error file name # add %j to id the job
+#SBATCH --time=20:30:00             # maximum execution time (HH:MM:SS)
+#SBATCH --qos=qos_gpu-t3
+#SBATCH --output=logs/ofw_e.out # output file name # add %j to id the job
+#SBATCH --error=logs/ofw_e.err  # error file name # add %j to id the job
 #SBATCH -C v100-32g
  
 
@@ -47,8 +47,8 @@ export RESULTS_FOLDER="/gpfsscratch/rech/arf/unm89rb/nnUNet_trained_models"
 
 ### FINE
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_fine -task 017 -outpath mlmi_notta_fine # ofb
-# srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_fine -task 140 -outpath mlmi_notta_fine # ofw
-srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_fine -task 130 -outpath mlmi_notta_fine # ofl
+srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_fine -task 140 -outpath mlmi_notta_fine -only_val # ofw, ofw_e
+# srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_fine -task 130 -outpath mlmi_notta_fine -only_val # ofl; ofl_e
 
 
 

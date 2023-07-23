@@ -34,6 +34,10 @@ from torch import nn
 from torch.cuda.amp import autocast
 from nnunet.training.learning_rate.poly_lr import poly_lr
 from batchgenerators.utilities.file_and_folder_operations import *
+
+import time
+
+
 def get_n_params(model):
     pp=0
     for p in list(model.parameters()):
@@ -247,6 +251,7 @@ class nnUNetTrainerV2_finev3UNet_v2_visu(nnUNetTrainer):
         """
         ds = self.network.do_ds
         self.network.do_ds = False
+
         ret = super().predict_preprocessed_data_return_seg_and_softmax(data,
                                                                        do_mirroring=do_mirroring,
                                                                        mirror_axes=mirror_axes,

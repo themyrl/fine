@@ -612,6 +612,8 @@ class nnUNetTrainer(NetworkTrainer):
         all_keys = self.dataset_val.keys()
         if idx != -1:
             all_keys = [list(all_keys)[idx]]
+        print("--------> all_keys", all_keys)
+        exit(0)
         for k in all_keys:
         # for k in self.dataset_val.keys():
             properties = load_pickle(self.dataset[k]['properties_file'])
@@ -680,9 +682,12 @@ class nnUNetTrainer(NetworkTrainer):
         # except the largest connected component for each class. To see if this improves results, we do this for all
         # classes and then rerun the evaluation. Those classes for which this resulted in an improved dice score will
         # have this applied during inference as well
-        self.print_to_log_file("determining postprocessing")
-        determine_postprocessing(self.output_folder, self.gt_niftis_folder, validation_folder_name,
+        if idx == -1:
+            self.print_to_log_file("determining postprocessing")
+            determine_postprocessing(self.output_folder, self.gt_niftis_folder, validation_folder_name,
                                  final_subf_name=validation_folder_name + "_postprocessed", debug=debug)
+        else:
+            print("Only visu; no postprod")
         # after this the final predictions for the vlaidation set can be found in validation_folder_name_base + "_postprocessed"
         # They are always in that folder, even if no postprocessing as applied!
 

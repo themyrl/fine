@@ -612,8 +612,8 @@ class nnUNetTrainer(NetworkTrainer):
         all_keys = self.dataset_val.keys()
         if idx != -1:
             all_keys = [list(all_keys)[idx]]
-        print("--------> all_keys", all_keys)
-        exit(0)
+        # print("--------> all_keys", all_keys)
+        # exit(0)
         for k in all_keys:
         # for k in self.dataset_val.keys():
             properties = load_pickle(self.dataset[k]['properties_file'])

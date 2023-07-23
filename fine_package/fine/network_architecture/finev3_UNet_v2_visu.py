@@ -470,10 +470,10 @@ class Finev3_UNet_v2_visu(SegmentationNetwork):
         skips = []
         seg_outputs = []
 
-        print("------> input x", x.shape)
+        # print("------> input x", x.shape)
         for d in range(len(self.conv_blocks_context) - 1):
             x = self.conv_blocks_context[d](x)
-            print("------> inp {} x".format(d), x.shape)
+            # print("------> inp {} x".format(d), x.shape)
 
             skips.append(x)
 
@@ -489,11 +489,11 @@ class Finev3_UNet_v2_visu(SegmentationNetwork):
 
             if not self.convolutional_pooling:
                 x = self.td[d](x)
-            print("------> pool {} x".format(d), x.shape)
+            # print("------> pool {} x".format(d), x.shape)
 
         x = self.conv_blocks_context[-1](x)
-        print("------> bottle x", x.shape)
-        exit(0)
+        # print("------> bottle x", x.shape)
+        # exit(0)
 
         if self.do_fine[-1]:
             Ws, Wh, Ww = x.size(2), x.size(3), x.size(4)

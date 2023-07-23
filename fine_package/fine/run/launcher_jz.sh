@@ -53,7 +53,7 @@ export RESULTS_FOLDER="/gpfsscratch/rech/arf/unm89rb/nnUNet_trained_models"
 
 
 ### Visu
-srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_finev3UNet_v2_visu -task 140 -outpath visu_notta_FINEV32NNUNETV2 -na -only_val -visu -idx 1 # visu
+srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_finev3UNet_v2_visu -task 140 -outpath visu_notta_FINEV32NNUNETV2 -na -only_val -visu -idx 4 # visu
 
 
 ### Ablation

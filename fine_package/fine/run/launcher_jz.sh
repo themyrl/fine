@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -A arf@a100
+#SBATCH -A arf@v100
 #SBATCH --job-name=fbv1     # job name
 #SBATCH --ntasks=1                  # number of MP tasks
 #SBATCH --ntasks-per-node=1          # number of MPI tasks per node
@@ -10,7 +10,7 @@
 #SBATCH --qos=qos_gpu-dev
 #SBATCH --output=logs/fbv1.out # output file name # add %j to id the job
 #SBATCH --error=logs/fbv1.err  # error file name # add %j to id the job
-#SBATCH -C a100
+#SBATCH -C v100-32g
  
 
 cd $WORK/fine

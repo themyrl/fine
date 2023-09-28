@@ -9,7 +9,7 @@
 #SBATCH --qos=qos_gpu-dev
 #SBATCH --output=logs/fbv1.out # output file name # add %j to id the job
 #SBATCH --error=logs/fbv1.err  # error file name # add %j to id the job
-#SBATCH -C v100-32g
+#SBATCH -C a100
  
 
 cd $WORK/fine

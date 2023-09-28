@@ -1,4 +1,5 @@
 #!/bin/bash
+#SBATCH -A arf@a100
 #SBATCH --job-name=fbv1     # job name
 #SBATCH --ntasks=1                  # number of MP tasks
 #SBATCH --ntasks-per-node=1          # number of MPI tasks per node

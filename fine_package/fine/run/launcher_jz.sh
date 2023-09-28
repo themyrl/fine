@@ -1,14 +1,14 @@
 #!/bin/bash
-#SBATCH --job-name=visu     # job name
+#SBATCH --job-name=fbv1     # job name
 #SBATCH --ntasks=1                  # number of MP tasks
 #SBATCH --ntasks-per-node=1          # number of MPI tasks per node
 #SBATCH --gres=gpu:1                 # number of GPUs per node
 #SBATCH --cpus-per-task=20   #10           # number of cores per tasks
 #SBATCH --hint=nomultithread         # we get physical cores not logical
-#SBATCH --time=02:05:00             # maximum execution time (HH:MM:SS)
-#SBATCH --qos=qos_gpu-t3
-#SBATCH --output=logs/visu.out # output file name # add %j to id the job
-#SBATCH --error=logs/visu.err  # error file name # add %j to id the job
+#SBATCH --time=00:05:00             # maximum execution time (HH:MM:SS)
+#SBATCH --qos=qos_gpu-dev
+#SBATCH --output=logs/fbv1.out # output file name # add %j to id the job
+#SBATCH --error=logs/fbv1.err  # error file name # add %j to id the job
 #SBATCH -C v100-32g
  
 
@@ -29,6 +29,10 @@ export RESULTS_FOLDER="/gpfsscratch/rech/arf/unm89rb/nnUNet_trained_models"
 
 
 # srun python fine_package/fine/run/compute_assd.py -network notta_FINEV32NNUNETV2 -task 130 -n_classe 4 #assd, assd_2
+
+
+### MLMI FINE
+srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_fine -task 017 -outpath mlmi_notta_fine_boostv1 # fbv1
 
 
 ### Debug
@@ -53,7 +57,7 @@ export RESULTS_FOLDER="/gpfsscratch/rech/arf/unm89rb/nnUNet_trained_models"
 
 
 ### Visu
-srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_finev3UNet_v2_visu -task 140 -outpath visu_notta_FINEV32NNUNETV2 -na -only_val -visu -idx 4 # visu
+# srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_finev3UNet_v2_visu -task 140 -outpath visu_notta_FINEV32NNUNETV2 -na -only_val -visu -idx 4 # visu
 
 
 ### Ablation

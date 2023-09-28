@@ -36,8 +36,6 @@ from nnunet.training.learning_rate.poly_lr import poly_lr
 from batchgenerators.utilities.file_and_folder_operations import *
 
 import time
-
-
 def get_n_params(model):
     pp=0
     for p in list(model.parameters()):

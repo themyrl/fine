@@ -19,7 +19,7 @@ import time
 # os.environ['nnUNet_raw_data_base'] = '/local/DEEPLEARNING/MULTI_ATLAS/MULTI_ATLAS/Task017_BCV/'
 def main(gpu, network, network_trainer, task, fold, outpath, val, npz, c=False, ep=1000, lr=1e-2, 
     pretrained_weights=None, na=False, vt_map=(3,5,5,1), dbg=False, visu=False, idx=-1, tta=True, clip=False,
-    deterministic = True, vt_num=1, depths=[2, 2, 2, 2, 2, 2], dofine=[0,0,1,1,1,1]):
+    deterministic = True, vt_num=1, depths=[2, 2, 2, 2, 2, 2], dofine=[0,0,1,1,1,1], vb=False):
     # if not dbg:
         # ts.send(messages=[network_trainer+" "+task +" "+ str(fold) +" "+ outpath +" val="+ str(val)+" ..."])
 
@@ -106,7 +106,7 @@ def main(gpu, network, network_trainer, task, fold, outpath, val, npz, c=False, 
     # deterministic = args.deterministic
     # deterministic = True
     # valbest = args.valbest
-    valbest = False
+    valbest = vb
     # valbest = True
 
     # fp32 = args.fp32

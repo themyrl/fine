@@ -32,7 +32,7 @@ def get_n_params(model):
             nn = nn*s
         pp += nn
     return pp
-class nnUNetTrainerV2_fine(nnUNetTrainer):
+class nnUNetTrainerV2_fine_b4(nnUNetTrainer):
 
     def __init__(self, plans_file, fold, output_folder=None, dataset_directory=None, batch_dice=True, stage=None,
                  unpack_data=True, deterministic=True, fp16=False, vt_map=None):
@@ -42,7 +42,7 @@ class nnUNetTrainerV2_fine(nnUNetTrainer):
         # print("!!! OK !!!")
         # exit(0)
         # self.max_num_epochs = 1000 #classic
-        self.max_num_epochs = 1000 # boostv1
+        self.max_num_epochs = 1200 # boostv1
         self.initial_lr = 1e-2
         self.deep_supervision_scales = None
         self.ds_loss_weights = None
@@ -178,6 +178,7 @@ class nnUNetTrainerV2_fine(nnUNetTrainer):
         print('  + Number of Network Params: %.2f(e6)' % (total / 1e6))
 
         print("####\n#### MODEL PARAMS :{}\n####".format(get_n_params(self.network)))
+        print("------> epochs: {}".format(self.max_num_epochs))
         # exit(0)
 
         if torch.cuda.is_available():

@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -A arf@v100
-#SBATCH --job-name=fbv3c60l4     # job name
+#SBATCH --job-name=fbv3c50l3     # job name
 #SBATCH --ntasks=1                  # number of MP tasks
 #SBATCH --ntasks-per-node=1          # number of MPI tasks per node
 #SBATCH --gres=gpu:1                 # number of GPUs per node
@@ -8,8 +8,8 @@
 #SBATCH --hint=nomultithread         # we get physical cores not logical
 #SBATCH --time=10:05:00             # maximum execution time (HH:MM:SS)
 #SBATCH --qos=qos_gpu-t3
-#SBATCH --output=logs/fbv3c60l4.out # output file name # add %j to id the job
-#SBATCH --error=logs/fbv3c60l4.err  # error file name # add %j to id the job
+#SBATCH --output=logs/fbv3c50l3.out # output file name # add %j to id the job
+#SBATCH --error=logs/fbv3c50l3.err  # error file name # add %j to id the job
 #SBATCH -C v100-32g
  
 
@@ -40,8 +40,8 @@ export RESULTS_FOLDER="/gpfsscratch/rech/arf/unm89rb/nnUNet_trained_models"
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_fine -task 017 -outpath mlmi_notta_fine_boostv2 # fbv2 # mlmi based
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_fine_b3 -task 017 -outpath mlmi_notta_fine_boostv3 # fbv3 # no deter
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_fine_b3 -task 017 -outpath mlmi_notta_fine_boostv3_m10l4 -ep 10 -lr 1e-4 -prett /gpfsscratch/rech/arf/unm89rb/nnUNet_trained_models/nnUNet/3d_fullres_nnUNetPlansv2.1/Task017_BCV/mlmi_notta_fine_boostv3_IN_LeakyReLU/fold_0/model_final_checkpoint.model     # fbv3c10l4 # no deter
-srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_fine_b3 -task 017 -outpath mlmi_notta_fine_boostv3_m60l4 -ep 50 -lr 1e-4 -prett /gpfsscratch/rech/arf/unm89rb/nnUNet_trained_models/nnUNet/3d_fullres_nnUNetPlansv2.1/Task017_BCV/mlmi_notta_fine_boostv3_m10l4_IN_LeakyReLU/fold_0/model_final_checkpoint.model     # fbv3c60l4 # no deter
-# srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_fine_b3 -task 017 -outpath mlmi_notta_fine_boostv3_m10l3 -ep 10 -lr 1e-3 -prett /gpfsscratch/rech/arf/unm89rb/nnUNet_trained_models/nnUNet/3d_fullres_nnUNetPlansv2.1/Task017_BCV/mlmi_notta_fine_boostv3_IN_LeakyReLU/fold_0/model_final_checkpoint.model     # fbv3c10l3 # no deter
+# srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_fine_b3 -task 017 -outpath mlmi_notta_fine_boostv3_m60l4 -ep 50 -lr 1e-4 -prett /gpfsscratch/rech/arf/unm89rb/nnUNet_trained_models/nnUNet/3d_fullres_nnUNetPlansv2.1/Task017_BCV/mlmi_notta_fine_boostv3_m10l4_IN_LeakyReLU/fold_0/model_final_checkpoint.model     # fbv3c60l4 # no deter
+srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_fine_b3 -task 017 -outpath mlmi_notta_fine_boostv3_m50l3 -ep 50 -lr 1e-3 -prett /gpfsscratch/rech/arf/unm89rb/nnUNet_trained_models/nnUNet/3d_fullres_nnUNetPlansv2.1/Task017_BCV/mlmi_notta_fine_boostv3_IN_LeakyReLU/fold_0/model_final_checkpoint.model     # fbv3c50l3 # no deter
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_fine_b3 -task 017 -outpath mlmi_notta_fine_boostv3_m10l2 -ep 10 -lr 1e-2 -prett /gpfsscratch/rech/arf/unm89rb/nnUNet_trained_models/nnUNet/3d_fullres_nnUNetPlansv2.1/Task017_BCV/mlmi_notta_fine_boostv3_IN_LeakyReLU/fold_0/model_final_checkpoint.model     # fbv3c10l2 # no deter
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_fine_b4 -task 017 -outpath mlmi_notta_fine_boostv4 # fbv4 # 1200
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_fine_b4 -task 017 -outpath mlmi_notta_fine_boostv4 -continu # fbv4c # 1200

@@ -1,15 +1,15 @@
 #!/bin/bash
 #SBATCH -A arf@v100
-#SBATCH --job-name=fbv4c     # job name
+#SBATCH --job-name=fbv3c10     # job name
 #SBATCH --ntasks=1                  # number of MP tasks
 #SBATCH --ntasks-per-node=1          # number of MPI tasks per node
 #SBATCH --gres=gpu:1                 # number of GPUs per node
 #SBATCH --cpus-per-task=20   #10           # number of cores per tasks
 #SBATCH --hint=nomultithread         # we get physical cores not logical
-#SBATCH --time=99:05:00             # maximum execution time (HH:MM:SS)
-#SBATCH --qos=qos_gpu-t4
-#SBATCH --output=logs/fbv4c.out # output file name # add %j to id the job
-#SBATCH --error=logs/fbv4c.err  # error file name # add %j to id the job
+#SBATCH --time=04:05:00             # maximum execution time (HH:MM:SS)
+#SBATCH --qos=qos_gpu-t3
+#SBATCH --output=logs/fbv3c10.out # output file name # add %j to id the job
+#SBATCH --error=logs/fbv3c10.err  # error file name # add %j to id the job
 #SBATCH -C v100-32g
  
 
@@ -39,8 +39,9 @@ export RESULTS_FOLDER="/gpfsscratch/rech/arf/unm89rb/nnUNet_trained_models"
 # 
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_fine -task 017 -outpath mlmi_notta_fine_boostv2 # fbv2 # mlmi based
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_fine_b3 -task 017 -outpath mlmi_notta_fine_boostv3 # fbv3 # no deter
+srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_fine_b3 -task 017 -outpath mlmi_notta_fine_boostv3_m10 -ep 10 -lr 1e-4 -prett /gpfsscratch/rech/arf/unm89rb/nnUNet_trained_models/nnUNet/3d_fullres_nnUNetPlansv2.1/Task017_BCV/mlmi_notta_fine_boostv3_IN_LeakyReLU/fold_0/model_final_checkpoint.model     # fbv3c10 # no deter
 # srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_fine_b4 -task 017 -outpath mlmi_notta_fine_boostv4 # fbv4 # 1200
-srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_fine_b4 -task 017 -outpath mlmi_notta_fine_boostv4 -continu # fbv4c # 1200
+# srun python fine_package/fine/run/run.py -network nnUNetTrainerV2_fine_b4 -task 017 -outpath mlmi_notta_fine_boostv4 -continu # fbv4c # 1200
 
 
 

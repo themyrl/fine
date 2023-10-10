@@ -13,12 +13,13 @@ from fine.training.network_training.nnUNetTrainer import nnUNetTrainer
 from nnunet.utilities.task_name_id_conversion import convert_id_to_task_name
 import os
 import fine
+from nnunet.run.load_pretrained_weights import load_pretrained_weights
 
 import time
 # import telegram_send as ts
 # os.environ['nnUNet_raw_data_base'] = '/local/DEEPLEARNING/MULTI_ATLAS/MULTI_ATLAS/Task017_BCV/'
 def main(gpu, network, network_trainer, task, fold, outpath, val, npz, c=False, ep=1000, lr=1e-2, 
-    pretrained_weights=None, na=False, vt_map=(3,5,5,1), dbg=False, visu=False, idx=-1, tta=True, clip=False,
+    pretrained_weights="", na=False, vt_map=(3,5,5,1), dbg=False, visu=False, idx=-1, tta=True, clip=False,
     deterministic = True, vt_num=1, depths=[2, 2, 2, 2, 2, 2], dofine=[0,0,1,1,1,1], vb=False):
     # if not dbg:
         # ts.send(messages=[network_trainer+" "+task +" "+ str(fold) +" "+ outpath +" val="+ str(val)+" ..."])
@@ -158,9 +159,10 @@ def main(gpu, network, network_trainer, task, fold, outpath, val, npz, c=False, 
                             deterministic=deterministic,
                             fp16=run_mixed_precision, vt_map=vt_map)
 
-    if c:
-        trainer.max_num_epochs = ep
-        trainer.initial_lr = lr
+    # if c:
+    trainer.max_num_epochs = ep
+    trainer.initial_lr = lr
+    
 
     # print("Here its ok 3")
     # exit(0)
@@ -174,6 +176,9 @@ def main(gpu, network, network_trainer, task, fold, outpath, val, npz, c=False, 
     #     trainer.save_final_checkpoint = False  # whether or not to save the final checkpoint
 
     trainer.initialize(not validation_only)
+
+    if pretrained_weights != "":
+        load_pretrained_weights(trainer.network, pretrained_weights)
 
     if find_lr:
         trainer.find_lr()

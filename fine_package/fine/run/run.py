@@ -22,6 +22,9 @@ if __name__ == '__main__':
 	parser.add_argument("-ntok", type=int, default=1)
 	parser.add_argument("-depths", nargs='+', type=int, default=[2])
 	parser.add_argument("-dofine", nargs='+', type=int, default=[0,0,1,1,1,1])
+	parser.add_argument("-ep", type=float, default=1000)
+	parser.add_argument("-lr", type=float, default=1e-2)
+	parser.add_argument("-prett", type=str, default="")
 
 	args = parser.parse_args()
 
@@ -53,6 +56,9 @@ if __name__ == '__main__':
 	visu = args.visu
 	depths = args.depths
 	vb = args.vb
+	ep = args.ep
+	lr = args.lr
+	prett = args.prett
 	if len(depths) == 1:
 		depths = [depths[0] for i in range(6)]
 	elif len(depths) < 6:
@@ -66,15 +72,15 @@ if __name__ == '__main__':
 	if not ov:
 		if ntok != 1 or depths != [2, 2, 2, 2, 2, 2]  or dofine!=[0,0,1,1,1,1]:
 			run.main(gpu=g, network='3d_fullres', network_trainer=network_trainer, task=task, fold=0, outpath=outpath, val=False, npz=True, na=na, tta=tta, c=c, deterministic=deterministic, 
-				vt_num=ntok, depths=depths, dofine=dofine)
+				vt_num=ntok, depths=depths, dofine=dofine, ep=ep, lr=lr, pretrained_weights=prett)
 			run.main(gpu=g, network='3d_fullres', network_trainer=network_trainer, task=task, fold=0, outpath=outpath, val=True, npz=True, na=na, tta=tta, deterministic=deterministic, 
-				vt_num=ntok, depths=depths, dofine=dofine)
+				vt_num=ntok, depths=depths, dofine=dofine, ep=ep, lr=lr, pretrained_weights=prett)
 		# if clip:
 		# 	run.main(gpu=g, network='3d_fullres', network_trainer=network_trainer, task=task, fold=0, outpath=outpath, val=False, npz=True, na=na, tta=tta, c=c, clip=clip)
 		# 	run.main(gpu=g, network='3d_fullres', network_trainer=network_trainer, task=task, fold=0, outpath=outpath, val=True, npz=True, na=na, tta=tta, clip=clip)
 		else:
-			run.main(gpu=g, network='3d_fullres', network_trainer=network_trainer, task=task, fold=0, outpath=outpath, val=False, npz=True, na=na, tta=tta, c=c, deterministic=deterministic)
-			run.main(gpu=g, network='3d_fullres', network_trainer=network_trainer, task=task, fold=0, outpath=outpath, val=True, npz=True, na=na, tta=tta, deterministic=deterministic)
+			run.main(gpu=g, network='3d_fullres', network_trainer=network_trainer, task=task, fold=0, outpath=outpath, val=False, npz=True, na=na, tta=tta, c=c, deterministic=deterministic, ep=ep, lr=lr, pretrained_weights=prett)
+			run.main(gpu=g, network='3d_fullres', network_trainer=network_trainer, task=task, fold=0, outpath=outpath, val=True, npz=True, na=na, tta=tta, deterministic=deterministic, ep=ep, lr=lr, pretrained_weights=prett)
 	else:
 		if ntok != 1 or depths != [2, 2, 2, 2, 2, 2]  or dofine!=[0,0,1,1,1,1]:
 			run.main(gpu=g, network='3d_fullres', network_trainer=network_trainer, task=task, fold=0, outpath=outpath, val=True, npz=True, na=na, tta=tta, deterministic=deterministic, 

@@ -33,22 +33,25 @@ python run/run_all_fine.py
 
 ## 4. Citation
 ```
-@misc{https://doi.org/10.48550/arxiv.2210.05313,
-  doi = {10.48550/ARXIV.2210.05313},
-  
-  url = {https://arxiv.org/abs/2210.05313},
-  
-  author = {Themyr, Loic and Rambour, Clément and Thome, Nicolas and Collins, Toby and Hostettler, Alexandre},
-  
-  keywords = {Computer Vision and Pattern Recognition (cs.CV), FOS: Computer and information sciences, FOS: Computer and information sciences, 68T45},
-  
-  title = {Memory transformers for full context and high-resolution 3D Medical Segmentation},
-  
-  publisher = {arXiv},
-  
-  year = {2022},
-  
-  copyright = {arXiv.org perpetual, non-exclusive license}
+@InProceedings{10.1007/978-3-031-21014-3_13,
+author="Themyr, Loic
+and Rambour, Cl{\'e}ment
+and Thome, Nicolas
+and Collins, Toby
+and Hostettler, Alexandre",
+editor="Lian, Chunfeng
+and Cao, Xiaohuan
+and Rekik, Islem
+and Xu, Xuanang
+and Cui, Zhiming",
+title="Memory Transformers for Full Context and High-Resolution 3D Medical Segmentation",
+booktitle="Machine Learning in Medical Imaging",
+year="2022",
+publisher="Springer Nature Switzerland",
+address="Cham",
+pages="121--130",
+abstract="Transformer models achieve state-of-the-art results for image segmentation. However, achieving long-range attention, necessary to capture global context, with high-resolution 3D images is a fundamental challenge. This paper introduces the Full resolutIoN mEmory (FINE) transformer to overcome this issue. The core idea behind FINE is to learn memory tokens to indirectly model full range interactions while scaling well in both memory and computational costs. FINE introduces memory tokens at two levels: the first one allows full interaction between voxels within local image regions (patches), the second one allows full interactions between all regions of the 3D volume. Combined, they allow full attention over high resolution images, e.g. 512{\$}{\$}{\backslash},{\backslash}times {\backslash},{\$}{\$}{\texttimes}512{\$}{\$}{\backslash},{\backslash}times {\backslash},{\$}{\$}{\texttimes}256 voxels and above. Experiments on the BCV image segmentation dataset shows better performances than state-of-the-art CNN and transformer baselines, highlighting the superiority of our full attention mechanism compared to recent transformer baselines, e.g. CoTr, and nnFormer.",
+isbn="978-3-031-21014-3"
 }
 ```
 

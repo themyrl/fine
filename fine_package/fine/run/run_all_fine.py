@@ -4,7 +4,7 @@ gpu = '0'
 
 # BCV
 # Training
-# run.main(gpu=gpu, network='3d_fullres', network_trainer='nnUNetTrainerV2_fine', task='017', fold=0, outpath='FINE', val=False, npz=True)
+run.main(gpu=gpu, network='3d_fullres', network_trainer='nnUNetTrainerV2_fine', task='017', fold=0, outpath='FINE', val=False, npz=True)
 # Evaluation
 # run.main(gpu=gpu, network='3d_fullres', network_trainer='nnUNetTrainerV2_fine', task='017', fold=0, outpath='FINE', val=True,  npz=True)
 
@@ -15,6 +15,5 @@ gpu = '0'
 
 
 # WORD
-run.main(gpu=gpu, network='3d_fullres', network_trainer='nnUNetTrainerV2_fine', task='140', fold=0, outpath='FINE', val=False, npz=True)
-# run.main(gpu=gpu, network='3d_fullres', network_trainer='nnUNetTrainerV2_fine', task='140', fold=0, outpath='FINE', val=False, npz=True, c=True)
-run.main(gpu=gpu, network='3d_fullres', network_trainer='nnUNetTrainerV2_fine', task='140', fold=0, outpath='FINE', val=True,  npz=True)
+# run.main(gpu=gpu, network='3d_fullres', network_trainer='nnUNetTrainerV2_fine', task='140', fold=0, outpath='FINE', val=False, npz=True)
+# run.main(gpu=gpu, network='3d_fullres', network_trainer='nnUNetTrainerV2_fine', task='140', fold=0, outpath='FINE', val=True,  npz=True)
